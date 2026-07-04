@@ -109,12 +109,10 @@ a{color:inherit}
 .clips-head h3{font-family:var(--serif);font-weight:500;font-size:1.5rem}
 .clips-head p{font-size:.9rem;color:var(--muted)}
 .clips{display:grid;grid-template-columns:repeat(3,1fr);gap:24px 18px;align-items:start}
-.clip{display:flex;flex-direction:column}
-.clip .embed-frame{border-radius:4px;overflow:hidden;background:var(--card);box-shadow:0 12px 32px rgba(23,21,28,.10);min-height:420px;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px}
-.clip .embed-frame iframe{display:block}
-.clip .embed-frame blockquote{margin:0;width:100%}
-.clip .embed-frame blockquote a{display:inline-block;font-family:var(--sans);font-weight:600;font-size:.9rem;color:var(--green);text-decoration:none;border:1px solid var(--line);padding:12px 22px;border-radius:2px;transition:border-color .15s ease}
-.clip .embed-frame blockquote a:hover{border-color:var(--green)}
+.clip{display:flex;flex-direction:column;text-decoration:none;color:inherit}
+.clip .embed-frame{position:relative;aspect-ratio:4/5;border-radius:4px;overflow:hidden;background:var(--card);box-shadow:0 12px 32px rgba(23,21,28,.10);transition:transform .2s ease}
+.clip:hover .embed-frame{transform:translateY(-4px)}
+.clip .embed-frame img{width:100%;height:100%;object-fit:cover;display:block}
 .clip figcaption{margin-top:12px}
 .clip figcaption .who{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .clip figcaption .what{display:block;font-family:var(--serif);font-size:1.05rem;line-height:1.2;margin-top:4px}
@@ -304,30 +302,30 @@ a{color:inherit}
         <p>Tap a clip to open it on the client's profile.</p>
       </div>
       <div class="clips reveal">
-        <figure class="clip">
-          <div class="embed-frame"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/bohemianbreezetaverna/p/DWjGuIYjK55/" data-instgrm-version="14" style="margin:0;width:100%;"><a href="https://www.instagram.com/bohemianbreezetaverna/p/DWjGuIYjK55/" target="_blank" rel="noopener">View this post on Instagram</a></blockquote></div>
+        <a class="clip" href="https://www.instagram.com/bohemianbreezetaverna/p/DWjGuIYjK55/" target="_blank" rel="noopener">
+          <div class="embed-frame"><img src="images/clip-bohemian-1.jpg" alt="Illustrated post from Bohemian Breeze Taverna" loading="lazy"></div>
           <figcaption><span class="who">Bohemian Breeze Taverna</span><span class="what">Pasta la vista, baby</span></figcaption>
-        </figure>
-        <figure class="clip">
-          <div class="embed-frame"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/bohemianbreezetaverna/p/DW7zhlKD5pc/" data-instgrm-version="14" style="margin:0;width:100%;"><a href="https://www.instagram.com/bohemianbreezetaverna/p/DW7zhlKD5pc/" target="_blank" rel="noopener">View this post on Instagram</a></blockquote></div>
+        </a>
+        <a class="clip" href="https://www.instagram.com/bohemianbreezetaverna/p/DW7zhlKD5pc/" target="_blank" rel="noopener">
+          <div class="embed-frame"><img src="images/clip-bohemian-2.jpg" alt="Feed post from Bohemian Breeze Taverna" loading="lazy"></div>
           <figcaption><span class="who">Bohemian Breeze Taverna</span><span class="what">The main squeeze</span></figcaption>
-        </figure>
-        <figure class="clip">
-          <div class="embed-frame"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/catbehaviourindia/p/DNS7JCfCkhN/" data-instgrm-version="14" style="margin:0;width:100%;"><a href="https://www.instagram.com/catbehaviourindia/p/DNS7JCfCkhN/" target="_blank" rel="noopener">View this post on Instagram</a></blockquote></div>
+        </a>
+        <a class="clip" href="https://www.instagram.com/catbehaviourindia/p/DNS7JCfCkhN/" target="_blank" rel="noopener">
+          <div class="embed-frame"><img src="images/clip-catbehaviour-1.jpg" alt="Educational post from Cat Behaviour India" loading="lazy"></div>
           <figcaption><span class="who">Cat Behaviour India</span><span class="what">Playtime = brain time</span></figcaption>
-        </figure>
-        <figure class="clip">
-          <div class="embed-frame"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/catbehaviourindia/p/DM7xszVCyHR/" data-instgrm-version="14" style="margin:0;width:100%;"><a href="https://www.instagram.com/catbehaviourindia/p/DM7xszVCyHR/" target="_blank" rel="noopener">View this post on Instagram</a></blockquote></div>
+        </a>
+        <a class="clip" href="https://www.instagram.com/catbehaviourindia/p/DM7xszVCyHR/" target="_blank" rel="noopener">
+          <div class="embed-frame"><img src="images/clip-catbehaviour-2.jpg" alt="Adoption advocacy post from Cat Behaviour India" loading="lazy"></div>
           <figcaption><span class="who">Cat Behaviour India</span><span class="what">Adopt, don't shop</span></figcaption>
-        </figure>
-        <figure class="clip">
-          <div class="embed-frame"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/ancientindia_bysaanse/reel/DWhCTVJR3Fa/" data-instgrm-version="14" style="margin:0;width:100%;"><a href="https://www.instagram.com/ancientindia_bysaanse/reel/DWhCTVJR3Fa/" target="_blank" rel="noopener">View this post on Instagram</a></blockquote></div>
+        </a>
+        <a class="clip" href="https://www.instagram.com/ancientindia_bysaanse/reel/DWhCTVJR3Fa/" target="_blank" rel="noopener">
+          <div class="embed-frame"><img src="images/clip-saanse-1.jpg" alt="Illustrated reel from Saanse — the Pandavas' final journey" loading="lazy"></div>
           <figcaption><span class="who">Saanse</span><span class="what">The Pandavas' final journey</span></figcaption>
-        </figure>
-        <figure class="clip">
-          <div class="embed-frame"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/saanse_shraddhakanayadwaar/reel/DWmL39FxEmz/" data-instgrm-version="14" style="margin:0;width:100%;"><a href="https://www.instagram.com/saanse_shraddhakanayadwaar/reel/DWmL39FxEmz/" target="_blank" rel="noopener">View this post on Instagram</a></blockquote></div>
+        </a>
+        <a class="clip" href="https://www.instagram.com/saanse_shraddhakanayadwaar/reel/DWmL39FxEmz/" target="_blank" rel="noopener">
+          <div class="embed-frame"><img src="images/clip-saanse-2.jpg" alt="Reel title card from Saanse — Hanuman's untold strength" loading="lazy"></div>
           <figcaption><span class="who">Saanse</span><span class="what">Hanuman's untold strength</span></figcaption>
-        </figure>
+        </a>
       </div>
     </div>
   </section>
@@ -468,7 +466,6 @@ if (!reduce && 'IntersectionObserver' in window) {
   document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
 }
 </script>
-<script async src="https://www.instagram.com/embed.js"></script>
 
 </body>
 </html>
