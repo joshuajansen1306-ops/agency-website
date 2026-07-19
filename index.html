@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jansen & Co. — Social media, run like a sales channel</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23151713'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-style='italic' font-size='38' fill='%231E5745' text-anchor='middle'%3E%26%3C/text%3E%3C/svg%3E">
 <meta name="description" content="Jansen & Co. plans, films, produces, and manages short-form content programs — reels, posts, and stories — measured against reach, sales, and footfall, not likes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,19 +24,22 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:17px;line-height:1.65}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:17px;line-height:1.65;position:relative}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.035;mix-blend-mode:multiply;background-image:url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="180" height="180"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E')}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--green);outline-offset:3px}
 .wrap{max-width:1080px;margin-inline:auto;padding-inline:28px}
 
 .eyebrow{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;color:var(--green)}
-.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--sans);font-weight:600;font-size:.95rem;text-decoration:none;padding:14px 28px;border-radius:2px;transition:background .15s ease,color .15s ease;cursor:pointer;border:none}
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--sans);font-weight:600;font-size:.95rem;text-decoration:none;padding:14px 28px;border-radius:2px;transition:background .18s ease,color .18s ease,transform .18s ease,box-shadow .18s ease;cursor:pointer;border:none}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
 .btn-ink{background:var(--ink);color:var(--paper)}
-.btn-ink:hover{background:var(--green-deep)}
+.btn-ink:hover{background:var(--green-deep);box-shadow:0 10px 24px rgba(18,56,45,.28)}
 .btn-line{background:transparent;color:var(--ink);border:1px solid var(--ink)}
-.btn-line:hover{background:var(--ink);color:var(--paper)}
+.btn-line:hover{background:var(--ink);color:var(--paper);box-shadow:0 10px 24px rgba(21,23,19,.18)}
 .btn-paper{background:var(--paper);color:var(--green-deep)}
-.btn-paper:hover{background:#fff}
+.btn-paper:hover{background:#fff;box-shadow:0 10px 24px rgba(0,0,0,.22)}
 
 /* ---------- header ---------- */
 .site-header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -43,13 +47,23 @@ a{color:inherit}
 .wordmark{font-family:var(--serif);font-weight:500;font-size:1.3rem;letter-spacing:-.01em;text-decoration:none}
 .wordmark span{color:var(--green)}
 .site-nav{display:flex;gap:32px;align-items:center}
-.site-nav a{font-size:.92rem;font-weight:500;text-decoration:none;color:var(--muted)}
-.site-nav a:hover{color:var(--ink)}
+.site-nav a:not(.btn){font-size:.92rem;font-weight:500;text-decoration:none;color:var(--muted);position:relative;padding-bottom:2px}
+.site-nav a:not(.btn)::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--green);transform:scaleX(0);transform-origin:right;transition:transform .25s ease}
+.site-nav a:not(.btn):hover{color:var(--ink)}
+.site-nav a:not(.btn):hover::after{transform:scaleX(1);transform-origin:left}
 .site-nav .btn{padding:10px 20px}
 @media (max-width:900px){.site-nav a:not(.btn){display:none}}
+@media (max-width:420px){
+  .site-header .wrap{padding-inline:18px}
+  .wordmark{font-size:1.1rem}
+  .site-nav .btn{padding:9px 14px;font-size:.8rem}
+}
 
 /* ---------- hero ---------- */
-.hero{padding:120px 0 96px;border-bottom:1px solid var(--line)}
+.hero{position:relative;padding:120px 0 96px;border-bottom:1px solid var(--line);overflow:hidden}
+.hero::after{content:"&";position:absolute;top:-14%;right:-2%;font-family:var(--serif);font-style:italic;font-weight:500;font-size:52rem;line-height:1;color:var(--ink);opacity:.03;pointer-events:none;user-select:none;z-index:0}
+.hero>.wrap{position:relative;z-index:1}
+@media (max-width:820px){.hero::after{display:none}}
 .hero h1{font-family:var(--serif);font-optical-sizing:auto;font-weight:500;font-size:clamp(2.7rem,6vw,4.6rem);line-height:1.06;letter-spacing:-.015em;max-width:15em;margin:26px 0 30px}
 .hero h1 em{font-style:italic;font-weight:400;color:var(--green)}
 .hero .lede{font-size:1.2rem;color:var(--muted);max-width:34em;margin-bottom:40px}
@@ -68,13 +82,15 @@ a{color:inherit}
 
 /* ---------- services ---------- */
 .services{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
-.service{background:var(--card);padding:40px 34px 44px}
+.service{background:var(--card);padding:40px 34px 44px;position:relative;transition:box-shadow .25s ease;z-index:0}
+.service:hover{box-shadow:0 22px 44px rgba(21,23,19,.08);z-index:1}
 .service .tag{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .service h3{font-family:var(--serif);font-weight:500;font-size:1.45rem;margin:16px 0 12px}
 .service p{color:var(--muted);font-size:.95rem;margin-bottom:20px}
 .service ul{list-style:none}
-.service li{font-size:.92rem;padding:9px 0;border-top:1px solid var(--line)}
+.service li{font-size:.92rem;padding:9px 0;border-top:1px solid var(--line);transition:padding-left .2s ease,color .2s ease}
 .service li:last-child{border-bottom:1px solid var(--line)}
+.service:hover li{padding-left:4px}
 
 /* ---------- work ledger ---------- */
 .work{background:var(--card);border-block:1px solid var(--line)}
@@ -96,11 +112,12 @@ a{color:inherit}
 
 /* ---------- clients ---------- */
 .clients{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:16px}
-.client{background:var(--card);padding:34px 32px}
+.client{background:var(--card);padding:34px 32px;position:relative;transition:box-shadow .25s ease;z-index:0}
+.client:hover{box-shadow:0 22px 44px rgba(21,23,19,.08);z-index:1}
 .client-niche{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .client h3{font-family:var(--serif);font-weight:500;font-size:1.55rem;margin:12px 0 10px}
 .client-scope{color:var(--muted);font-size:.95rem;margin-bottom:18px}
-.client-link{font-family:var(--mono);font-size:.85rem;font-weight:600;color:var(--green);text-decoration:none}
+.client-link{font-family:var(--mono);font-size:.85rem;font-weight:600;color:var(--green);text-decoration:none;display:inline-flex;align-items:center;gap:4px}
 .client-link:hover{text-decoration:underline}
 @media (max-width:820px){.clients{grid-template-columns:1fr}}
 
@@ -110,18 +127,21 @@ a{color:inherit}
 .clips-head p{font-size:.9rem;color:var(--muted)}
 .clips{display:grid;grid-template-columns:repeat(3,1fr);gap:24px 18px;align-items:start}
 .clip{display:flex;flex-direction:column;text-decoration:none;color:inherit}
-.clip .embed-frame{position:relative;aspect-ratio:4/5;border-radius:4px;overflow:hidden;background:var(--card);box-shadow:0 12px 32px rgba(23,21,28,.10);transition:transform .2s ease}
-.clip:hover .embed-frame{transform:translateY(-4px)}
-.clip .embed-frame img{width:100%;height:100%;object-fit:cover;display:block}
+.clip .embed-frame{position:relative;aspect-ratio:4/5;border-radius:4px;overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:0 12px 32px rgba(23,21,28,.10);transition:transform .25s ease,box-shadow .25s ease}
+.clip:hover .embed-frame{transform:translateY(-4px);box-shadow:0 20px 40px rgba(23,21,28,.16)}
+.clip .embed-frame img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+.clip:hover .embed-frame img{transform:scale(1.05)}
 .clip figcaption{margin-top:12px}
 .clip figcaption .who{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.clip figcaption .what{display:block;font-family:var(--serif);font-size:1.05rem;line-height:1.2;margin-top:4px}
+.clip figcaption .what{display:block;font-family:var(--serif);font-size:1.05rem;line-height:1.2;margin-top:4px;transition:color .2s ease}
+.clip:hover figcaption .what{color:var(--green)}
 @media (max-width:820px){.clips{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:560px){.clips{grid-template-columns:1fr;max-width:420px;margin-inline:auto}}
 
 /* ---------- process ---------- */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:44px 40px}
-.step{border-top:2px solid var(--ink);padding-top:18px}
+.step{border-top:2px solid var(--ink);padding-top:18px;transition:border-color .25s ease}
+.step:hover{border-color:var(--green)}
 .step .no{font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;color:var(--green);display:block;margin-bottom:10px}
 .step h3{font-family:var(--serif);font-weight:500;font-size:1.2rem;margin-bottom:8px}
 .step p{color:var(--muted);font-size:.92rem}
@@ -131,8 +151,10 @@ a{color:inherit}
 /* ---------- engagements ---------- */
 .engage{background:var(--card);border-block:1px solid var(--line)}
 .engage-list{border-top:1px solid var(--ink)}
-.engagement{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.6fr) minmax(0,.6fr);gap:32px;padding:34px 0;border-bottom:1px solid var(--line);align-items:baseline}
-.engagement h3{font-family:var(--serif);font-weight:500;font-size:1.35rem}
+.engagement{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.6fr) minmax(0,.6fr);gap:32px;padding:34px 28px;margin-inline:-28px;border-bottom:1px solid var(--line);align-items:baseline;transition:background .2s ease;border-radius:2px}
+.engagement:hover{background:var(--paper)}
+.engagement h3{font-family:var(--serif);font-weight:500;font-size:1.35rem;position:relative}
+.engagement--featured h3::after{content:"Most booked";font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green);border:1px solid var(--line);border-radius:2px;padding:3px 8px;margin-left:12px;vertical-align:middle}
 .engagement .scope{color:var(--muted);font-size:.95rem}
 .engagement .fee{font-family:var(--mono);font-size:.9rem;text-align:right}
 .engage-note{margin-top:26px;font-size:.9rem;color:var(--muted);max-width:46em}
@@ -162,17 +184,37 @@ a{color:inherit}
 .contact a.mail{color:var(--paper);text-decoration:underline;text-underline-offset:4px}
 
 /* ---------- footer ---------- */
-.site-footer{padding:40px 0}
-.site-footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.site-footer{padding:64px 0 40px}
+.footer-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding-bottom:32px;margin-bottom:28px;border-bottom:1px solid var(--line)}
+.footer-top .wordmark{font-family:var(--serif);font-size:1.7rem;font-weight:500;letter-spacing:-.01em;text-decoration:none}
+.footer-top .wordmark span{color:var(--green)}
+.footer-top .to-top{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:color .2s ease,transform .2s ease}
+.footer-top .to-top:hover{color:var(--ink);transform:translateY(-2px)}
+.site-footer .wrap>div:last-child{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .site-footer p{font-size:.85rem;color:var(--muted)}
 .site-footer nav{display:flex;gap:26px}
-.site-footer nav a{font-size:.88rem;text-decoration:none;color:var(--muted)}
+.site-footer nav a{font-size:.88rem;text-decoration:none;color:var(--muted);position:relative;padding-bottom:2px}
+.site-footer nav a::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:right;transition:transform .25s ease}
 .site-footer nav a:hover{color:var(--ink)}
+.site-footer nav a:hover::after{transform:scaleX(1);transform-origin:left}
 
 /* reveal */
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+/* staggered entrance for grid children */
+.services .service,.clients .client,.clips .clip{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.services.in .service,.clients.in .client,.clips.in .clip{opacity:1;transform:none}
+.services .service:nth-child(1),.clients .client:nth-child(1),.clips .clip:nth-child(1),.clips .clip:nth-child(4){transition-delay:0s}
+.services .service:nth-child(2),.clients .client:nth-child(2),.clips .clip:nth-child(2),.clips .clip:nth-child(5){transition-delay:.1s}
+.services .service:nth-child(3),.clients .client:nth-child(3),.clips .clip:nth-child(3),.clips .clip:nth-child(6){transition-delay:.2s}
+.step:nth-child(1),.step:nth-child(4){transition-delay:0s}
+.step:nth-child(2),.step:nth-child(5){transition-delay:.08s}
+.step:nth-child(3),.step:nth-child(6){transition-delay:.16s}
+@media (prefers-reduced-motion:reduce){
+  .services .service,.clients .client,.clips .clip{opacity:1;transform:none;transition:none}
+}
 
 @media (max-width:820px){
   .services{grid-template-columns:1fr}
@@ -391,9 +433,9 @@ a{color:inherit}
           <p class="scope">Content only. A monthly slate of filmed reels, posts, and stories, delivered ready to publish with captions and a calendar. For teams that run their own channels.</p>
           <p class="fee">Priced to budget</p>
         </div>
-        <div class="engagement">
+        <div class="engagement engagement--featured">
           <h3>Management</h3>
-          <p class="scope">Production, plus daily operation of your channels: publishing, community, enquiry handling, and a monthly performance review. Our most common engagement.</p>
+          <p class="scope">Production, plus daily operation of your channels: publishing, community, enquiry handling, and a monthly performance review.</p>
           <p class="fee">Priced to budget</p>
         </div>
         <div class="engagement">
@@ -445,13 +487,19 @@ a{color:inherit}
 
 <footer class="site-footer">
   <div class="wrap">
-    <p>© 2026 Jansen &amp; Co. All rights reserved.</p>
-    <nav aria-label="Footer">
-      <a href="#services">Services</a>
-      <a href="#work">Work</a>
-      <a href="#engagements">Engagements</a>
-      <a href="https://instagram.com/13_joshuaaaaaaaaa" target="_blank" rel="noopener">Instagram</a>
-    </nav>
+    <div class="footer-top">
+      <a class="wordmark" href="#top">Jansen <span>&amp;</span> Co.</a>
+      <a class="to-top" href="#top">Back to top ↑</a>
+    </div>
+    <div>
+      <p>© 2026 Jansen &amp; Co. All rights reserved.</p>
+      <nav aria-label="Footer">
+        <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#engagements">Engagements</a>
+        <a href="https://instagram.com/13_joshuaaaaaaaaa" target="_blank" rel="noopener">Instagram</a>
+      </nav>
+    </div>
   </div>
 </footer>
 
