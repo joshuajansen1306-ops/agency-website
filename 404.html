@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page not found — Jansen & Co.</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23151713'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-style='italic' font-size='38' fill='%231E5745' text-anchor='middle'%3E%26%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F7F7F4;--ink:#151713;--green:#1E5745;--green-deep:#12382D;--muted:#63675F;--line:#E2E3DC;
+--serif:"Newsreader",serif;--sans:"Hanken Grotesk",sans-serif;--mono:"IBM Plex Mono",monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;position:relative;overflow:hidden}
+body::after{content:"&";position:absolute;top:-12%;right:-4%;font-family:var(--serif);font-style:italic;font-weight:500;font-size:44rem;line-height:1;color:var(--ink);opacity:.03;pointer-events:none;user-select:none}
+.inner{position:relative;z-index:1;max-width:34em}
+.eyebrow{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;color:var(--green);margin-bottom:20px}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(2.2rem,5.4vw,3.6rem);line-height:1.08;letter-spacing:-.015em;margin-bottom:18px}
+h1 em{font-style:italic;font-weight:400;color:var(--green)}
+p{color:var(--muted);margin-bottom:36px}
+.btn{display:inline-flex;font-weight:600;font-size:.95rem;text-decoration:none;padding:14px 28px;border-radius:2px;background:var(--ink);color:var(--paper);transition:background .18s ease,transform .18s ease,box-shadow .18s ease}
+.btn:hover{background:var(--green-deep);transform:translateY(-2px);box-shadow:0 10px 24px rgba(18,56,45,.28)}
+.markwrap{margin-top:64px}
+.mark{font-family:var(--serif);font-size:1.15rem;font-weight:500;text-decoration:none;color:var(--ink)}
+.mark span{color:var(--green)}
+</style>
+</head>
+<body>
+<div class="inner">
+  <p class="eyebrow">404 — Page not found</p>
+  <h1>This page doesn't exist. Your <em>audience</em> does.</h1>
+  <p>The link you followed is broken or the page has moved. Everything worth seeing is back on the main page.</p>
+  <a class="btn" href="/agency-website/">Back to the site</a>
+  <div class="markwrap"><a class="mark" href="/agency-website/">Jansen <span>&amp;</span> Co.</a></div>
+</div>
+</body>
+</html>

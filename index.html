@@ -6,6 +6,19 @@
 <title>Jansen & Co. — Social media, run like a sales channel</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23151713'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-style='italic' font-size='38' fill='%231E5745' text-anchor='middle'%3E%26%3C/text%3E%3C/svg%3E">
 <meta name="description" content="Jansen & Co. plans, films, produces, and manages short-form content programs — reels, posts, and stories — measured against reach, sales, and footfall, not likes.">
+<meta name="theme-color" content="#F7F7F4">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jansen & Co.">
+<meta property="og:title" content="Jansen & Co. — Social media, run like a sales channel">
+<meta property="og:description" content="We plan, film, produce, and manage reels, posts, and stories for brands that expect their marketing to pay for itself.">
+<meta property="og:url" content="https://joshuajansen1306-ops.github.io/agency-website/">
+<meta property="og:image" content="https://joshuajansen1306-ops.github.io/agency-website/images/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jansen & Co. — Social media, run like a sales channel">
+<meta name="twitter:description" content="We plan, film, produce, and manage reels, posts, and stories for brands that expect their marketing to pay for itself.">
+<meta name="twitter:image" content="https://joshuajansen1306-ops.github.io/agency-website/images/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -28,7 +41,11 @@ body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:
 body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.035;mix-blend-mode:multiply;background-image:url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="180" height="180"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E')}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--green);outline-offset:3px}
+::selection{background:var(--green);color:#fff}
+section[id]{scroll-margin-top:84px}
 .wrap{max-width:1080px;margin-inline:auto;padding-inline:28px}
+.skip{position:absolute;left:16px;top:-60px;z-index:100;background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:2px;font-size:.9rem;font-weight:600;text-decoration:none;transition:top .2s ease}
+.skip:focus{top:12px}
 
 .eyebrow{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;color:var(--green)}
 .btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--sans);font-weight:600;font-size:.95rem;text-decoration:none;padding:14px 28px;border-radius:2px;transition:background .18s ease,color .18s ease,transform .18s ease,box-shadow .18s ease;cursor:pointer;border:none}
@@ -165,6 +182,8 @@ a{color:inherit}
 
 /* ---------- founder ---------- */
 .founder .inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:64px;align-items:start}
+.founder .qmark{display:block;font-family:var(--serif);font-style:italic;font-weight:500;font-size:9rem;line-height:.6;color:var(--green);opacity:.18;margin-top:34px;user-select:none}
+@media (max-width:820px){.founder .qmark{display:none}}
 .founder blockquote{font-family:var(--serif);font-size:clamp(1.3rem,2.4vw,1.7rem);line-height:1.45;font-weight:400}
 .founder blockquote em{color:var(--green);font-style:italic}
 .founder .sig{margin-top:28px;display:flex;align-items:center;gap:16px}
@@ -176,7 +195,10 @@ a{color:inherit}
 @media (max-width:820px){.founder .inner{grid-template-columns:1fr;gap:24px}}
 
 /* ---------- contact ---------- */
-.contact{background:var(--green-deep);color:var(--paper)}
+.contact{background:var(--green-deep);color:var(--paper);position:relative;overflow:hidden}
+.contact::after{content:"&";position:absolute;bottom:-38%;right:-2%;font-family:var(--serif);font-style:italic;font-weight:500;font-size:38rem;line-height:1;color:#fff;opacity:.04;pointer-events:none;user-select:none}
+.contact .wrap{position:relative;z-index:1}
+@media (max-width:820px){.contact::after{display:none}}
 .contact .eyebrow{color:#9DC3B4}
 .contact h2{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,4.4vw,3.2rem);line-height:1.1;letter-spacing:-.01em;max-width:16em;margin:18px 0 22px}
 .contact p{color:#C4D8CF;max-width:36em;margin-bottom:38px;font-size:1.05rem}
@@ -224,6 +246,8 @@ a{color:inherit}
 </style>
 </head>
 <body>
+
+<a class="skip" href="#top">Skip to content</a>
 
 <header class="site-header">
   <div class="wrap">
@@ -454,6 +478,7 @@ a{color:inherit}
       <div class="inner reveal">
         <div>
           <p class="eyebrow">The person behind it</p>
+          <span class="qmark" aria-hidden="true">&ldquo;</span>
         </div>
         <div>
           <blockquote>&ldquo;Brands don't need more content. They need content with a <em>job</em> — a reason to exist, a place in the funnel, and a number it's accountable to. That's the agency I wanted to hire and couldn't find, so I built it. When you work with us, you're working with me.&rdquo;</blockquote>
