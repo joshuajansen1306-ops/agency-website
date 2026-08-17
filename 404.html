@@ -6,6 +6,8 @@
 <title>Page not found — Jansen & Co.</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23151713'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-style='italic' font-size='38' fill='%231E5745' text-anchor='middle'%3E%26%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="format-detection" content="telephone=no,date=no,address=no,email=no">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -22,9 +24,10 @@ h1 em{font-style:italic;font-weight:400;color:var(--green)}
 p{color:var(--muted);margin-bottom:36px}
 .btn{display:inline-flex;font-weight:600;font-size:.95rem;text-decoration:none;padding:14px 28px;border-radius:2px;background:var(--ink);color:var(--paper);transition:background .18s ease,transform .18s ease,box-shadow .18s ease}
 .btn:hover{background:var(--green-deep);transform:translateY(-2px);box-shadow:0 10px 24px rgba(18,56,45,.28)}
-.markwrap{margin-top:64px}
-.mark{font-family:var(--serif);font-size:1.15rem;font-weight:500;text-decoration:none;color:var(--ink)}
-.mark span{color:var(--green)}
+.markwrap{margin-top:64px;display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+.badge{width:28px;height:28px;flex-shrink:0;border-radius:50%;border:1.3px solid var(--green);display:grid;place-items:center;font-family:var(--serif);font-style:italic;font-weight:500;font-size:.9rem;color:var(--green)}
+.wordbit{font-family:var(--serif);font-size:1.15rem;font-weight:500;text-decoration:none;color:var(--ink)}
+.wordbit span{color:var(--green)}
 </style>
 </head>
 <body>
@@ -33,7 +36,10 @@ p{color:var(--muted);margin-bottom:36px}
   <h1>This page doesn't exist. Your <em>audience</em> does.</h1>
   <p>The link you followed is broken or the page has moved. Everything worth seeing is back on the main page.</p>
   <a class="btn" href="/agency-website/">Back to the site</a>
-  <div class="markwrap"><a class="mark" href="/agency-website/">Jansen <span>&amp;</span> Co.</a></div>
+  <a class="markwrap" href="/agency-website/">
+    <span class="badge" aria-hidden="true">&amp;</span>
+    <span class="wordbit">Jansen <span>&amp;</span> Co.</span>
+  </a>
 </div>
 </body>
 </html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://joshuajansen1306-ops.github.io/agency-website/sitemap.xml

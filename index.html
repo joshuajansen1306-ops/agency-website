@@ -5,6 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jansen & Co. — Social media, run like a sales channel</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23151713'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-style='italic' font-size='38' fill='%231E5745' text-anchor='middle'%3E%26%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="format-detection" content="telephone=no,date=no,address=no,email=no">
+<link rel="canonical" href="https://joshuajansen1306-ops.github.io/agency-website/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MarketingAgency",
+  "name": "Jansen & Co.",
+  "url": "https://joshuajansen1306-ops.github.io/agency-website/",
+  "logo": "https://joshuajansen1306-ops.github.io/agency-website/apple-touch-icon.png",
+  "image": "https://joshuajansen1306-ops.github.io/agency-website/images/og.jpg",
+  "description": "Jansen & Co. plans, films, produces, and manages short-form content programs — reels, posts, and stories — measured against reach, sales, and footfall, not likes.",
+  "founder": {
+    "@type": "Person",
+    "name": "Joshua Jansen"
+  },
+  "sameAs": ["https://instagram.com/13_joshuaaaaaaaaa"],
+  "email": "joshuamailforwork@gmail.com",
+  "priceRange": "$$",
+  "areaServed": "Worldwide",
+  "knowsAbout": ["Social media management", "Short-form video production", "Content strategy", "Reels", "Instagram marketing"]
+}
+</script>
 <meta name="description" content="Jansen & Co. plans, films, produces, and manages short-form content programs — reels, posts, and stories — measured against reach, sales, and footfall, not likes.">
 <meta name="theme-color" content="#F7F7F4">
 <meta property="og:type" content="website">
@@ -60,21 +83,19 @@ section[id]{scroll-margin-top:84px}
 
 /* ---------- header ---------- */
 .site-header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.site-header .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
-.wordmark{font-family:var(--serif);font-weight:500;font-size:1.3rem;letter-spacing:-.01em;text-decoration:none}
+.site-header .wrap{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;row-gap:8px;min-height:72px;padding-block:12px;padding-inline:clamp(14px,4.5vw,28px)}
+.brand{flex-shrink:0;display:flex;align-items:center;gap:10px;text-decoration:none}
+.mark{width:30px;height:30px;flex-shrink:0;border-radius:50%;border:1.3px solid var(--green);display:grid;place-items:center;font-family:var(--serif);font-style:italic;font-weight:500;font-size:.95rem;color:var(--green);transition:transform .35s ease,background .2s ease,color .2s ease}
+.brand:hover .mark{transform:rotate(14deg);background:var(--green);color:var(--paper)}
+.wordmark{flex-shrink:0;font-family:var(--serif);font-weight:500;font-size:clamp(1rem,4.2vw,1.3rem);letter-spacing:-.01em;text-decoration:none;white-space:nowrap}
 .wordmark span{color:var(--green)}
-.site-nav{display:flex;gap:32px;align-items:center}
+.site-nav{display:flex;gap:32px;align-items:center;min-width:0}
 .site-nav a:not(.btn){font-size:.92rem;font-weight:500;text-decoration:none;color:var(--muted);position:relative;padding-bottom:2px}
 .site-nav a:not(.btn)::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--green);transform:scaleX(0);transform-origin:right;transition:transform .25s ease}
 .site-nav a:not(.btn):hover{color:var(--ink)}
 .site-nav a:not(.btn):hover::after{transform:scaleX(1);transform-origin:left}
-.site-nav .btn{padding:10px 20px}
+.site-nav .btn{flex-shrink:0;white-space:nowrap;padding:clamp(8px,2.2vw,10px) clamp(12px,4vw,20px);font-size:clamp(.78rem,2.6vw,.95rem)}
 @media (max-width:900px){.site-nav a:not(.btn){display:none}}
-@media (max-width:420px){
-  .site-header .wrap{padding-inline:18px}
-  .wordmark{font-size:1.1rem}
-  .site-nav .btn{padding:9px 14px;font-size:.8rem}
-}
 
 /* ---------- hero ---------- */
 .hero{position:relative;padding:120px 0 96px;border-bottom:1px solid var(--line);overflow:hidden}
@@ -208,7 +229,8 @@ section[id]{scroll-margin-top:84px}
 
 /* ---------- footer ---------- */
 .site-footer{padding:64px 0 40px}
-.footer-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding-bottom:32px;margin-bottom:28px;border-bottom:1px solid var(--line)}
+.footer-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-bottom:32px;margin-bottom:28px;border-bottom:1px solid var(--line)}
+.footer-top .mark{width:40px;height:40px;font-size:1.3rem}
 .footer-top .wordmark{font-family:var(--serif);font-size:1.7rem;font-weight:500;letter-spacing:-.01em;text-decoration:none}
 .footer-top .wordmark span{color:var(--green)}
 .footer-top .to-top{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:color .2s ease,transform .2s ease}
@@ -252,7 +274,10 @@ section[id]{scroll-margin-top:84px}
 
 <header class="site-header">
   <div class="wrap">
-    <a class="wordmark" href="#top">Jansen <span>&amp;</span> Co.</a>
+    <a class="brand" href="#top">
+      <span class="mark" aria-hidden="true">&amp;</span>
+      <span class="wordmark">Jansen <span>&amp;</span> Co.</span>
+    </a>
     <nav class="site-nav" aria-label="Main">
       <a href="#services">Services</a>
       <a href="#work">Work</a>
@@ -515,7 +540,10 @@ section[id]{scroll-margin-top:84px}
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-top">
-      <a class="wordmark" href="#top">Jansen <span>&amp;</span> Co.</a>
+      <a class="brand" href="#top">
+        <span class="mark" aria-hidden="true">&amp;</span>
+        <span class="wordmark">Jansen <span>&amp;</span> Co.</span>
+      </a>
       <a class="to-top" href="#top">Back to top ↑</a>
     </div>
     <div>
