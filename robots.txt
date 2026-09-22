@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://joshuajansen1306-ops.github.io/agency-website/sitemap.xml
+Sitemap: https://fableandco.in/sitemap.xml
