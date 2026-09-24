@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 140" role="img" aria-label="fable&amp;co sticker"><title>fable&amp;co sticker</title><style>@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;1,6..72,400&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap');</style>
+<g transform="rotate(-5 160 70)">
+  <rect x="32" y="34" width="262" height="78" rx="39" fill="#151713"/>
+  <rect x="26" y="28" width="262" height="78" rx="39" fill="#F1E3A4" stroke="#151713" stroke-width="3"/>
+  <text x="157" y="82" font-family="Newsreader, Georgia, 'Times New Roman', serif" font-size="50" font-weight="500" fill="#151713" text-anchor="middle" letter-spacing="-1">fable<tspan font-style="italic" font-weight="400" fill="#1E5745">&amp;</tspan>co</text>
+</g>
+<path d="M0,-15 C2,-3 3,-2 15,0 C3,2 2,3 0,15 C-2,3 -3,2 -15,0 C-3,-2 -2,-3 0,-15Z" transform="translate(290 26)" fill="#1E5745" stroke="#151713" stroke-width="2"/>
+<path d="M0,-15 C2,-3 3,-2 15,0 C3,2 2,3 0,15 C-2,3 -3,2 -15,0 C-3,-2 -2,-3 0,-15Z" transform="translate(40 116) scale(.55)" fill="#151713"/></svg>
