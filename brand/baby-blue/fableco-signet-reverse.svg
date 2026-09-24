@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Fable &amp; Co. signet monogram"><title>Fable &amp; Co. signet monogram</title><style>@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;1,6..72,400&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap');</style><rect width="200" height="200" fill="#B7D5EE"/>
+<circle cx="100" cy="100" r="93" fill="none" stroke="#1C2B4B" stroke-width="2.4"/>
+<circle cx="100" cy="100" r="67" fill="none" stroke="#1C2B4B" stroke-width="1"/>
+<path id="ring-bb" d="M100,20 a80,80 0 1,1 -0.01,0" fill="none"/>
+<text font-family="'IBM Plex Mono', 'Courier New', monospace" font-size="9.5" font-weight="500" fill="#1C2B4B" letter-spacing="2">
+  <textPath href="#ring-bb" textLength="496" lengthAdjust="spacing">FABLE &amp; COMPANY · STORIES THAT SELL · FABLEANDCO.IN ·</textPath>
+</text>
+<text x="70" y="121" font-family="Newsreader, Georgia, 'Times New Roman', serif" font-size="58" font-weight="500" fill="#1C2B4B" text-anchor="middle">F</text>
+<text x="131" y="121" font-family="Newsreader, Georgia, 'Times New Roman', serif" font-size="58" font-weight="500" fill="#1C2B4B" text-anchor="middle">C</text>
+<text x="100" y="128" font-family="Newsreader, Georgia, 'Times New Roman', serif" font-size="46" font-style="italic" font-weight="400" fill="#2F5F8F" text-anchor="middle">&amp;</text></svg>
