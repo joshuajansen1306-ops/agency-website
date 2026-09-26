@@ -214,6 +214,14 @@ a:hover > .mark{transform:rotate(14deg)}
 .quote{align-self:end}
 .quote blockquote{font-size:var(--fs-lead);letter-spacing:var(--track-lead);line-height:1.25;margin-bottom:20px}
 .quote cite{font-style:normal;font-size:var(--fs-small);color:var(--text-muted)}
+.portrait-row{display:grid;grid-template-columns:minmax(200px,280px) 1fr;gap:clamp(24px,4vw,56px);align-items:center;padding-block:clamp(40px,5vw,72px);border-bottom:1px solid var(--line)}
+.portrait-row .row-lead{margin-bottom:0;max-width:30em}
+.portrait-canvas-wrap{position:relative;width:100%;aspect-ratio:640/1138;border-radius:4px;overflow:hidden;background:var(--surface-raised)}
+.portrait-canvas-wrap img,.portrait-canvas-wrap canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.portrait-canvas-wrap canvas{opacity:0;transition:opacity .6s ease}
+.portrait-canvas-wrap canvas.ready{opacity:1}
+@media (prefers-reduced-motion:reduce){.portrait-canvas-wrap canvas{transition:none}}
+
 .about-body{padding-block:clamp(40px,5vw,72px);border-bottom:1px solid var(--line)}
 .about-body p{max-width:38em;font-size:1.125rem;margin-bottom:20px}
 .about-body p:last-child{margin-bottom:0}
@@ -258,6 +266,8 @@ a:hover > .mark{transform:rotate(14deg)}
 @media (max-width:900px){
   .page-head,.section-head,.row,.about-head{grid-template-columns:1fr}
   .page-intro{justify-self:start}
+  .portrait-row{grid-template-columns:1fr}
+  .portrait-canvas-wrap{max-width:220px}
   .client,.client--flip{grid-template-columns:1fr;align-items:start}
   .client--flip .client-media{order:0}
   .stage{grid-template-columns:1fr;gap:8px}
