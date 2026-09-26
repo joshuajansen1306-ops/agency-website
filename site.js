@@ -1,34 +1,19 @@
 (() => {
-  // Scroll-scrubbed hero video: playback position tracks how far the visitor
-  // has scrolled through the pinned hero zone, rather than playing freely.
-  const wrap = document.querySelector('.paint-hero-scroll');
+  // Hero video only plays while the visitor scrolls upward; it holds still
+  // (frozen on whatever frame it reached) the rest of the time.
   const video = document.querySelector('.paint-hero-media');
-  if (!wrap || !video) return;
-  video.removeAttribute('autoplay');
+  if (!video) return;
   video.pause();
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; // wrap keeps its natural (unstretched) height, so no scroll-jacking happens
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  let duration = 0, frame = null;
-
-  const update = () => {
-    frame = null;
-    if (!duration) return;
-    const total = wrap.offsetHeight - innerHeight;
-    const scrolled = Math.min(Math.max(-wrap.getBoundingClientRect().top, 0), total);
-    const p = total > 0 ? scrolled / total : 0;
-    video.currentTime = p * duration;
+  let lastY = scrollY;
+  const onScroll = () => {
+    const y = scrollY;
+    if (y < lastY - 2) video.play().catch(() => {});
+    else if (y > lastY + 2) video.pause();
+    lastY = y;
   };
-  const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
-
-  const start = () => {
-    duration = video.duration || 0;
-    wrap.style.height = `calc(220vh + 100svh - var(--topbar-h))`;
-    addEventListener('scroll', onScroll, { passive: true });
-    addEventListener('resize', onScroll);
-    update();
-  };
-  if (video.readyState >= 1) start();
-  else video.addEventListener('loadedmetadata', start, { once: true });
+  addEventListener('scroll', onScroll, { passive: true });
 })();
 
 (() => {
