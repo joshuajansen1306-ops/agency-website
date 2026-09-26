@@ -1,7 +1,14 @@
 (() => {
   const video = document.querySelector('.paint-hero-media');
-  if (!video || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  video.play().catch(() => {}); // browsers can reject autoplay(); poster frame stays visible either way
+  if (!video) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    video.removeAttribute('autoplay');
+    video.pause();
+    return;
+  }
+  // The native autoplay attribute starts it; this is just a fallback for
+  // browsers that silently ignore autoplay under some conditions.
+  video.play().catch(() => {});
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) video.play().catch(() => {}); else video.pause(); });
