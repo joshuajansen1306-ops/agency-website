@@ -1,4 +1,15 @@
 (() => {
+  const video = document.querySelector('.paint-hero-media');
+  if (!video || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  video.play().catch(() => {}); // browsers can reject autoplay(); poster frame stays visible either way
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) video.play().catch(() => {}); else video.pause(); });
+    }, { threshold: 0.05 }).observe(video);
+  }
+})();
+
+(() => {
   const scroller = document.querySelector('.home-scroll');
   const stack = document.querySelector('.stack');
   if (!scroller || !stack || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
