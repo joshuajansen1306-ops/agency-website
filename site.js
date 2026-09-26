@@ -1,19 +1,34 @@
 (() => {
+  // Scroll-scrubbed hero video: playback position tracks how far the visitor
+  // has scrolled through the pinned hero zone, rather than playing freely.
+  const wrap = document.querySelector('.paint-hero-scroll');
   const video = document.querySelector('.paint-hero-media');
-  if (!video) return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    video.removeAttribute('autoplay');
-    video.pause();
-    return;
-  }
-  // The native autoplay attribute starts it; this is just a fallback for
-  // browsers that silently ignore autoplay under some conditions.
-  video.play().catch(() => {});
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) video.play().catch(() => {}); else video.pause(); });
-    }, { threshold: 0.05 }).observe(video);
-  }
+  if (!wrap || !video) return;
+  video.removeAttribute('autoplay');
+  video.pause();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; // wrap keeps its natural (unstretched) height, so no scroll-jacking happens
+
+  let duration = 0, frame = null;
+
+  const update = () => {
+    frame = null;
+    if (!duration) return;
+    const total = wrap.offsetHeight - innerHeight;
+    const scrolled = Math.min(Math.max(-wrap.getBoundingClientRect().top, 0), total);
+    const p = total > 0 ? scrolled / total : 0;
+    video.currentTime = p * duration;
+  };
+  const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+
+  const start = () => {
+    duration = video.duration || 0;
+    wrap.style.height = `calc(220vh + 100svh - var(--topbar-h))`;
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    update();
+  };
+  if (video.readyState >= 1) start();
+  else video.addEventListener('loadedmetadata', start, { once: true });
 })();
 
 (() => {
@@ -47,8 +62,9 @@
     frame = current === target ? null : requestAnimationFrame(render);
   };
   const read = () => {
-    const range = document.documentElement.scrollHeight - innerHeight;
-    const p = range > 0 ? Math.min(Math.max(scrollY / range, 0), 1) : 0;
+    const total = scroller.offsetHeight - innerHeight;
+    const scrolled = Math.min(Math.max(-scroller.getBoundingClientRect().top, 0), total);
+    const p = total > 0 ? scrolled / total : 0;
     target = p * maxShift;
     if (!frame) frame = requestAnimationFrame(render);
   };
