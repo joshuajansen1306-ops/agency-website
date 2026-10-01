@@ -1,34 +1,71 @@
 (() => {
   // Scroll-scrubbed hero video: playback position tracks how far the visitor
   // has scrolled through the pinned hero zone. Scrolling down plays it
-  // forward, scrolling back up reverses it.
+  // forward, scrolling back up reverses it. The poster image stays visible
+  // until the video has a frame, and is all that shows when motion is reduced
+  // or the visitor is on a data-saving / very slow connection.
   const wrap = document.querySelector('.paint-hero-scroll');
   const video = document.querySelector('.paint-hero-media');
   if (!wrap || !video) return;
-  video.pause();
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; // wrap keeps its natural (unstretched) height, so no scroll-jacking happens
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const conn = navigator.connection;
+  if (conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || ''))) return;
 
-  let duration = 0, frame = null;
+  // Phones held upright get a smaller, cropped, keyframe-dense file (cheap to
+  // seek); everything else gets the full-size video.
+  const phone = matchMedia('(max-width: 640px) and (orientation: portrait)');
+  let duration = 0, frame = null, loaded = '', primed = false;
 
-  const update = () => {
-    frame = null;
-    if (!duration) return;
+  wrap.style.height = 'calc(220vh + 100svh - var(--topbar-h))';
+
+  const progress = () => {
     const total = wrap.offsetHeight - innerHeight;
     const scrolled = Math.min(Math.max(-wrap.getBoundingClientRect().top, 0), total);
-    const p = total > 0 ? scrolled / total : 0;
-    video.currentTime = p * duration;
+    return total > 0 ? scrolled / total : 0;
   };
-  const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+  const apply = () => {
+    frame = null;
+    if (!duration || video.seeking) return; // 'seeked' re-applies the latest position
+    const t = progress() * duration;
+    if (Math.abs(t - video.currentTime) > 0.01) video.currentTime = t;
+  };
+  const schedule = () => { if (!frame) frame = requestAnimationFrame(apply); };
 
-  const start = () => {
-    duration = video.duration || 0;
-    wrap.style.height = `calc(220vh + 100svh - var(--topbar-h))`;
-    addEventListener('scroll', onScroll, { passive: true });
-    addEventListener('resize', onScroll);
-    update();
+  // iOS Safari will not paint seeked frames of a video that has never played;
+  // a muted play()/pause() wakes the decoder.
+  const prime = () => {
+    if (primed) return Promise.resolve();
+    const p = video.play();
+    if (!p || !p.then) return Promise.resolve();
+    return p.then(() => { primed = true; video.pause(); }).catch(() => {});
   };
-  if (video.readyState >= 1) start();
-  else video.addEventListener('loadedmetadata', start, { once: true });
+
+  const load = () => {
+    const src = phone.matches ? video.dataset.srcMobile : video.dataset.src;
+    if (src === loaded) return;
+    const resumeAt = video.classList.contains('is-ready') ? video.currentTime : 0;
+    loaded = src; duration = 0; primed = false;
+    video.classList.remove('is-ready');
+    video.preload = 'auto';
+    video.src = src;
+    video.addEventListener('loadeddata', () => {
+      duration = video.duration || 0;
+      prime().then(() => {
+        const t = Math.max(resumeAt, progress() * duration);
+        const reveal = () => video.classList.add('is-ready');
+        if (t > 0.05) { video.addEventListener('seeked', reveal, { once: true }); video.currentTime = t; }
+        else reveal();
+      });
+    }, { once: true });
+  };
+
+  video.addEventListener('seeked', schedule);
+  video.addEventListener('error', () => { wrap.style.height = ''; video.classList.remove('is-ready'); });
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('resize', schedule);
+  addEventListener('touchstart', () => { if (!primed && duration) prime(); }, { once: true, passive: true });
+  phone.addEventListener('change', load);
+  load();
 })();
 
 (() => {
@@ -38,7 +75,7 @@
 
   // Repeat the real posts so the stack has enough depth to travel through.
   const originals = [...stack.querySelectorAll('.stack-card')];
-  const SETS = 3;
+  const SETS = matchMedia('(max-width: 640px)').matches ? 2 : 3;
   for (let s = 1; s < SETS; s++) {
     originals.forEach((card, k) => {
       const clone = card.cloneNode(true);
@@ -53,12 +90,18 @@
   const maxShift = cards.length - originals.length;
   scroller.style.height = `calc(${maxShift * 42}vh + 100svh - var(--topbar-h))`;
 
+  const culled = cards.map(() => false);
   let target = 0, current = 0, frame = null;
   const render = () => {
     current += (target - current) * 0.12;
     if (Math.abs(target - current) < 0.001) current = target;
     stack.style.setProperty('--shift', current.toFixed(4));
-    cards.forEach((c, n) => c.classList.toggle('is-past', index[n] - current < -0.6));
+    cards.forEach((c, n) => {
+      const d = index[n] - current;
+      c.classList.toggle('is-past', d < -0.6);
+      const cull = d < -1.2 || d > 8.5; // fully transparent or off-screen: drop from the render tree
+      if (cull !== culled[n]) { culled[n] = cull; c.classList.toggle('is-culled', cull); }
+    });
     frame = current === target ? null : requestAnimationFrame(render);
   };
   const read = () => {
@@ -104,10 +147,13 @@
   const ctx = canvas.getContext('2d');
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const CELL = 16;
+  let CELL = 16;
   const BRIGHTNESS = 12, CONTRAST = 115, SATURATION = 100, GRAYSCALE = 0;
   const VIGNETTE = 0.38, BLOOM = 0.25;
   const SPEED = 1, INTENSITY = 0.6;
+
+  const coarse = matchMedia('(pointer: coarse)').matches; // phones/tablets: lighter rendering to save battery
+  let lastDraw = 0;
 
   const sample = document.createElement('canvas');
   const sctx = sample.getContext('2d', { willReadFrequently: true });
@@ -132,7 +178,8 @@
     const rect = wrap.getBoundingClientRect();
     cw = Math.max(1, Math.round(rect.width));
     ch = Math.max(1, Math.round(rect.height));
-    dpr = Math.min(devicePixelRatio || 1, 2);
+    dpr = Math.min(devicePixelRatio || 1, coarse ? 1.5 : 2);
+    CELL = cw < 260 ? Math.max(8, Math.round(cw / 22)) : 16; // keep the portrait recognisable on small canvases
     canvas.width = cw * dpr; canvas.height = ch * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
@@ -188,7 +235,7 @@
     }
     ctx.globalAlpha = 1;
 
-    if (BLOOM > 0 && 'filter' in ctx) {
+    if (BLOOM > 0 && !coarse && 'filter' in ctx) {
       ctx.save();
       ctx.filter = 'blur(6px)';
       ctx.globalCompositeOperation = 'lighter';
@@ -206,6 +253,8 @@
 
   function loop(t) {
     if (!visible) { raf = null; return; }
+    if (coarse && t - lastDraw < 32) { raf = requestAnimationFrame(loop); return; }
+    lastDraw = t;
     drawFrame(t);
     raf = reduceMotion ? null : requestAnimationFrame(loop);
   }

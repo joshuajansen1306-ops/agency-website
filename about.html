@@ -20,7 +20,8 @@
 <meta name="twitter:image" content="https://fableandco.in/images/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,500&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,500&display=swap"></noscript>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -57,7 +58,7 @@
 
   <section class="portrait-row" aria-labelledby="portrait-title">
     <div class="portrait-canvas-wrap">
-      <img src="images/team/joshua.jpg" alt="Joshua, founder of Fable &amp; Co." width="640" height="1138">
+      <img src="images/team/joshua.jpg" srcset="images/team/joshua-420.jpg 420w, images/team/joshua.jpg 640w" sizes="(max-width: 900px) 140px, 280px" alt="Joshua, founder of Fable &amp; Co." width="640" height="1138" decoding="async">
       <canvas class="portrait-canvas" aria-hidden="true"></canvas>
     </div>
     <div>
@@ -77,15 +78,15 @@
     <h2 id="team-title" class="row-title">The team</h2>
     <div class="team">
       <figure class="member">
-        <img src="images/team/prisha.jpg" alt="Prisha" width="640" height="1138" loading="lazy">
+        <img src="images/team/prisha.jpg" srcset="images/team/prisha-420.jpg 420w, images/team/prisha.jpg 640w" sizes="(max-width: 900px) 30vw, 640px" alt="Prisha" width="640" height="1138" loading="lazy" decoding="async">
         <figcaption>Prisha</figcaption>
       </figure>
       <figure class="member">
-        <img src="images/team/joshua.jpg" alt="Joshua" width="640" height="1138" loading="lazy">
+        <img src="images/team/joshua.jpg" srcset="images/team/joshua-420.jpg 420w, images/team/joshua.jpg 640w" sizes="(max-width: 900px) 30vw, 640px" alt="Joshua" width="640" height="1138" loading="lazy" decoding="async">
         <figcaption>Joshua</figcaption>
       </figure>
       <figure class="member">
-        <img src="images/team/ailleen.jpg" alt="Ailleen" width="640" height="1138" loading="lazy">
+        <img src="images/team/ailleen.jpg" srcset="images/team/ailleen-420.jpg 420w, images/team/ailleen.jpg 640w" sizes="(max-width: 900px) 30vw, 640px" alt="Ailleen" width="640" height="1138" loading="lazy" decoding="async">
         <figcaption>Ailleen</figcaption>
       </figure>
     </div>
