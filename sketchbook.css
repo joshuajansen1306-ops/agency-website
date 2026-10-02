@@ -19,8 +19,14 @@
   /* room the book may use: the hero's height minus its padding and kicker */
   --sk-h:max(520px,calc(100svh - var(--topbar-h)));
   --sk-pt:clamp(78px,11svh,120px);
-  --sk-pb:clamp(84px,14svh,110px);
-  --sk-bookmax:calc((var(--sk-h) - var(--sk-pt) - var(--sk-pb) - 56px) * 1.4194);
+  --sk-cue:clamp(84px,14svh,110px);   /* gap from the hero's bottom edge to the scroll arrow */
+  --sk-pb:calc(var(--sk-cue) + 50px); /* so the book stops above the arrow */
+  --sk-extra:56px; /* the kicker line above the book */
+  /* The book is drawn in a 1760x1240 frame with empty paper-coloured margin: the
+     pages fill 85% of its width and 39.7% of its width in height. So the frame
+     is sized from the space the pages themselves may use, and its empty top and
+     bottom margin (15.4% of its width each) is pulled back with negative margin. */
+  --sk-w:min(1200px,108vw,calc((var(--sk-h) - var(--sk-pt) - var(--sk-pb) - var(--sk-extra)) / .397));
   position:relative;display:grid;justify-items:center;align-content:center;
   height:calc(100svh - var(--topbar-h));min-height:520px;overflow:hidden;
   padding:var(--sk-pt) 0 var(--sk-pb);
@@ -65,7 +71,7 @@
 }
 
 .sk-down{
-  position:absolute;bottom:clamp(84px,14svh,110px);left:50%;transform:translateX(-50%);
+  position:absolute;bottom:var(--sk-cue);left:50%;transform:translateX(-50%);
   display:inline-flex;padding:10px 14px;color:var(--ink);cursor:pointer;
   -webkit-tap-highlight-color:transparent;
   animation:sk-breathe 2.6s ease-in-out infinite;z-index:3;
@@ -84,7 +90,8 @@
 
 /* The box is the book's own untransformed frame; only .sb-tilt leans. */
 .sk-hero .sb-3d{
-  position:relative;flex:1 1;min-width:0;max-width:min(900px,var(--sk-bookmax));
+  position:relative;flex:none;width:var(--sk-w);
+  margin-block:calc(var(--sk-w) * -0.1536);
   perspective:1750px;perspective-origin:50% 46%;
 }
 .sk-hero .sb-tilt{
@@ -198,16 +205,14 @@
   .sk-name{font-size:20px}
   .sk-kicker{font-size:10.5px;letter-spacing:.16em}
   .sk-hero .sb-wrap{width:100vw;margin-inline:calc(50% - 50vw)}
-  .sk-hero .sb-3d{max-width:none}
 }
 @media (pointer:coarse),(max-width:640px){
   .sk-down{min-width:44px;min-height:44px;align-items:center;justify-content:center}
 }
 /* short landscape screens (phones on their side) */
 @media (max-height:520px) and (orientation:landscape){
-  .sk-hero{--sk-h:calc(100svh - var(--topbar-h));--sk-pt:44px;--sk-pb:60px;min-height:0}
+  .sk-hero{--sk-h:calc(100svh - var(--topbar-h));--sk-pt:44px;--sk-pb:72px;--sk-extra:0px;min-height:0}
   .sk-kicker{display:none}
   .sk-name{top:10px;font-size:20px}
-  .sk-down{bottom:72px}
-  .sk-hero .sb-3d{max-width:min(900px,calc((var(--sk-h) - var(--sk-pt) - var(--sk-pb)) * 1.4194))}
+  .sk-down{display:none}
 }
