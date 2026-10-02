@@ -198,8 +198,6 @@ ul,ol{list-style:none}
 .sublabel{font-size:var(--fs-small);color:var(--text-muted);margin-bottom:10px}
 .outputs li{position:relative;padding-left:16px;margin-bottom:6px}
 .outputs li::before{content:"";position:absolute;left:0;top:.68em;width:5px;height:5px;background:var(--text-muted)}
-.related-label{margin-top:28px}
-.related{display:flex;flex-wrap:wrap;gap:12px 28px}
 .row .fee{margin-top:18px;font-size:var(--fs-small);color:var(--text-muted)}
 .note{padding-block:32px;color:var(--text-muted);max-width:44em;font-size:var(--fs-small)}
 
@@ -209,21 +207,6 @@ ul,ol{list-style:none}
 .stage-no{font-size:var(--fs-small);color:var(--text-muted);font-variant-numeric:tabular-nums}
 .stage h3{font-size:1.5rem;font-weight:400;letter-spacing:-.03em;line-height:1.15}
 .stage p{max-width:34em;color:var(--text-muted)}
-
-/* work: client rows */
-.client{display:grid;grid-template-columns:8fr 4fr;gap:clamp(24px,3vw,48px);padding-block:clamp(40px,5vw,72px);border-bottom:1px solid var(--line);align-items:end;scroll-margin-top:calc(var(--topbar-h) + 16px)}
-.client--flip{grid-template-columns:4fr 8fr}
-.client--flip .client-media{order:2}
-.client-media{display:flex;gap:12px;align-items:flex-start}
-.post{flex:var(--ar) 1 0;min-width:0}
-.post img{width:100%;height:auto;border-radius:4px;transition:opacity .2s ease}
-@media (hover:hover){.post:hover img{opacity:.85}}
-.post figcaption{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:var(--fs-small)}
-.post figcaption span:last-child{color:var(--text-muted)}
-.client-meta .label{margin-bottom:14px}
-.client-meta h2{font-size:clamp(2rem,3vw,2.75rem);font-weight:400;letter-spacing:-.04em;line-height:1;margin-bottom:16px}
-.client-meta p{color:var(--text-muted);max-width:26em;margin-bottom:22px}
-.client-meta .client-more{margin-bottom:16px;color:var(--text)}
 
 /* about */
 .about-head{display:grid;grid-template-columns:7fr 5fr;gap:clamp(24px,4vw,64px);padding-block:clamp(40px,6vw,88px);border-bottom:1px solid var(--line)}
@@ -287,8 +270,6 @@ ul,ol{list-style:none}
   .page-intro{justify-self:start}
   .portrait-row{grid-template-columns:1fr}
   .portrait-canvas-wrap{max-width:220px}
-  .client,.client--flip{grid-template-columns:1fr;align-items:start}
-  .client--flip .client-media{order:0}
   .stage{grid-template-columns:1fr;gap:8px}
   .stage p{padding-left:4.5em}
   .home{padding-bottom:var(--dock-clearance)}
@@ -315,7 +296,6 @@ ul,ol{list-style:none}
   .paint-hero-cue{width:44px;height:44px}
   .arrow-link{position:relative}
   .arrow-link::after{content:"";position:absolute;inset:-10px -6px}
-  .related{gap:18px 28px}
   .about-links{gap:18px 28px}
   .site-footer .wrap{row-gap:0}
   .site-footer nav{gap:0 22px}
