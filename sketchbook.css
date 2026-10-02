@@ -253,10 +253,10 @@
 @keyframes sk-loader-in{from{opacity:0;transform:translateY(6px)}}
 @media (prefers-reduced-motion:reduce){.sk-loader,.sk-loader-bar i{transition:none}.sk-loader-text{animation:none}}
 
-/* ---- About us fades down into the dark section instead of ending on a hard edge ---- */
-.home-about{--sk-fade:clamp(150px,19vw,280px);padding-bottom:var(--sk-fade)}
+/* ---- About us: its textured wash melts into the page colour below, which starts icy blue and darkens with the scroll ---- */
+.home-about{--sk-fade:clamp(120px,14vw,200px);padding-bottom:var(--sk-fade)}
 .home-about::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:var(--sk-fade);z-index:1;pointer-events:none;
-  background:linear-gradient(to bottom,rgb(214 236 250 / 0) 0%,color-mix(in srgb,var(--bg) 35%,transparent) 45%,var(--bg) 100%);
+  background:linear-gradient(to bottom,rgb(214 236 250 / 0) 0%,var(--bg) 100%);   /* var(--bg) follows the scroll effect, so the join never shows */
 }
 .home-about .row{border-bottom:0}

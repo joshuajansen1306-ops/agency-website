@@ -51,8 +51,7 @@
     ticking = false;
     const onPaper = [...paperSections].some(el => {
       const r = el.getBoundingClientRect();
-      const fade = parseFloat(getComputedStyle(el, '::after').height) || 0;   /* the dark fade at the foot of About us */
-      return r.top < innerHeight - 20 && r.bottom - fade > innerHeight - 56;
+      return r.top < innerHeight - 20 && r.bottom > innerHeight - 56;
     });
     document.body.classList.toggle('on-paper', onPaper);
   };

@@ -80,12 +80,12 @@
 })();
 
 (() => {
-  // Scrolling down from About us, the page's dark navy deepens into #0F1E3D.
-  // It follows the scroll position (not a timer) and only ever touches --bg,
-  // the dark page colour, so the cream and blue sections are unaffected.
+  // The page below About us starts as the same icy blue, so there is no colour edge, and then
+  // turns to #0F1E3D as you scroll into it. It follows the scroll position (not a timer).
+  // The text colours flip at the halfway point so nothing sits in muddy mid-tones.
   const scroller = document.querySelector('.home-scroll');
   if (!scroller) return;
-  const from = [10, 24, 38], to = [15, 30, 61];       // #0A1826 -> #0F1E3D
+  const from = [214, 236, 250], to = [15, 30, 61];    // #D6ECFA -> #0F1E3D
   const bar = [212, 231, 247];                         // the top bar's icy blue, #D4E7F7
   const root = document.documentElement;
   let queued = false;
@@ -101,6 +101,9 @@
     root.style.setProperty('--topbar-bg', 'rgb(' + bar.map((v, i) => Math.round(v + (to[i] - v) * e)).join(' ') + ')');
     root.style.setProperty('--topbar-line', 'rgb(238 244 250 / ' + (0.14 * e).toFixed(3) + ')');
     const dark = e > 0.5;
+    root.style.setProperty('--text', dark ? '#EEF4FA' : '#0A1826');
+    root.style.setProperty('--text-muted', dark ? 'rgb(238 244 250 / .6)' : 'rgb(10 24 38 / .66)');
+    root.style.setProperty('--line', dark ? 'rgb(238 244 250 / .14)' : 'rgb(10 24 38 / .16)');
     root.style.setProperty('--topbar-text', dark ? '#EEF4FA' : '#0A1826');
     root.style.setProperty('--topbar-muted', dark ? 'rgb(238 244 250 / .7)' : 'rgb(10 24 38 / .72)');
   };

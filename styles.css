@@ -188,6 +188,8 @@ ul,ol{list-style:none}
 /* closing call to action */
 .home-cta{padding-bottom:calc(var(--dock-clearance) + clamp(40px,5vw,72px))}
 
+/* text that changes colour with the page background as you scroll into the dark part */
+.home-intro h1,.stack-now,.stack-now span,.stat-num,.stat-label,.home-stats .section-head h2,.home-stats .section-head p,.home-brands .section-head h2,.home-brands .section-head p,.home-cta h2,.home-cta p,.home-cta .label,.home-cta .fine a,.home-foot,.home-foot nav{transition:color .3s ease}
 .home-foot{position:fixed;left:0;right:0;bottom:max(28px,env(safe-area-inset-bottom));z-index:30;display:flex;justify-content:space-between;align-items:center;padding-inline:var(--gutter);font-size:var(--fs-small);pointer-events:none}
 .home-foot > *{pointer-events:auto}
 .home-foot nav{display:flex;gap:18px;color:var(--text-muted)}
