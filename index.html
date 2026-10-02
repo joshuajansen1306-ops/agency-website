@@ -109,6 +109,29 @@ section[id]{scroll-margin-top:84px}
 .fact .n{font-family:var(--serif);font-size:1.6rem;font-weight:500}
 .fact .l{font-size:.85rem;color:var(--muted)}
 
+/* hero video: stays hidden until a file in /videos actually plays */
+.hero-media{position:absolute;inset:0;z-index:0;opacity:0;transition:opacity 1.2s ease;background:#140607;pointer-events:none}
+.hero-media video{width:100%;height:100%;object-fit:cover;display:block}
+.hero-media::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(18,5,6,.8) 0%,rgba(18,5,6,.55) 48%,rgba(18,5,6,.2) 100%),linear-gradient(0deg,rgba(18,5,6,.55),transparent 38%)}
+.hero-pause{position:absolute;right:28px;bottom:22px;z-index:2;display:none;font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#FFE4C4;background:rgba(18,5,6,.45);border:1px solid rgba(255,228,196,.5);padding:8px 14px;border-radius:2px;cursor:pointer}
+.hero-pause:hover{background:#FFE4C4;color:#3F0C0D}
+.hero.has-video{min-height:min(88vh,840px);display:flex;align-items:center;border-bottom-color:transparent}
+.hero.has-video>.wrap{width:100%}
+.hero.has-video .hero-media{opacity:1}
+.hero.has-video .hero-pause{display:block}
+.hero.has-video .eyebrow{color:#FFE4C4}
+.hero.has-video h1{color:#FFF3E4}
+.hero.has-video h1 em{color:#FFE4C4}
+.hero.has-video .lede{color:#F1DCC6}
+.hero.has-video .btn-ink{background:#FFE4C4;color:#3F0C0D}
+.hero.has-video .btn-ink:hover{background:#fff;color:#3F0C0D;box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.hero.has-video .btn-line{color:#FFF3E4;border-color:rgba(255,243,228,.6)}
+.hero.has-video .btn-line:hover{background:#FFF3E4;color:#3F0C0D}
+.hero.has-video .hero-facts{border-top-color:rgba(255,243,228,.28)}
+.hero.has-video .fact .n{color:#FFF3E4}
+.hero.has-video .fact .l{color:#E7CDB5}
+@media (max-width:700px){.hero-media::after{background:linear-gradient(0deg,rgba(18,5,6,.88) 0%,rgba(18,5,6,.55) 55%,rgba(18,5,6,.35) 100%)}.hero-pause{right:16px}}
+
 /* ---------- sections ---------- */
 .section{padding:104px 0}
 .section-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:48px;margin-bottom:64px;align-items:end}
@@ -295,6 +318,8 @@ section[id]{scroll-margin-top:84px}
 
   <!-- HERO -->
   <section class="hero">
+    <div class="hero-media" aria-hidden="true"><video id="heroVideo" muted loop playsinline preload="none" disablepictureinpicture tabindex="-1"></video></div>
+    <button class="hero-pause" id="heroPause" type="button" aria-label="Pause background video">Pause</button>
     <div class="wrap">
       <p class="eyebrow">Social media agency: content, management, growth</p>
       <h1>Social media, run like a <em>sales channel.</em></h1>
@@ -588,6 +613,40 @@ if (!reduce && 'IntersectionObserver' in window) {
 }
 </script>
 
+<script>
+/* Hero video. Drop files into /videos (see videos/README.md). Nothing changes on the page until a file plays. */
+(function () {
+  const hero = document.querySelector('.hero');
+  const video = document.getElementById('heroVideo');
+  const pauseBtn = document.getElementById('heroPause');
+  if (!hero || !video) return;
+  const conn = navigator.connection || {};
+  const slow = conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || slow) return;
+
+  const portrait = matchMedia('(max-width: 700px)').matches;
+  const file = portrait ? 'videos/hero-vertical' : 'videos/hero';
+  const webm = video.canPlayType('video/webm; codecs="vp9"') === 'probably';
+  video.preload = 'auto';
+  video.src = file + (webm ? '.webm' : '.mp4');
+  video.addEventListener('playing', () => hero.classList.add('has-video'), { once: true });
+  video.addEventListener('error', () => {
+    if (webm && video.src.endsWith('.webm')) { video.src = file + '.mp4'; video.play().catch(() => {}); }
+  });
+  video.play().catch(() => {});
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(es => es.forEach(e => {
+      if (!hero.classList.contains('has-video') || hero.dataset.paused) return;
+      e.isIntersecting ? video.play().catch(() => {}) : video.pause();
+    }), { threshold: 0.05 }).observe(hero);
+  }
+  pauseBtn.addEventListener('click', () => {
+    if (video.paused) { video.play(); delete hero.dataset.paused; pauseBtn.textContent = 'Pause'; pauseBtn.setAttribute('aria-label', 'Pause background video'); }
+    else { video.pause(); hero.dataset.paused = '1'; pauseBtn.textContent = 'Play'; pauseBtn.setAttribute('aria-label', 'Play background video'); }
+  });
+})();
+</script>
 
 </body>
 </html>
