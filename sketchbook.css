@@ -17,8 +17,8 @@
   --font:'Newsreader Upright',"New York",Georgia,'Times New Roman',serif;
   --track-caps:.24em;
   /* room the book may use: the hero's height minus its padding and kicker */
-  --sk-h:max(520px,min(calc(100svh - var(--topbar-h)),980px));
-  --sk-logo:clamp(52px,6.4vw,112px);    /* the fable wordmark */
+  --sk-h:max(520px,calc(100svh - var(--topbar-h)));
+  --sk-logo:clamp(52px,6.4vw,88px);    /* the fable wordmark */
   --sk-pt:24px;
   --sk-pb:88px;                       /* kept clear at the bottom for the pinned nav */
   --sk-arrow:58px;                    /* the scroll arrow, sitting just under the book */
@@ -27,9 +27,9 @@
      pages fill 85% of its width and 39.7% of its width in height. So the frame
      is sized from the space the pages themselves may use, and its empty top and
      bottom margin (15.4% of its width each) is pulled back with negative margin. */
-  --sk-w:min(clamp(1100px,62vw,1500px),104vw,calc((var(--sk-h) - var(--sk-pt) - var(--sk-pb) - var(--sk-extra)) / .397));
+  --sk-w:min(1100px,104vw,calc((var(--sk-h) - var(--sk-pt) - var(--sk-pb) - var(--sk-extra)) / .397));
   position:relative;display:grid;justify-items:center;align-content:center;
-  height:min(calc(100svh - var(--topbar-h)),980px);min-height:520px;overflow:hidden; /* on very tall screens the hero stops growing, so About us peeks in below it */
+  height:calc(100svh - var(--topbar-h));min-height:520px;overflow:hidden;
   padding:var(--sk-pt) 0 var(--sk-pb);
   background:var(--paper);color:var(--ink);
   font-family:var(--font);font-weight:400;-webkit-font-smoothing:antialiased;
