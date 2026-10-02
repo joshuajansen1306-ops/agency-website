@@ -10,7 +10,7 @@
   src:url(fonts/newsreader.woff2) format('woff2')}
 
 .sk-hero{
-  --paper:#ece7dc;
+  --paper:#D6ECFA;
   --ink:#2b2721;
   --ink-soft:rgba(43,39,33,.58);
   --display:'Instrument Serif',"New York",Georgia,'Times New Roman',serif;
@@ -46,7 +46,7 @@
 }
 .sk-wash:after{
   content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(236,231,220,.25) 0%,rgba(236,231,220,.72) 58%,var(--paper) 88%);
+  background:linear-gradient(180deg,rgba(214,236,250,.25) 0%,rgba(214,236,250,.72) 58%,var(--paper) 88%);
 }
 
 /* the logo */
@@ -219,13 +219,13 @@
 
 /* ---- About us: the same paper, wash and botanicals as the hero's bottom edge ---- */
 .sk-paper{
-  --ink:#2b2721;--paper:#ece7dc;
+  --ink:#2b2721;--paper:#D6ECFA;
   position:relative;overflow:hidden;background:var(--paper);color:var(--ink);
 }
 /* the wash is kept faint, and begins as plain paper exactly where the hero ends */
 .sk-paper .sk-wash{background-position:center bottom;opacity:.7}
 .sk-paper .sk-wash:after{
-  background:linear-gradient(180deg,var(--paper,#ece7dc) 0%,rgba(236,231,220,.84) 35%,rgba(236,231,220,.72) 100%);
+  background:linear-gradient(180deg,var(--paper,#D6ECFA) 0%,rgba(214,236,250,.84) 35%,rgba(214,236,250,.72) 100%);
 }
 .sk-paper>.wrap{position:relative;z-index:2}
 .sk-paper .label{color:rgba(43,39,33,.58)}
@@ -237,7 +237,7 @@
 /* ---- loading screen: covers the page while the book's pages get ready ---- */
 .sk-loader{
   position:fixed;inset:0;z-index:1000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;
-  background:#ece7dc;color:#2b2721;
+  background:#D6ECFA;color:#2b2721;
   opacity:1;transition:opacity .45s ease;
 }
 .sk-loader::before{content:"";position:absolute;inset:0;background:url(images/sketchbook/bg-wash.jpg) center top / cover no-repeat;opacity:.5}
