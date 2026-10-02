@@ -221,6 +221,7 @@
 .sk-paper{
   --ink:#2b2721;--paper:#D6ECFA;
   position:relative;overflow:hidden;background:var(--paper);color:var(--ink);
+  border-top:1px solid rgba(43,39,33,.22); /* the line between the hero and About us */
 }
 /* the wash is kept faint, and begins as plain paper exactly where the hero ends */
 .sk-paper .sk-wash{background-position:center bottom;opacity:.7}
