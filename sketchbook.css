@@ -216,3 +216,20 @@
   .sk-name{top:10px;font-size:20px}
   .sk-down{display:none}
 }
+
+/* ---- About us: the same paper, wash and botanicals as the hero's bottom edge ---- */
+.sk-paper{
+  --ink:#2b2721;--paper:#ece7dc;
+  position:relative;overflow:hidden;background:var(--paper);color:var(--ink);
+}
+/* the wash is kept faint, and begins as plain paper exactly where the hero ends */
+.sk-paper .sk-wash{background-position:center bottom;opacity:.7}
+.sk-paper .sk-wash:after{
+  background:linear-gradient(180deg,var(--paper,#ece7dc) 0%,rgba(236,231,220,.84) 35%,rgba(236,231,220,.72) 100%);
+}
+.sk-paper>.wrap{position:relative;z-index:2}
+.sk-paper .label{color:rgba(43,39,33,.58)}
+.sk-paper .row{border-bottom-color:rgba(43,39,33,.14)}
+.sk-paper .arrow-link{border-bottom-color:rgba(43,39,33,.3)}
+.sk-paper .arrow-link:hover{border-bottom-color:var(--ink)}
+.sk-paper :focus-visible{outline-color:var(--ink)}

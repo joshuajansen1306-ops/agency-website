@@ -45,11 +45,15 @@
 
   /* the footer is pinned to the bottom of the viewport, so give it dark ink
      while the cream hero is what sits behind it */
-  const hero = document.querySelector('.sk-hero');
   let ticking = false;
+  const paperSections = document.querySelectorAll('.sk-hero, .sk-paper');
   const paperUnderFooter = () => {
     ticking = false;
-    document.body.classList.toggle('on-paper', hero.getBoundingClientRect().bottom > innerHeight - 56);
+    const onPaper = [...paperSections].some(el => {
+      const r = el.getBoundingClientRect();
+      return r.top < innerHeight - 20 && r.bottom > innerHeight - 56;
+    });
+    document.body.classList.toggle('on-paper', onPaper);
   };
   const queueFooter = () => { if (!ticking) { ticking = true; requestAnimationFrame(paperUnderFooter); } };
   addEventListener('scroll', queueFooter, { passive: true });
