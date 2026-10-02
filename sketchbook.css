@@ -20,9 +20,9 @@
   --sk-h:max(520px,calc(100svh - var(--topbar-h)));
   --sk-logo:clamp(52px,6.4vw,88px);    /* the fable wordmark */
   --sk-pt:24px;
-  --sk-cue:clamp(84px,14svh,110px);   /* gap from the hero's bottom edge to the scroll arrow */
-  --sk-pb:calc(var(--sk-cue) + 50px); /* so the book stops above the arrow */
-  --sk-extra:calc(var(--sk-logo) + 10px + 56px); /* wordmark + kicker line above the book */
+  --sk-pb:88px;                       /* kept clear at the bottom for the pinned nav */
+  --sk-arrow:58px;                    /* the scroll arrow, sitting just under the book */
+  --sk-extra:calc(var(--sk-logo) + 10px + 56px + var(--sk-arrow)); /* wordmark + tagline above, arrow below */
   /* The book is drawn in a 1760x1240 frame with empty paper-coloured margin: the
      pages fill 85% of its width and 39.7% of its width in height. So the frame
      is sized from the space the pages themselves may use, and its empty top and
@@ -72,7 +72,7 @@
 }
 
 .sk-down{
-  position:absolute;bottom:var(--sk-cue);left:50%;transform:translateX(-50%);
+  position:relative;margin-top:14px;
   display:inline-flex;padding:10px 14px;color:var(--ink);cursor:pointer;
   -webkit-tap-highlight-color:transparent;
   animation:sk-breathe 2.6s ease-in-out infinite;z-index:3;
@@ -211,7 +211,7 @@
 }
 /* short landscape screens (phones on their side) */
 @media (max-height:520px) and (orientation:landscape){
-  .sk-hero{--sk-h:calc(100svh - var(--topbar-h));--sk-logo:30px;--sk-pt:8px;--sk-pb:72px;--sk-extra:calc(var(--sk-logo) + 10px);min-height:0}
+  .sk-hero{--sk-h:calc(100svh - var(--topbar-h));--sk-logo:30px;--sk-pt:8px;--sk-pb:72px;--sk-arrow:0px;--sk-extra:calc(var(--sk-logo) + 10px);min-height:0}
   .sk-kicker{display:none}
   .sk-down{display:none}
 }
