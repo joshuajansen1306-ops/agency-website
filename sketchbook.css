@@ -252,3 +252,11 @@
 .sk-loader-bar i{display:block;height:100%;width:100%;background:#2b2721;transform:scaleX(.04);transform-origin:left;transition:transform .35s ease}
 @keyframes sk-loader-in{from{opacity:0;transform:translateY(6px)}}
 @media (prefers-reduced-motion:reduce){.sk-loader,.sk-loader-bar i{transition:none}.sk-loader-text{animation:none}}
+
+/* ---- About us fades down into the dark section instead of ending on a hard edge ---- */
+.home-about{--sk-fade:clamp(150px,19vw,280px);padding-bottom:var(--sk-fade)}
+.home-about::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:var(--sk-fade);z-index:1;pointer-events:none;
+  background:linear-gradient(to bottom,rgb(214 236 250 / 0) 0%,color-mix(in srgb,var(--bg) 35%,transparent) 45%,var(--bg) 100%);
+}
+.home-about .row{border-bottom:0}
