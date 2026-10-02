@@ -233,3 +233,23 @@
 .sk-paper .arrow-link{border-bottom-color:rgba(43,39,33,.3)}
 .sk-paper .arrow-link:hover{border-bottom-color:var(--ink)}
 .sk-paper :focus-visible{outline-color:var(--ink)}
+
+/* ---- loading screen: covers the page while the book's pages get ready ---- */
+.sk-loader{
+  position:fixed;inset:0;z-index:1000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;
+  background:#ece7dc;color:#2b2721;
+  opacity:1;transition:opacity .45s ease;
+}
+.sk-loader::before{content:"";position:absolute;inset:0;background:url(images/sketchbook/bg-wash.jpg) center top / cover no-repeat;opacity:.5}
+.sk-loading .sk-loader{display:flex}
+.sk-loader.is-done{opacity:0;pointer-events:none}
+.sk-loading{overflow:hidden}
+.sk-loader-text{
+  position:relative;font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-size:clamp(28px,4.4vw,44px);
+  letter-spacing:.005em;line-height:1;text-align:center;padding-inline:20px;
+  animation:sk-loader-in .7s ease both;
+}
+.sk-loader-bar{position:relative;display:block;width:clamp(120px,18vw,180px);height:1px;background:rgba(43,39,33,.16);overflow:hidden}
+.sk-loader-bar i{display:block;height:100%;width:100%;background:#2b2721;transform:scaleX(.04);transform-origin:left;transition:transform .35s ease}
+@keyframes sk-loader-in{from{opacity:0;transform:translateY(6px)}}
+@media (prefers-reduced-motion:reduce){.sk-loader,.sk-loader-bar i{transition:none}.sk-loader-text{animation:none}}

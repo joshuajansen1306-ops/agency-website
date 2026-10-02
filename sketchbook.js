@@ -257,21 +257,53 @@
   })).then(r => r.every(Boolean));
   const within = (p, ms) => Promise.race([p, new Promise(r => setTimeout(() => r(false), ms))]);
 
+  /* ---- loading screen ---- */
+  const loader = document.getElementById('skLoader');
+  const fill = document.getElementById('skLoaderFill');
+  const root = document.documentElement;
+  const MIN_MS = 900, CAP_MS = 4500;       /* never a blink, never a wait */
+  const t0 = performance.now();
+  let loaded = 0;
+  const progress = n => { loaded = n; if (fill) fill.style.transform = 'scaleX(' + Math.max(.04, n / PAGES.length).toFixed(3) + ')'; };
+  let hidden = false;
+  const hideLoader = () => {
+    if (hidden) return;
+    hidden = true;
+    root.classList.remove('sk-loading');
+    if (!loader) return;
+    loader.classList.add('is-done');
+    loader.setAttribute('aria-hidden', 'true');
+    setTimeout(() => { loader.style.display = 'none'; }, 500);
+  };
+  /* the cap: whatever is still loading, the visitor is let in */
+  setTimeout(hideLoader, Math.max(0, CAP_MS - performance.now()));   /* counted from navigation start */
+  const holdLoader = () => new Promise(r => setTimeout(r, Math.max(0, MIN_MS - (performance.now() - t0))));
+
+  const decodeEach = urls => Promise.all(urls.map(u => {
+    const im = new Image(); im.src = u;
+    const done = ok => { if (ok) progress(loaded + 1); return ok; };
+    return (im.decode ? im.decode().then(() => true, () => false)
+      : new Promise(r => { im.onload = () => r(true); im.onerror = () => r(false); })).then(done);
+  })).then(r => r.every(Boolean));
+
   (async function boot() {
     if (STILL) {
       await within(decode([PAGES[LAND].url]), 8000);
       idx = LAND; paint(); applyView();
+      await holdLoader(); hideLoader();
       return;
     }
     idx = 0; paint(); applyView();
     /* every spread has to be ready before the riffle, or a page would flash
        empty; on a connection too slow for that, just rest on the last one */
-    const ready = await within(decode(PAGES.map(p => p.url)), 7000);
-    if (!ready) { idx = LAND; paint(); return; }
+    const ready = await within(decodeEach(PAGES.map(p => p.url)), 7000);
+    if (!ready) { idx = LAND; paint(); hideLoader(); return; }
     if (document.fonts && document.fonts.ready) await within(document.fonts.ready.then(() => true, () => true), 1500);
+    await holdLoader();
     if (document.hidden) await new Promise(r => document.addEventListener('visibilitychange', function f() {
       if (!document.hidden) { document.removeEventListener('visibilitychange', f); r(); }
     }));
-    setTimeout(startIntro, 220);
+    hideLoader();
+    setTimeout(startIntro, 350);          /* the screen is fading as the first page turns */
   })();
 })();
