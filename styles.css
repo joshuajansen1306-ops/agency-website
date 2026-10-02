@@ -98,11 +98,12 @@ ul,ol{list-style:none}
 .mark--lg{width:64px;height:64px;font-size:2rem}
 
 /* ---------- top bar ---------- */
-.topbar{position:sticky;top:0;z-index:40;background:var(--topbar-bg);color:var(--topbar-text);height:var(--topbar-h)}
-.topbar :focus-visible,.dock :focus-visible{outline-color:var(--navy-950)}
+.topbar{position:sticky;top:0;z-index:40;background:var(--topbar-bg);color:var(--topbar-text);height:var(--topbar-h);border-bottom:1px solid var(--topbar-line,transparent);transition:color .25s ease}
+.topbar :focus-visible{outline-color:var(--topbar-text)}
+.dock :focus-visible{outline-color:var(--navy-950)}
 .topbar-inner{height:100%;display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px}
 .clock{display:flex;align-items:baseline;gap:10px;font-size:var(--fs-small);font-variant-numeric:tabular-nums}
-.clock-city{font-size:var(--fs-label);text-transform:uppercase;letter-spacing:.06em;color:var(--topbar-muted)}
+.clock-city{font-size:var(--fs-label);text-transform:uppercase;letter-spacing:.06em;color:var(--topbar-muted);transition:color .25s ease}
 .topbar-links{display:flex;justify-content:flex-end;gap:28px;font-size:var(--fs-small)}
 .topbar-links a{display:inline-flex;align-items:center;gap:6px;transition:opacity .2s ease}
 .topbar-links a:hover{opacity:.7}
