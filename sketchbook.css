@@ -240,7 +240,6 @@
   background:#D6ECFA;color:#2b2721;
   opacity:1;transition:opacity .45s ease;
 }
-.sk-loader::before{content:"";position:absolute;inset:0;background:url(images/sketchbook/bg-wash.jpg) center top / cover no-repeat;opacity:.5}
 .sk-loading .sk-loader{display:flex}
 .sk-loader.is-done{opacity:0;pointer-events:none}
 .sk-loading{overflow:hidden}

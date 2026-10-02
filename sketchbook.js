@@ -36,7 +36,7 @@
 
   const DIR = 'images/sketchbook/';
   /* one spread per spot in the riffle, so no page is ever shown twice */
-  const PAGES = Array.from({ length: 16 }, (_, i) => ({ url: DIR + 'spread-' + String(i + 1).padStart(2, '0') + '.webp?v=8' }));
+  const PAGES = Array.from({ length: 16 }, (_, i) => ({ url: DIR + 'spread-' + String(i + 1).padStart(2, '0') + '.webp?v=9' }));
   const M = PAGES.length, LAND = M - 1;
 
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -261,7 +261,7 @@
   const loader = document.getElementById('skLoader');
   const fill = document.getElementById('skLoaderFill');
   const root = document.documentElement;
-  const MIN_MS = 900, CAP_MS = 4500;       /* never a blink, never a wait */
+  const MIN_MS = 900, CAP_MS = 4500, HARD_MS = 9000;   /* never a blink; normally never a wait; never stuck */
   const t0 = performance.now();
   let loaded = 0;
   const progress = n => { loaded = n; if (fill) fill.style.transform = 'scaleX(' + Math.max(.04, n / PAGES.length).toFixed(3) + ')'; };
@@ -275,9 +275,9 @@
     loader.setAttribute('aria-hidden', 'true');
     setTimeout(() => { loader.style.display = 'none'; }, 500);
   };
-  /* the cap: whatever is still loading, the visitor is let in */
-  setTimeout(hideLoader, Math.max(0, CAP_MS - performance.now()));   /* counted from navigation start */
+  setTimeout(hideLoader, Math.max(0, HARD_MS - performance.now()));   /* absolute last resort, counted from navigation start */
   const holdLoader = () => new Promise(r => setTimeout(r, Math.max(0, MIN_MS - (performance.now() - t0))));
+  const untilCap = () => new Promise(r => setTimeout(r, Math.max(0, CAP_MS - performance.now())));
 
   const decodeEach = urls => Promise.all(urls.map(u => {
     const im = new Image(); im.src = u;
@@ -286,24 +286,35 @@
       : new Promise(r => { im.onload = () => r(true); im.onerror = () => r(false); })).then(done);
   })).then(r => r.every(Boolean));
 
+  /* what the hero needs to look right the moment the loading screen leaves:
+     the painted ground, the corner plants and the first (or, with no riffle, the last) spread.
+     The screen never lifts before these are in, so a slow connection can't show a half-built page. */
+  const essentials = decode([
+    'images/sketchbook/bg-wash.jpg', 'images/sketchbook/botany-left.webp', 'images/sketchbook/botany-right.webp',
+    PAGES[STILL ? LAND : 0].url
+  ]);
+
   (async function boot() {
     if (STILL) {
-      await within(decode([PAGES[LAND].url]), 8000);
       idx = LAND; paint(); applyView();
+      await within(essentials, HARD_MS);
       await holdLoader(); hideLoader();
       return;
     }
     idx = 0; paint(); applyView();
     /* every spread has to be ready before the riffle, or a page would flash
        empty; on a connection too slow for that, just rest on the last one */
-    const ready = await within(decodeEach(PAGES.map(p => p.url)), 7000);
-    if (!ready) { idx = LAND; paint(); hideLoader(); return; }
-    if (document.fonts && document.fonts.ready) await within(document.fonts.ready.then(() => true, () => true), 1500);
+    const all = within(decodeEach(PAGES.map(p => p.url)), 12000);
+    await within(essentials, HARD_MS);
+    await Promise.race([all, untilCap()]);      /* normally both are done; a slow link is let in at the cap */
     await holdLoader();
+    hideLoader();
+    const ready = await all;
+    if (!ready) { await within(decode([PAGES[LAND].url]), 8000); idx = LAND; paint(); return; }
+    if (document.fonts && document.fonts.ready) await within(document.fonts.ready.then(() => true, () => true), 1500);
     if (document.hidden) await new Promise(r => document.addEventListener('visibilitychange', function f() {
       if (!document.hidden) { document.removeEventListener('visibilitychange', f); r(); }
     }));
-    hideLoader();
     setTimeout(startIntro, 350);          /* the screen is fading as the first page turns */
   })();
 })();
