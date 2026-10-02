@@ -20,8 +20,9 @@
   const book = document.getElementById('sbBook');
 
   const DIR = 'images/sketchbook/';
-  const PAGES = Array.from({ length: 9 }, (_, i) => ({ url: DIR + 'spread-0' + (i + 1) + '.webp?v=2' }));
-  const M = PAGES.length, LAND = 6;
+  /* one spread per spot in the riffle, so no page is ever shown twice */
+  const PAGES = Array.from({ length: 16 }, (_, i) => ({ url: DIR + 'spread-' + String(i + 1).padStart(2, '0') + '.webp?v=3' }));
+  const M = PAGES.length, LAND = M - 1;
 
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const conn = navigator.connection;
@@ -219,7 +220,7 @@
     });
   }
   function startIntro() {
-    const steps = M + LAND;
+    const steps = LAND;                /* one turn per spot after the first */
     riffle = [];
     for (let r = 0; r < steps; r++) {
       const bell = Math.sin(Math.PI * (r / (steps - 1)));
