@@ -14,7 +14,7 @@
   const book = document.getElementById('sbBook');
 
   const DIR = 'images/sketchbook/';
-  const PAGES = Array.from({ length: 9 }, (_, i) => ({ url: DIR + 'spread-0' + (i + 1) + '.webp' }));
+  const PAGES = Array.from({ length: 9 }, (_, i) => ({ url: DIR + 'spread-0' + (i + 1) + '.webp?v=2' }));
   const M = PAGES.length, LAND = 6;
 
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
