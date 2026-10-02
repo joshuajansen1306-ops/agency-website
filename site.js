@@ -1,70 +1,72 @@
 (() => {
-  // Scroll-scrubbed hero video: playback position tracks how far the visitor
-  // has scrolled through the pinned hero zone. Scrolling down plays it
-  // forward, scrolling back up reverses it. The poster image stays visible
-  // until the video has a frame, and is all that shows when motion is reduced
-  // or the visitor is on a data-saving / very slow connection.
-  const wrap = document.querySelector('.paint-hero-scroll');
+  // Hero video: starts playing as soon as the page opens and loops forever.
+  // It is muted (required for autoplay), pauses while off screen to save
+  // battery, and picks a phone-sized file on upright phones. The poster (the
+  // video's own first frame) is all that shows when motion is reduced (even if
+  // that is switched on later), when the visitor is on a data-saving / very
+  // slow connection, or while autoplay is blocked.
   const video = document.querySelector('.paint-hero-media');
-  if (!wrap || !video) return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!video) return;
   const conn = navigator.connection;
   if (conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || ''))) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)'); // also honoured if switched on while the page is open
 
-  // Phones held upright get a smaller, cropped, keyframe-dense file (cheap to
-  // seek); everything else gets the full-size video.
+  video.muted = video.defaultMuted = true;
+  video.loop = true;
+  video.playsInline = true;
+
   const phone = matchMedia('(max-width: 640px) and (orientation: portrait)');
-  let duration = 0, frame = null, loaded = '', primed = false;
+  let loaded = '', onScreen = true, armed = false;
 
-  wrap.style.height = 'calc(220vh + 100svh - var(--topbar-h))';
-
-  const progress = () => {
-    const total = wrap.offsetHeight - innerHeight;
-    const scrolled = Math.min(Math.max(-wrap.getBoundingClientRect().top, 0), total);
-    return total > 0 ? scrolled / total : 0;
-  };
-  const apply = () => {
-    frame = null;
-    if (!duration || video.seeking) return; // 'seeked' re-applies the latest position
-    const t = progress() * duration;
-    if (Math.abs(t - video.currentTime) > 0.01) video.currentTime = t;
-  };
-  const schedule = () => { if (!frame) frame = requestAnimationFrame(apply); };
-
-  // iOS Safari will not paint seeked frames of a video that has never played;
-  // a muted play()/pause() wakes the decoder.
-  const prime = () => {
-    if (primed) return Promise.resolve();
+  const play = () => {
+    if (reduce.matches || !loaded || !onScreen || document.hidden) return;
     const p = video.play();
-    if (!p || !p.then) return Promise.resolve();
-    return p.then(() => { primed = true; video.pause(); }).catch(() => {});
+    if (p && p.catch) p.catch(err => { if (err && err.name === 'NotAllowedError') armRetry(); });
+  };
+
+  // Some browsers (e.g. iOS in Low Power Mode) refuse autoplay until the
+  // visitor touches the page; start on their first tap/key instead.
+  const armRetry = () => {
+    if (armed) return;
+    armed = true;
+    const go = () => {
+      armed = false;
+      ['touchend', 'click', 'keydown'].forEach(t => removeEventListener(t, go, true));
+      play();
+    };
+    ['touchend', 'click', 'keydown'].forEach(t => addEventListener(t, go, true));
   };
 
   const load = () => {
+    if (reduce.matches) return;
     const src = phone.matches ? video.dataset.srcMobile : video.dataset.src;
     if (src === loaded) return;
-    const resumeAt = video.classList.contains('is-ready') ? video.currentTime : 0;
-    loaded = src; duration = 0; primed = false;
+    const resumeAt = loaded ? video.currentTime : 0; // keep the place after a rotation
+    loaded = src;
     video.classList.remove('is-ready');
     video.preload = 'auto';
     video.src = src;
-    video.addEventListener('loadeddata', () => {
-      duration = video.duration || 0;
-      prime().then(() => {
-        const t = Math.max(resumeAt, progress() * duration);
-        const reveal = () => video.classList.add('is-ready');
-        if (t > 0.05) { video.addEventListener('seeked', reveal, { once: true }); video.currentTime = t; }
-        else reveal();
-      });
-    }, { once: true });
+    if (resumeAt) video.addEventListener('loadedmetadata', () => { video.currentTime = resumeAt % video.duration; }, { once: true });
+    play();
   };
 
-  video.addEventListener('seeked', schedule);
-  video.addEventListener('error', () => { wrap.style.height = ''; video.classList.remove('is-ready'); });
-  addEventListener('scroll', schedule, { passive: true });
-  addEventListener('resize', schedule);
-  addEventListener('touchstart', () => { if (!primed && duration) prime(); }, { once: true, passive: true });
-  phone.addEventListener('change', load);
+  const onReduce = () => {
+    if (reduce.matches) { video.pause(); video.classList.remove('is-ready'); } // back to the still poster
+    else { load(); play(); }
+  };
+
+  video.addEventListener('playing', () => video.classList.add('is-ready'));
+  video.addEventListener('error', () => video.classList.remove('is-ready'));
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      onScreen = entries[entries.length - 1].isIntersecting;
+      if (onScreen) play(); else video.pause();
+    }, { threshold: 0.01 }).observe(video);
+  }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) video.pause(); else play(); });
+  if (phone.addEventListener) { phone.addEventListener('change', load); reduce.addEventListener('change', onReduce); }
+  else { phone.addListener(load); reduce.addListener(onReduce); }
   load();
 })();
 
