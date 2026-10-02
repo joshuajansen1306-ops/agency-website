@@ -10,6 +10,12 @@
 (() => {
   const wrap = document.getElementById('sbWrap');
   if (!wrap) return;
+  /* always open at the top so the book's opening is what you see; browsers
+     otherwise restore the scroll position from the last visit (a link to a
+     #section still works) */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (!location.hash) scrollTo(0, 0);
+
   const sb3d = document.getElementById('sb3d');
   const book = document.getElementById('sbBook');
 
