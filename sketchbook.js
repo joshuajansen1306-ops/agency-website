@@ -21,7 +21,7 @@
 
   const DIR = 'images/sketchbook/';
   /* one spread per spot in the riffle, so no page is ever shown twice */
-  const PAGES = Array.from({ length: 16 }, (_, i) => ({ url: DIR + 'spread-' + String(i + 1).padStart(2, '0') + '.webp?v=3' }));
+  const PAGES = Array.from({ length: 16 }, (_, i) => ({ url: DIR + 'spread-' + String(i + 1).padStart(2, '0') + '.webp?v=4' }));
   const M = PAGES.length, LAND = M - 1;
 
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
