@@ -227,15 +227,30 @@
   function endIntro() {
     introOn = false; wrap.classList.remove('intro', 'b2');
   }
+  /* each turn waits for its own page, so the riffle can start before every spread has arrived;
+     on a slow link it simply pauses on the current page until the next one is in */
+  const pageOk = PAGES.map(() => false);
+  const pageReady = [];
+  let startPage = i => Promise.resolve(false);
   function riffleStep() {
     const s = riffle[riffleAt];
-    wrap.classList.toggle('b2', s.bell > 0.55);
-    startTurn('next', 0);
-    tweenTo(1, s.dur, () => {
-      idx = turn.to; turn = null;
-      riffleAt++;
-      if (introOn && riffleAt < riffle.length) { paint(); riffleStep(); }
-      else { endIntro(); paint(); }
+    const next = (idx + 1) % M;
+    const go = () => {
+      wrap.classList.add('intro');
+      wrap.classList.toggle('b2', s.bell > 0.55);
+      startTurn('next', 0);
+      tweenTo(1, s.dur, () => {
+        idx = turn.to; turn = null;
+        riffleAt++;
+        if (introOn && riffleAt < riffle.length) { paint(); riffleStep(); }
+        else { endIntro(); paint(); }
+      });
+    };
+    if (pageOk[next]) { go(); return; }
+    wrap.classList.remove('intro', 'b2');                       /* no blur while waiting on a page */
+    within(startPage(next), 6000).then(ok => {
+      if (ok && introOn) go();
+      else { endIntro(); idx = LAND; paint(); }                 /* a page never arrived: settle on the last spread */
     });
   }
   function startIntro() {
@@ -250,11 +265,14 @@
   }
 
   /* ------------------------------------------------------------- boot */
-  const decode = urls => Promise.all(urls.map(u => {
+  /* decode one image; if the browser's decode() balks (some do for large WebPs) but the image did load, that still counts */
+  const decodeOne = u => {
     const im = new Image(); im.src = u;
-    return im.decode ? im.decode().then(() => true, () => false)
+    const viaLoad = () => (im.complete && im.naturalWidth > 0) ? true
       : new Promise(r => { im.onload = () => r(true); im.onerror = () => r(false); });
-  })).then(r => r.every(Boolean));
+    return im.decode ? im.decode().then(() => true, viaLoad) : viaLoad();
+  };
+  const decode = urls => Promise.all(urls.map(decodeOne)).then(r => r.every(Boolean));
   const within = (p, ms) => Promise.race([p, new Promise(r => setTimeout(() => r(false), ms))]);
 
   /* ---- loading screen ---- */
@@ -279,13 +297,6 @@
   const holdLoader = () => new Promise(r => setTimeout(r, Math.max(0, MIN_MS - (performance.now() - t0))));
   const untilCap = () => new Promise(r => setTimeout(r, Math.max(0, CAP_MS - performance.now())));
 
-  const decodeEach = urls => Promise.all(urls.map(u => {
-    const im = new Image(); im.src = u;
-    const done = ok => { if (ok) progress(loaded + 1); return ok; };
-    return (im.decode ? im.decode().then(() => true, () => false)
-      : new Promise(r => { im.onload = () => r(true); im.onerror = () => r(false); })).then(done);
-  })).then(r => r.every(Boolean));
-
   /* what the hero needs to look right the moment the loading screen leaves:
      the painted ground, the corner plants and the first (or, with no riffle, the last) spread.
      The screen never lifts before these are in, so a slow connection can't show a half-built page. */
@@ -302,15 +313,17 @@
       return;
     }
     idx = 0; paint(); applyView();
-    /* every spread has to be ready before the riffle, or a page would flash
-       empty; on a connection too slow for that, just rest on the last one */
-    const all = within(decodeEach(PAGES.map(p => p.url)), 12000);
+    /* every spread starts loading at once; the riffle needs the first few to begin and the rest as it goes */
+    /* the first four load first, with the whole connection to themselves; the rest follow straight after */
+    startPage = i => pageReady[i] || (pageReady[i] = decodeOne(PAGES[i].url).then(ok => { if (ok) { pageOk[i] = true; progress(loaded + 1); } return ok; }));
+    const firstFew = Promise.all([0, 1, 2, 3].map(startPage)).then(r => r.every(Boolean));
+    firstFew.then(() => { for (let i = 4; i < M; i++) startPage(i); });
     await within(essentials, HARD_MS);
-    await Promise.race([all, untilCap()]);      /* normally both are done; a slow link is let in at the cap */
+    await Promise.race([firstFew, untilCap()]);   /* normally both are done; a slow link is let in at the cap */
     await holdLoader();
     hideLoader();
-    const ready = await all;
-    if (!ready) { await within(decode([PAGES[LAND].url]), 8000); idx = LAND; paint(); return; }
+    const ready = await within(firstFew, 12000);
+    if (!ready) { await within(decodeOne(PAGES[LAND].url), 8000); idx = LAND; paint(); return; }
     if (document.fonts && document.fonts.ready) await within(document.fonts.ready.then(() => true, () => true), 1500);
     if (document.hidden) await new Promise(r => document.addEventListener('visibilitychange', function f() {
       if (!document.hidden) { document.removeEventListener('visibilitychange', f); r(); }
