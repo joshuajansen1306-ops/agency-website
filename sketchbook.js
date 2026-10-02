@@ -13,7 +13,7 @@
   const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
   /* always open at the top so the book's opening is what you see. Browsers
      otherwise restore the scroll position from the last visit, and a leftover
-     #work-stack in the address bar would jump straight to the work section. */
+     #section in the address bar would jump straight past the hero. */
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   scrollTo(0, 0);
@@ -22,10 +22,10 @@
   ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(t => addEventListener(t, () => { userScrolled = true; }, { once: true, passive: true }));
   addEventListener('load', () => { if (!userScrolled && scrollY) scrollTo(0, 0); });
 
-  /* the scroll cue glides down without writing #work-stack into the URL */
+  /* the scroll cue glides down without writing a #hash into the URL */
   const cue = document.querySelector('.sk-down');
   if (cue) cue.addEventListener('click', e => {
-    const target = document.getElementById('work-stack');
+    const target = document.getElementById('about-us');
     if (!target) return;
     e.preventDefault();
     target.scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth', block: 'start' });
