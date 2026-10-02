@@ -180,14 +180,11 @@ ul,ol{list-style:none}
 
 /* brands we've worked with: lots of room, ready for logos */
 .home-brands{padding-top:clamp(72px,10vw,160px);padding-bottom:clamp(96px,14vw,240px)}
-.brand-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--gutter);padding-top:clamp(40px,6vw,96px)}
-.brand-tile{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;text-align:center;min-height:clamp(180px,20vw,300px);padding:28px 20px;border:1px solid var(--line);border-radius:2px;transition:border-color .25s ease,background .25s ease}
-.brand-tile img{max-width:70%;max-height:64px;width:auto;height:auto}
-.brand-name{font-size:var(--fs-lead);letter-spacing:var(--track-lead);line-height:1.15}
-.brand-note{font-size:var(--fs-small);color:var(--text-muted)}
-@media (hover:hover){.brand-tile:hover{border-color:var(--text);background:var(--ice-50-08)}}
-.brand-tile:focus-visible{outline-offset:-3px}
-@media (max-width:900px){.brand-grid{grid-template-columns:1fr}.brand-tile{min-height:140px}}
+.brand-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,3vw,48px);padding-top:clamp(48px,7vw,112px);align-items:center;justify-items:center}
+.brand-logo{width:100%;max-width:clamp(150px,17vw,250px)}
+.brand-logo img{width:100%;height:auto;aspect-ratio:1;border-radius:50%;transition:transform .35s ease}
+@media (hover:hover){.brand-logo img:hover{transform:scale(1.05)}}
+@media (max-width:900px){.brand-grid{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:36px}.brand-logo{max-width:170px}}
 /* closing call to action */
 .home-cta{padding-bottom:calc(var(--dock-clearance) + clamp(40px,5vw,72px))}
 
