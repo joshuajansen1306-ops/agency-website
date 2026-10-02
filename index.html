@@ -46,7 +46,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,500&display=swap"></noscript>
+<link rel="preload" as="image" href="images/sketchbook/spread-01.webp" type="image/webp" fetchpriority="high">
+<link rel="preload" as="font" type="font/woff2" href="fonts/instrument-serif.woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="sketchbook.css">
 </head>
 <body class="home">
 
@@ -64,15 +67,37 @@
 
 <main id="main">
 
-<section class="paint-hero">
-  <picture>
-    <source media="(max-width: 640px) and (orientation: portrait)" srcset="images/hero-fable-v4-mobile-poster.jpg">
-    <img class="paint-hero-poster" src="images/hero-fable-v5-poster.jpg" alt="A cinematic scene of a grassy hill covered in wildflowers with a stack of books at its peak, butterflies flying around it under a bright blue sky" width="1600" height="902" fetchpriority="high" decoding="async">
-  </picture>
-  <video class="paint-hero-media" muted loop playsinline preload="none" disablepictureinpicture disableremoteplayback aria-hidden="true" data-src="images/hero-fable-v5.mp4" data-src-mobile="images/hero-fable-v4-mobile.mp4"></video>
+<section class="sk-hero" id="sketchbook" aria-label="Fable &amp; Co.">
+  <div class="sk-wash" aria-hidden="true"></div>
+  <img class="sk-botany l" src="images/sketchbook/botany-left.png" alt="" aria-hidden="true" width="760" height="1053" loading="lazy" decoding="async">
+  <img class="sk-botany r" src="images/sketchbook/botany-right.png" alt="" aria-hidden="true" width="760" height="1924" loading="lazy" decoding="async">
+
+  <a class="sk-name" href="index.html" aria-label="Fable &amp; Co. home">fable</a>
   <h1 class="visually-hidden">Fable &amp; Co. | Social media, run like a sales channel</h1>
-  <a class="paint-hero-cue" href="#work-stack" aria-label="Scroll to see our work">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v16M5 13l7 7 7-7"/></svg>
+  <p class="sk-kicker">Social media / Content / Growth</p>
+
+  <div class="sb-wrap" id="sbWrap">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <filter id="sb-mblur-1"><feGaussianBlur stdDeviation="5 0"/></filter>
+      <filter id="sb-mblur-2"><feGaussianBlur stdDeviation="14 0"/></filter>
+    </svg>
+    <div class="sb-stage" id="sbStage" role="img" aria-label="An open sketchbook of watercolour illustrations, its pages flipping past">
+      <div class="sb-3d" id="sb3d">
+        <div class="sb-tilt" id="sbTilt">
+          <div class="sb-cast ambient" aria-hidden="true"></div>
+          <div class="sb-cast contact" aria-hidden="true"></div>
+          <div class="sb-cast hair" aria-hidden="true"></div>
+          <div class="sb-book" id="sbBook"><div class="sb-full"><img src="images/sketchbook/spread-01.webp" alt="" width="1760" height="1240" fetchpriority="high" decoding="async" draggable="false"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a class="sk-down" href="#work-stack" aria-label="Scroll to see our work">
+    <svg viewBox="0 0 44 22" width="34" height="17" fill="none" aria-hidden="true">
+      <polyline points="3,3 22,11 41,3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="3,11 22,19 41,11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
   </a>
 </section>
 
@@ -121,5 +146,6 @@
 </nav>
 
 <script src="site.js"></script>
+<script src="sketchbook.js"></script>
 </body>
 </html>

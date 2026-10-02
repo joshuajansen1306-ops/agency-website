@@ -1,0 +1,213 @@
+/* ==========================================================
+   Sketchbook hero: the opening of the book.
+   Adapted from the "Sketchbook" landing page (ThreeUI). The turning leaf is
+   a chain of nested 3D strips, so the page bends the way paper bends. Rules
+   are scoped to .sk-hero so nothing leaks into the rest of the site.
+   ========================================================== */
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:block;
+  src:url(fonts/instrument-serif.woff2) format('woff2')}
+@font-face{font-family:'Newsreader Upright';font-style:normal;font-weight:200 600;font-display:swap;
+  src:url(fonts/newsreader.woff2) format('woff2')}
+
+.sk-hero{
+  --paper:#ece7dc;
+  --ink:#2b2721;
+  --ink-soft:rgba(43,39,33,.58);
+  --display:'Instrument Serif',"New York",Georgia,'Times New Roman',serif;
+  --font:'Newsreader Upright',"New York",Georgia,'Times New Roman',serif;
+  --track-caps:.24em;
+  /* room the book may use: the hero's height minus its padding and kicker */
+  --sk-h:max(520px,calc(100svh - var(--topbar-h)));
+  --sk-pt:clamp(78px,11svh,120px);
+  --sk-pb:clamp(84px,14svh,110px);
+  --sk-bookmax:calc((var(--sk-h) - var(--sk-pt) - var(--sk-pb) - 56px) * 1.4194);
+  position:relative;display:grid;justify-items:center;align-content:center;
+  height:calc(100svh - var(--topbar-h));min-height:520px;overflow:hidden;
+  padding:var(--sk-pt) 0 var(--sk-pb);
+  background:var(--paper);color:var(--ink);
+  font-family:var(--font);font-weight:400;-webkit-font-smoothing:antialiased;
+  overflow-anchor:none;
+}
+.sk-hero,.sk-hero *{-webkit-user-select:none;-moz-user-select:none;user-select:none}
+.sk-hero img{-webkit-user-drag:none;user-drag:none}
+.sk-hero a{color:inherit;text-decoration:none}
+
+/* the painted ground the hero sits on */
+.sk-wash{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:url(images/sketchbook/bg-wash.jpg) center top / cover no-repeat;
+  opacity:.85;
+}
+.sk-wash:after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(236,231,220,.25) 0%,rgba(236,231,220,.72) 58%,var(--paper) 88%);
+}
+
+/* the logo */
+.sk-name{
+  position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:3;
+  font-family:var(--display);font-size:clamp(24px,2.4vw,30px);letter-spacing:.01em;
+  white-space:nowrap;line-height:1;
+}
+
+.sk-botany{
+  height:auto;position:absolute;bottom:0;width:clamp(120px,15vw,250px);opacity:.5;
+  pointer-events:none;user-select:none;z-index:0;
+}
+.sk-botany.l{left:clamp(-40px,-1vw,0px);bottom:2%}
+.sk-botany.r{right:clamp(-30px,0vw,10px);bottom:-2%;width:clamp(100px,12vw,200px)}
+@media (max-width:900px){.sk-botany{display:none}}
+
+.sk-kicker{
+  font-size:12px;font-weight:400;letter-spacing:var(--track-caps);text-align:center;
+  color:var(--ink-soft);margin:0 0 clamp(22px,3.4vh,40px);text-transform:uppercase;
+  position:relative;z-index:2;
+}
+
+.sk-down{
+  position:absolute;bottom:clamp(84px,14svh,110px);left:50%;transform:translateX(-50%);
+  display:inline-flex;padding:10px 14px;color:var(--ink);cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  animation:sk-breathe 2.6s ease-in-out infinite;z-index:3;
+}
+.sk-down:hover{animation:none;opacity:1}
+@keyframes sk-breathe{0%,100%{opacity:.15}50%{opacity:.7}}
+@media (prefers-reduced-motion:reduce){.sk-down{animation:none;opacity:.5}}
+
+/* ---------------- the book ---------------- */
+.sk-hero .sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2}
+.sk-hero .sb-stage{
+  display:flex;align-items:center;justify-content:center;width:100%;
+  position:relative;
+  touch-action:pan-y;
+}
+
+/* The box is the book's own untransformed frame; only .sb-tilt leans. */
+.sk-hero .sb-3d{
+  position:relative;flex:1 1;min-width:0;max-width:min(900px,var(--sk-bookmax));
+  perspective:1750px;perspective-origin:50% 46%;
+}
+.sk-hero .sb-tilt{
+  position:relative;
+  transform-style:preserve-3d;
+  transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  will-change:transform;
+}
+.sk-hero .sb-book{position:relative;width:100%;aspect-ratio:1760/1240;transform-style:preserve-3d;z-index:1}
+
+/* The book sits on a surface, so its shadow is a soft pool underneath;
+   both blobs ease off while a leaf is in the air. */
+.sk-hero .sb-cast{position:absolute;pointer-events:none;z-index:0}
+.sk-hero .sb-cast.ambient{
+  left:5%;right:5%;top:27%;bottom:2%;
+  background:radial-gradient(50% 50% at 50% 58%,
+    rgba(58,44,26,.34) 0%,rgba(58,44,26,.19) 40%,rgba(58,44,26,0) 74%);
+  filter:blur(26px);
+  opacity:calc(1 - var(--shade,0) * .42);
+}
+.sk-hero .sb-cast.contact{
+  left:9%;right:9%;top:62%;bottom:10%;
+  background:radial-gradient(50% 44% at 50% 42%,
+    rgba(44,32,14,.40) 0%,rgba(44,32,14,.17) 48%,rgba(44,32,14,0) 78%);
+  filter:blur(11px);
+  opacity:calc(1 - var(--shade,0) * .5);
+}
+.sk-hero .sb-cast.hair{
+  left:12%;right:12%;top:70%;bottom:17%;
+  background:radial-gradient(50% 52% at 50% 40%,
+    rgba(40,28,10,.34) 0%,rgba(40,28,10,0) 76%);
+  filter:blur(4px);
+  opacity:calc(1 - var(--shade,0) * .62);
+}
+.sk-hero .sb-full{position:absolute;inset:0}
+.sk-hero .sb-full img{width:100%;height:auto;display:block}
+.sk-hero .sb-half{position:absolute;top:0;bottom:0;width:50%;overflow-x:clip;overflow-y:visible}
+.sk-hero .sb-half.left{left:0}
+.sk-hero .sb-half.right{left:50%}
+.sk-hero .sb-half-img{width:200%;max-width:none;height:auto;display:block}
+.sk-hero .sb-half-img.right{margin-left:-100%}
+/* the shadow the lifting leaf throws onto the page beneath it */
+.sk-hero .gutter-shade{
+  position:absolute;top:var(--pg,21.8%);bottom:var(--pg,21.8%);width:46%;
+  pointer-events:none;opacity:calc(var(--shade,0) * .62);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 5.2%,#000 94.8%,transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0,#000 5.2%,#000 94.8%,transparent 100%);
+}
+.sk-hero .gutter-shade.left{right:0;background:linear-gradient(270deg,rgba(52,38,20,.30),rgba(52,38,20,0) 82%)}
+.sk-hero .gutter-shade.right{left:0;background:linear-gradient(90deg,rgba(52,38,20,.24),rgba(52,38,20,0) 82%)}
+
+/* ---- the turning leaf: nested strips forming a curved surface ---- */
+.sk-hero .curl{
+  position:absolute;top:0;height:100%;
+  width:calc(var(--bw,0px) * var(--span));
+  transform-style:preserve-3d;z-index:6;
+}
+.sk-hero .curl.next{left:50%;transform-origin:left center;transform:rotateY(calc(-1 * var(--tt,0deg)))}
+.sk-hero .curl.prev{right:50%;transform-origin:right center;transform:rotateY(var(--tt,0deg))}
+.sk-hero .strip{
+  position:absolute;top:0;height:100%;
+  width:calc(var(--bw,0px) * var(--span) / var(--n));
+  transform-style:preserve-3d;
+}
+.sk-hero .curl.next .strip{transform-origin:left center}
+.sk-hero .curl.prev .strip{transform-origin:right center}
+.sk-hero .curl.next>.strip{left:0}
+.sk-hero .curl.prev>.strip{right:0;left:auto}
+.sk-hero .curl.next .strip .strip{left:100%;transform:rotateY(var(--td,0deg))}
+.sk-hero .curl.prev .strip .strip{right:100%;transform:rotateY(calc(-1 * var(--td,0deg)))}
+.sk-hero .face{
+  position:absolute;top:0;bottom:0;left:0;right:-1.1px;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  background-repeat:no-repeat;background-size:var(--bw,0px) auto;
+}
+.sk-hero .face.back{transform:rotateY(180deg)}
+.sk-hero .face .sh,.sk-hero .face .gl{
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 5.2%,#000 94.8%,transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0,#000 5.2%,#000 94.8%,transparent 100%);
+}
+.sk-hero .strip.edge .face .sh,.sk-hero .strip.edge .face .gl{
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 9%,#000 91%,transparent 100%),var(--hf);
+  mask-image:linear-gradient(180deg,transparent 0,#000 9%,#000 91%,transparent 100%),var(--hf);
+  -webkit-mask-composite:source-in;mask-composite:intersect;
+}
+.sk-hero .curl.next .strip.edge .face.front,.sk-hero .curl.prev .strip.edge .face.back{
+  --hf:linear-gradient(90deg,#000 0 22%,transparent 96%);
+}
+.sk-hero .curl.next .strip.edge .face.back,.sk-hero .curl.prev .strip.edge .face.front{
+  --hf:linear-gradient(270deg,#000 0 22%,transparent 96%);
+}
+.sk-hero .face .sh{position:absolute;left:0;right:0;top:var(--pg,21.8%);bottom:var(--pg,21.8%);pointer-events:none}
+.sk-hero .curl.next .face.front .sh,.sk-hero .curl.prev .face.back .sh{
+  background:linear-gradient(90deg,rgba(58,43,20,var(--a1,0)),rgba(58,43,20,var(--a2,0)));
+}
+.sk-hero .curl.next .face.back .sh,.sk-hero .curl.prev .face.front .sh{
+  background:linear-gradient(90deg,rgba(58,43,20,var(--a2,0)),rgba(58,43,20,var(--a1,0)));
+}
+.sk-hero .face .gl{
+  position:absolute;left:0;right:0;top:var(--pg,21.8%);bottom:var(--pg,21.8%);
+  pointer-events:none;background:#fffaf0;
+  opacity:calc(var(--shade,0) * var(--lit,1) * var(--lit,1) * .20);
+}
+
+/* ---- the riffle: pages blur sideways as they fly past ---- */
+.sk-hero .sb-wrap.intro .sb-full img,.sk-hero .sb-wrap.intro .sb-half-img{filter:url(#sb-mblur-1)}
+.sk-hero .sb-wrap.intro.b2 .sb-full img,.sk-hero .sb-wrap.intro.b2 .sb-half-img{filter:url(#sb-mblur-2)}
+
+@media (max-width:640px){
+  .sk-hero{--sk-h:max(460px,calc(100svh - var(--topbar-h)));min-height:460px}
+  .sk-name{font-size:20px}
+  .sk-kicker{font-size:10.5px;letter-spacing:.16em}
+  .sk-hero .sb-wrap{width:100vw;margin-inline:calc(50% - 50vw)}
+  .sk-hero .sb-3d{max-width:none}
+}
+@media (pointer:coarse),(max-width:640px){
+  .sk-down{min-width:44px;min-height:44px;align-items:center;justify-content:center}
+}
+/* short landscape screens (phones on their side) */
+@media (max-height:520px) and (orientation:landscape){
+  .sk-hero{--sk-h:calc(100svh - var(--topbar-h));--sk-pt:44px;--sk-pb:60px;min-height:0}
+  .sk-kicker{display:none}
+  .sk-name{top:10px;font-size:20px}
+  .sk-down{bottom:72px}
+  .sk-hero .sb-3d{max-width:min(900px,calc((var(--sk-h) - var(--sk-pt) - var(--sk-pb)) * 1.4194))}
+}
