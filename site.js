@@ -78,3 +78,26 @@
   tick();
   setInterval(tick, 15000);
 })();
+
+(() => {
+  // Scrolling down from About us, the page's dark navy deepens into #0F1E3D.
+  // It follows the scroll position (not a timer) and only ever touches --bg,
+  // the dark page colour, so the cream and blue sections are unaffected.
+  const scroller = document.querySelector('.home-scroll');
+  if (!scroller) return;
+  const from = [10, 24, 38], to = [15, 30, 61];       // #0A1826 -> #0F1E3D
+  const root = document.documentElement;
+  let queued = false;
+  const update = () => {
+    queued = false;
+    const top = scroller.getBoundingClientRect().top;
+    const start = innerHeight * 0.6, end = -innerHeight * 0.4;   // from just entering view to a little way in
+    const p = Math.min(1, Math.max(0, (start - top) / (start - end)));
+    const e = p * p * (3 - 2 * p);                                // gentle ease in and out
+    root.style.setProperty('--bg', 'rgb(' + from.map((v, i) => Math.round(v + (to[i] - v) * e)).join(' ') + ')');
+  };
+  const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+  addEventListener('scroll', queue, { passive: true });
+  addEventListener('resize', queue);
+  update();
+})();
