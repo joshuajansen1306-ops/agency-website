@@ -11,6 +11,7 @@
   --ice-50-60:rgb(238 244 250 / .6);
   --ice-50-14:rgb(238 244 250 / .14);
   --ice-50-08:rgb(238 244 250 / .08);
+  --icy-100:#D4E7F7;
   --burgundy-600:#800020;
   --burgundy-500:#9A1B33;
 
@@ -42,11 +43,15 @@
   --dock-clearance:112px;
 
   /* component */
-  --topbar-bg:var(--surface);
-  --dock-bg:rgb(23 58 90 / .78);
-  --dock-hover-bg:var(--ice-50-08);
-  --dock-active-bg:var(--text);
-  --dock-active-text:var(--bg);
+  --topbar-bg:var(--icy-100);
+  --topbar-text:var(--navy-950);
+  --topbar-muted:rgb(10 24 38 / .72);
+  --dock-bg:rgb(212 231 247 / .92);
+  --dock-border:rgb(10 24 38 / .14);
+  --dock-text:var(--navy-950);
+  --dock-hover-bg:rgb(10 24 38 / .08);
+  --dock-active-bg:var(--navy-950);
+  --dock-active-text:var(--ice-50);
   --btn-primary-bg:var(--accent);
   --btn-primary-bg-hover:var(--accent-hover);
   --btn-primary-text:var(--text);
@@ -93,10 +98,11 @@ ul,ol{list-style:none}
 .mark--lg{width:64px;height:64px;font-size:2rem}
 
 /* ---------- top bar ---------- */
-.topbar{position:sticky;top:0;z-index:40;background:var(--topbar-bg);height:var(--topbar-h)}
+.topbar{position:sticky;top:0;z-index:40;background:var(--topbar-bg);color:var(--topbar-text);height:var(--topbar-h)}
+.topbar :focus-visible,.dock :focus-visible{outline-color:var(--navy-950)}
 .topbar-inner{height:100%;display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px}
 .clock{display:flex;align-items:baseline;gap:10px;font-size:var(--fs-small);font-variant-numeric:tabular-nums}
-.clock-city{font-size:var(--fs-label);text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)}
+.clock-city{font-size:var(--fs-label);text-transform:uppercase;letter-spacing:.06em;color:var(--topbar-muted)}
 .topbar-links{display:flex;justify-content:flex-end;gap:28px;font-size:var(--fs-small)}
 .topbar-links a{display:inline-flex;align-items:center;gap:6px;transition:opacity .2s ease}
 .topbar-links a:hover{opacity:.7}
@@ -106,7 +112,7 @@ ul,ol{list-style:none}
   position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom));z-index:50;
   transform:translateX(-50%);
   display:flex;gap:2px;padding:5px;border-radius:999px;
-  background:var(--dock-bg);border:1px solid var(--line);
+  background:var(--dock-bg);color:var(--dock-text);border:1px solid var(--dock-border);
   -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
   max-width:calc(100vw - 16px);
 }
