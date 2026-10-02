@@ -27,7 +27,7 @@
      pages fill 85% of its width and 39.7% of its width in height. So the frame
      is sized from the space the pages themselves may use, and its empty top and
      bottom margin (15.4% of its width each) is pulled back with negative margin. */
-  --sk-w:min(1020px,104vw,calc((var(--sk-h) - var(--sk-pt) - var(--sk-pb) - var(--sk-extra)) / .397));
+  --sk-w:min(1100px,104vw,calc((var(--sk-h) - var(--sk-pt) - var(--sk-pb) - var(--sk-extra)) / .397));
   position:relative;display:grid;justify-items:center;align-content:center;
   height:calc(100svh - var(--topbar-h));min-height:520px;overflow:hidden;
   padding:var(--sk-pt) 0 var(--sk-pb);
@@ -66,8 +66,8 @@
 @media (max-width:900px){.sk-botany{display:none}}
 
 .sk-kicker{
-  font-size:12px;font-weight:400;letter-spacing:var(--track-caps);text-align:center;
-  color:var(--ink-soft);margin:0 0 clamp(22px,3.4vh,40px);text-transform:uppercase;
+  font-size:clamp(16px,1.45vw,20px);font-weight:400;letter-spacing:.01em;line-height:1.3;text-align:center;
+  color:rgba(43,39,33,.72);margin:0 0 clamp(18px,3vh,30px);padding-inline:20px;
   position:relative;z-index:2;
 }
 
@@ -203,7 +203,7 @@
 
 @media (max-width:640px){
   .sk-hero{--sk-logo:52px;--sk-h:max(460px,calc(100svh - var(--topbar-h)));min-height:460px}
-  .sk-kicker{font-size:10.5px;letter-spacing:.16em}
+  .sk-kicker{font-size:15px}
   .sk-hero .sb-wrap{width:100vw;margin-inline:calc(50% - 50vw)}
 }
 @media (pointer:coarse),(max-width:640px){
