@@ -10,11 +10,26 @@
 (() => {
   const wrap = document.getElementById('sbWrap');
   if (!wrap) return;
-  /* always open at the top so the book's opening is what you see; browsers
-     otherwise restore the scroll position from the last visit (a link to a
-     #section still works) */
+  const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* always open at the top so the book's opening is what you see. Browsers
+     otherwise restore the scroll position from the last visit, and a leftover
+     #work-stack in the address bar would jump straight to the work section. */
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  if (!location.hash) scrollTo(0, 0);
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  scrollTo(0, 0);
+  /* the browser can still apply a scroll after load; undo it unless the visitor has already started scrolling */
+  let userScrolled = false;
+  ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(t => addEventListener(t, () => { userScrolled = true; }, { once: true, passive: true }));
+  addEventListener('load', () => { if (!userScrolled && scrollY) scrollTo(0, 0); });
+
+  /* the scroll cue glides down without writing #work-stack into the URL */
+  const cue = document.querySelector('.sk-down');
+  if (cue) cue.addEventListener('click', e => {
+    const target = document.getElementById('work-stack');
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth', block: 'start' });
+  });
 
   const sb3d = document.getElementById('sb3d');
   const book = document.getElementById('sbBook');
