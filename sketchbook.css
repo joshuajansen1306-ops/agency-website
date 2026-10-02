@@ -18,10 +18,11 @@
   --track-caps:.24em;
   /* room the book may use: the hero's height minus its padding and kicker */
   --sk-h:max(520px,calc(100svh - var(--topbar-h)));
-  --sk-pt:clamp(78px,11svh,120px);
+  --sk-logo:clamp(52px,6.4vw,88px);    /* the fable wordmark */
+  --sk-pt:24px;
   --sk-cue:clamp(84px,14svh,110px);   /* gap from the hero's bottom edge to the scroll arrow */
   --sk-pb:calc(var(--sk-cue) + 50px); /* so the book stops above the arrow */
-  --sk-extra:56px; /* the kicker line above the book */
+  --sk-extra:calc(var(--sk-logo) + 10px + 56px); /* wordmark + kicker line above the book */
   /* The book is drawn in a 1760x1240 frame with empty paper-coloured margin: the
      pages fill 85% of its width and 39.7% of its width in height. So the frame
      is sized from the space the pages themselves may use, and its empty top and
@@ -51,8 +52,8 @@
 
 /* the logo */
 .sk-name{
-  position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:3;
-  font-family:var(--display);font-size:clamp(24px,2.4vw,30px);letter-spacing:.01em;
+  position:relative;z-index:3;display:block;margin-bottom:10px;
+  font-family:var(--display);font-size:var(--sk-logo);letter-spacing:.005em;
   white-space:nowrap;line-height:1;
 }
 
@@ -201,8 +202,7 @@
 .sk-hero .sb-wrap.intro.b2 .sb-full img,.sk-hero .sb-wrap.intro.b2 .sb-half-img{filter:url(#sb-mblur-2)}
 
 @media (max-width:640px){
-  .sk-hero{--sk-h:max(460px,calc(100svh - var(--topbar-h)));min-height:460px}
-  .sk-name{font-size:20px}
+  .sk-hero{--sk-logo:52px;--sk-h:max(460px,calc(100svh - var(--topbar-h)));min-height:460px}
   .sk-kicker{font-size:10.5px;letter-spacing:.16em}
   .sk-hero .sb-wrap{width:100vw;margin-inline:calc(50% - 50vw)}
 }
@@ -211,9 +211,8 @@
 }
 /* short landscape screens (phones on their side) */
 @media (max-height:520px) and (orientation:landscape){
-  .sk-hero{--sk-h:calc(100svh - var(--topbar-h));--sk-pt:44px;--sk-pb:72px;--sk-extra:0px;min-height:0}
+  .sk-hero{--sk-h:calc(100svh - var(--topbar-h));--sk-logo:30px;--sk-pt:8px;--sk-pb:72px;--sk-extra:calc(var(--sk-logo) + 10px);min-height:0}
   .sk-kicker{display:none}
-  .sk-name{top:10px;font-size:20px}
   .sk-down{display:none}
 }
 
