@@ -26,7 +26,7 @@
      pages fill 85% of its width and 39.7% of its width in height. So the frame
      is sized from the space the pages themselves may use, and its empty top and
      bottom margin (15.4% of its width each) is pulled back with negative margin. */
-  --sk-w:min(1200px,108vw,calc((var(--sk-h) - var(--sk-pt) - var(--sk-pb) - var(--sk-extra)) / .397));
+  --sk-w:min(1020px,104vw,calc((var(--sk-h) - var(--sk-pt) - var(--sk-pb) - var(--sk-extra)) / .397));
   position:relative;display:grid;justify-items:center;align-content:center;
   height:calc(100svh - var(--topbar-h));min-height:520px;overflow:hidden;
   padding:var(--sk-pt) 0 var(--sk-pb);
