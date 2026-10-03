@@ -176,7 +176,9 @@ ul,ol{list-style:none}
 .work-scroll.is-live .w-more{z-index:4;display:flex;align-items:center;gap:10px;font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);transition:color .3s ease}
 .work-scroll.is-live .w-more i{display:block;width:22px;height:1px;background:currentColor}
 @media (max-width:900px) and (orientation:portrait),(max-aspect-ratio:1/1){
-  .work-scroll.is-live .w-para{width:min(26em,86vw)}
+  .work-scroll.is-live .w-para{width:min(26em,86vw);font-size:clamp(.8125rem,3.6vw,1rem);line-height:1.45;color:var(--text)}
+  .work-scroll.is-live .w-tag{font-size:clamp(1.125rem,5vw,1.5rem)}
+  .work-scroll.is-live .w-intro{font-size:clamp(.8125rem,3.4vw,1rem)}
   .work-scroll.is-live .w-cap{width:min(19em,84vw)}
   .work-scroll.is-live .w-more{display:none}
 }

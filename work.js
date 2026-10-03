@@ -80,8 +80,8 @@
       wf: (W, H) => W * .52,
       our: [R(0, .50, .42, 0, 1), R(.31, -.75, .47, 0, .70), R(1, -.75, .47, 0, .70)],
       work: [R(0, 1.75, .42, 0, 1), R(.31, .50, .47, 0, .70), R(.58, .47, .47, 0, .70), R(.92, -1.1, .47, 0, .70), R(1, -1.1, .47, 0, .70)],
-      intro: [R(0, .07, .08), R(.31, -.80, .08), R(1, -.80, .08)],
-      para: [R(0, .07, .74), R(.31, -.80, .72), R(1, -.80, .72)],
+      intro: [R(0, .07, .07), R(.31, -.80, .07), R(1, -.80, .07)],
+      para: [R(0, .07, .715), R(.31, -.80, .70), R(1, -.80, .70)],
       cap: [R(0, .07, .78, 0, 1, 0), R(.24, .07, .78, 0, 1, 0), R(.33, .07, .75, 0, 1, 1), R(.58, .07, .75, 0, 1, 1), R(.90, -1.0, .75, 0, 1, 1), R(1, -1.0, .75, 0, 1, 1)],
       photoY: y => .56 + (y - .5) * .60, photoW: (w, i) => i >= 3 ? .25 : Math.min(w * 1.8, .36)
     }
@@ -89,7 +89,9 @@
 
   /* where the ten ring photos come to rest (x, y as fractions of the stage, tilt in degrees), in markup order from the 4th photo on:
      a loose, balanced spread over two rows on wide stages, and over three rows on phones */
-  const FINAL = {
+  /* phones: where the three intro photos sit at the start, kept above the paragraph and clear of the nav pill */
+  const INTRO_PORT = [[.28, .56, -5], [.52, .33, 7], [.74, .53, -4]];
+    const FINAL = {
     land: [[.31, .58, 12], [.29, .24, 6], [.10, .22, -8], [.49, .24, 4], [.51, .62, -5], [.11, .60, -10], [.70, .60, 7], [.69, .24, -6], [.89, .64, -9], [.89, .24, 8]],
     port: [[.20, .60, -9], [.38, .20, 5], [.14, .20, -7], [.62, .20, -6], [.50, .40, -8], [.20, .40, 6], [.50, .60, 8], [.86, .20, 8], [.80, .60, -6], [.80, .40, 9]]
   };
@@ -156,7 +158,10 @@
       our: track(L.our), work: track(L.work), intro: track(L.intro), para: track(L.para), cap: track(L.cap),
       ph: PH.map((ph, i) => {
         const rows = ph.k.map(r => [r[0], r[1], L.photoY(r[2]), r[3], r[4], r[5]]);
-        if (i < 3) return track(rows);
+        if (i < 3) {
+          if (mode === 'port') { const s = INTRO_PORT[i]; rows[0][1] = s[0]; rows[0][2] = s[1]; rows[0][3] = s[2]; }
+          return track(rows);
+        }
         /* a ring photo glides in as before, then comes to rest at its own place and stays there */
         const e = FINAL[mode][i - 3];
         return track(rows.filter(r => r[0] < .58).concat([R(.58, e[0], e[1], e[2]), R(.64, e[0] - .008, e[1], e[2]), R(END, e[0] - .008, e[1], e[2])]));
