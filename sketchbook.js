@@ -220,18 +220,19 @@
   const loupe = document.getElementById('loupe');
   const zoomWrap = document.getElementById('zoomWrap');
   const zoomInner = document.getElementById('zoomInner');
-  const MAG = 2.3;
+  const MAG = 1.8;     /* the page art is only so sharp: more than this just enlarges blur */
   let lx = null, ly = null;
 
   function loupeSize() { return Math.round(Math.max(110, Math.min(262, book.clientWidth * 0.235))); }
   /* the loupe's own coordinate space: pixels of the book's untransformed frame */
   function bookBox() { return { x: 0, y: 0, w: book.clientWidth, h: book.clientHeight }; }
   /* on a narrow screen the resting place sits further in, so the glass is never cut off at the edge */
-  const restX = w => w > 700 ? 0.86 : 0.7;
+  const restX = w => w > 700 ? 0.80 : 0.7;
+  const restY = 0.5;      /* over the domed building, where there is detail to look at */
   /* park it on the desk at the lower right, half off the book */
   function restLoupe() {
     const b = bookBox();
-    lx = b.x + b.w * restX(b.w); ly = b.y + b.h * 0.68;
+    lx = b.x + b.w * restX(b.w); ly = b.y + b.h * restY;
     placeLoupe();
   }
   /* mirror whatever the book is currently showing into the magnified copy */
