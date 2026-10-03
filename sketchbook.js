@@ -226,8 +226,8 @@
   function loupeSize() { return Math.round(Math.max(110, Math.min(262, book.clientWidth * 0.235))); }
   /* the loupe's own coordinate space: pixels of the book's untransformed frame */
   function bookBox() { return { x: 0, y: 0, w: book.clientWidth, h: book.clientHeight }; }
-  const restX = () => 0.82;      /* the same spot on every screen size: lower right of the book, over the trees and waterline */
-  const restY = 0.5;      /* over the domed building, where there is detail to look at */
+  const restX = () => 0.82;      /* the same spot on every screen size: lower right of the book */
+  const restY = 0.7;      /* over the waterline and reflections, lower right of the book */
   /* park it on the desk at the lower right, half off the book */
   function restLoupe() {
     const b = bookBox();
