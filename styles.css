@@ -180,12 +180,15 @@ ul,ol{list-style:none}
 
 /* brands we've worked with: lots of room, ready for logos */
 .home-brands{padding-top:clamp(72px,10vw,160px);padding-bottom:clamp(96px,14vw,240px)}
-.brand-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(18px,2.4vw,40px);padding-top:clamp(48px,7vw,112px);align-items:center;justify-items:center}
-.brand-logo{width:100%;max-width:clamp(150px,17vw,250px)}
+.brand-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:clamp(18px,2.4vw,40px);padding-top:clamp(48px,7vw,112px);align-items:center;justify-items:center}
+.brand-logo{grid-column:span 2;width:100%;max-width:clamp(150px,17vw,250px)}
+/* four in the first line; the rest are centred on the line below */
+.brand-logo:nth-child(4n+5){grid-column:3 / span 2}
+.brand-logo:nth-child(4n+6){grid-column:5 / span 2}
 .brand-logo img{width:100%;height:auto;aspect-ratio:1;border-radius:50%;transition:transform .35s ease}
 @media (hover:hover){.brand-logo img:hover{transform:scale(1.05)}}
-@media (max-width:1100px){.brand-grid{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:40px}.brand-logo{max-width:200px}}
-@media (max-width:640px){.brand-grid{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:32px}.brand-logo{max-width:170px}}
+@media (max-width:1100px){.brand-grid{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:40px}.brand-logo,.brand-logo:nth-child(n){grid-column:auto;max-width:200px}}
+@media (max-width:640px){.brand-grid{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:32px}.brand-logo,.brand-logo:nth-child(n){max-width:170px}}
 /* closing call to action */
 .home-cta{padding-bottom:calc(var(--dock-clearance) + clamp(40px,5vw,72px))}
 
