@@ -169,9 +169,8 @@
       if (k >= 1) { spring = null; const d = s.done; d && d(); }
     }
     viewSpring();
-    const lmoved = loupeEase();
     /* kick() may already have queued the next frame from a done-callback */
-    if ((spring || viewActive || lmoved) && raf === null) raf = requestAnimationFrame(tick);
+    if ((spring || viewActive) && raf === null) raf = requestAnimationFrame(tick);
   }
   function kick() { if (raf === null) { last = performance.now(); raf = requestAnimationFrame(tick); } }
 
@@ -222,7 +221,7 @@
   const zoomWrap = document.getElementById('zoomWrap');
   const zoomInner = document.getElementById('zoomInner');
   const MAG = 2.3;
-  let lx = null, ly = null, lgrab = null, lTarget = null;
+  let lx = null, ly = null;
 
   function loupeSize() { return Math.round(Math.max(110, Math.min(262, book.clientWidth * 0.235))); }
   /* the loupe's own coordinate space: pixels of the book's untransformed frame */
@@ -276,56 +275,12 @@
     zoomInner.style.transform = 'translate(' + (lx - px * s).toFixed(1) + 'px,' + (ly - py * s).toFixed(1) + 'px) '
       + 'scale(' + s.toFixed(4) + ')';
   }
-  /* once the pages have stopped, the glass slides back to its resting place at the lower right */
-  function returnLoupe() {
-    if (lx === null || lgrab) return;
-    const b = bookBox();
-    lTarget = { x: b.x + b.w * restX(b.w), y: b.y + b.h * 0.68 };
-    kick();
-  }
-  /* the leaf shoves the glass aside as it sweeps past */
-  function shoveLoupe(dir) {
-    if (lx === null || lgrab) return;
-    const b = bookBox();
-    const nx = lx / b.w, ny = ly / b.h;
-    if (nx < 0.02 || nx > 0.98 || ny < 0.17 || ny > 0.83) return;      /* already clear of the page */
-    lTarget = { x: b.x + b.w * (dir === 'next' ? 0.14 : restX(b.w)), y: b.y + b.h * 0.68 };
-    kick();
-  }
-  function loupeEase() {
-    if (!lTarget) return false;
-    if (lgrab) { lTarget = null; return false; }
-    const dx = lTarget.x - lx, dy = lTarget.y - ly;
-    if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) { lx = lTarget.x; ly = lTarget.y; lTarget = null; placeLoupe(); return false; }
-    lx += dx * 0.17; ly += dy * 0.17; placeLoupe();
-    return true;
-  }
-  loupe.addEventListener('pointerdown', e => {
-    if (e.button !== 0) return;
-    e.preventDefault(); e.stopPropagation();
-    lTarget = null;
-    lgrab = { cx: e.clientX, cy: e.clientY, lx0: lx, ly0: ly };
-    loupe.classList.add('held');
-    loupe.setPointerCapture(e.pointerId);
-  });
-  loupe.addEventListener('pointermove', e => {
-    if (!lgrab) return;
-    const b = bookBox(), R = loupeSize() / 2;
-    /* the glass carries none of the book's transform, so the cursor maps 1:1 */
-    lx = Math.max(b.x - R * 0.7, Math.min(b.x + b.w + R * 0.7, lgrab.lx0 + (e.clientX - lgrab.cx)));
-    ly = Math.max(b.y - R * 0.7, Math.min(b.y + b.h + R * 1.0, lgrab.ly0 + (e.clientY - lgrab.cy)));
-    placeLoupe();
-  });
-  function dropLoupe() { lgrab = null; loupe.classList.remove('held'); }
-  loupe.addEventListener('pointerup', dropLoupe);
-  loupe.addEventListener('pointercancel', dropLoupe);
   addEventListener('resize', () => { lx = null; restLoupe(); });
 
   /* ------------------------------------------------------ turn control */
   function startTurn(dir, t) {
     spring = null;
     if (turn) { idx = turn.to; turn = null; }      /* settle anything still in flight */
-    shoveLoupe(dir);
     const from = idx;
     turn = { dir: dir, from: from, to: dir === 'next' ? (from + 1) % M : (from - 1 + M) % M, t: t || 0 };
     paint();
@@ -352,14 +307,14 @@
         idx = turn.to; turn = null;
         riffleAt++;
         if (introOn && riffleAt < riffle.length) { paint(); riffleStep(); }
-        else { endIntro(); paint(); returnLoupe(); }
+        else { endIntro(); paint(); }
       });
     };
     if (pageOk[next]) { go(); return; }
     wrap.classList.remove('intro', 'b2');                       /* no blur while waiting on a page */
     within(startPage(next), 6000).then(ok => {
       if (ok && introOn) go();
-      else { endIntro(); idx = LAND; paint(); returnLoupe(); }  /* a page never arrived: settle on the last spread */
+      else { endIntro(); idx = LAND; paint(); }  /* a page never arrived: settle on the last spread */
     });
   }
   function startIntro() {

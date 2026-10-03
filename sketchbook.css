@@ -261,7 +261,7 @@
 }
 .home-about .row{border-bottom:0}
 
-/* ---- the loupe: a real magnifier lying on the page. Pick it up and drag it across the book; it stays where you put it. ---- */
+/* ---- the loupe: a real magnifier lying on the page, fixed in place at the lower right ---- */
 .sk-hero .loupe{
   position:absolute;left:0;top:0;
   width:var(--lr,270px);height:var(--lr,270px);
@@ -270,10 +270,9 @@
   will-change:transform;
 }
 .sk-hero .loupe.on{opacity:1}
-.sk-hero .loupe.held .ring{cursor:grabbing}
 .sk-hero .loupe .ring{
   position:absolute;inset:0;border-radius:50%;
-  pointer-events:auto;cursor:grab;touch-action:none;
+  pointer-events:none;
   padding:calc(var(--lr,270px) * .058);
   box-shadow:
     0 1px 2px rgba(58,44,26,.30),
@@ -300,7 +299,7 @@
   transform-origin:0 50%;
   transform:rotate(40deg) translate(calc(var(--lr,270px) * .33),-50%);
   border-radius:calc(var(--lr,270px) * .06);
-  pointer-events:auto;cursor:grab;touch-action:none;
+  pointer-events:none;
   background:
     linear-gradient(180deg,rgba(255,255,255,.46) 0 13%,rgba(255,255,255,0) 44%,
                     rgba(0,0,0,.26) 100%),
