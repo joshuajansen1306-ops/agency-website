@@ -135,9 +135,11 @@ ul,ol{list-style:none}
 .home{padding-bottom:0}
 
 /* about us, between the hero and the work stage */
-.home-about .row:first-child{padding-top:clamp(64px,8vw,120px)}
-.home-about .row-lead{margin-bottom:18px}
-.home-about-link{margin-top:10px;font-size:var(--fs-small)}
+.home-about .row:first-child{padding-top:clamp(72px,9vw,150px);padding-bottom:clamp(24px,3vw,48px);grid-template-columns:6fr 6fr;align-items:start}
+.home-about .row-title{font-size:clamp(3rem,7vw,7.5rem);line-height:.92;letter-spacing:-.045em}
+.home-about .row-lead{font-size:clamp(1.25rem,2.1vw,2rem);line-height:1.32;letter-spacing:-.01em;max-width:26em;margin-bottom:28px}
+.home-about-link{margin-top:10px;font-size:clamp(.9375rem,1.2vw,1.125rem)}
+@media (max-width:900px){.home-about .row:first-child{grid-template-columns:1fr;gap:22px}.home-about .row-title{font-size:clamp(3rem,13vw,5.5rem)}.home-about .row-lead{font-size:clamp(1.25rem,4.6vw,1.75rem)}}
 .home-about .about-statement{font-size:var(--fs-lead);letter-spacing:var(--track-lead);line-height:1.2;max-width:24em;text-wrap:balance;margin-bottom:26px}
 /* our work: a pinned stage where scrolling slides the big word and the photos sideways (see scatter.js) */
 .work-scroll{position:relative}
