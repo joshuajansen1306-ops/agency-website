@@ -65,15 +65,32 @@
 @media (prefers-reduced-motion:reduce){.sk-down{animation:none;opacity:.5}}
 
 /* ---------------- the book ---------------- */
-/* the grid-paper picture behind the hero. It is white with grey lines, so it is multiplied over the pale blue:
-   the white lets the blue through and the lines (with their fade toward the edges) show exactly as drawn */
-.sk-hero::before{
-  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:url(images/sketchbook/grid-bg.jpg) center / cover no-repeat;
+/* the grid-paper picture behind the hero, set up as a room around the book:
+   a flat back wall at the top, and a floor made from the same picture tipped away in perspective, so the lines
+   run toward a horizon behind the book. Multiplied over the pale blue, so the white lets the blue through. */
+.sk-hero::before,.sk-hero::after{
+  content:"";position:absolute;z-index:0;pointer-events:none;
+  background:url(images/sketchbook/grid-bg-wide.jpg) center / 100% 100% no-repeat;
   mix-blend-mode:multiply;
 }
-/* on landscape screens use the same picture turned on its side, so it is not stretched to twice its size */
-@media (min-aspect-ratio:1/1){.sk-hero::before{background-image:url(images/sketchbook/grid-bg-wide.jpg)}}
+/* back wall */
+.sk-hero::before{
+  left:0;right:0;top:0;height:62%;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,rgb(0 0 0 / .55) 70%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 0%,rgb(0 0 0 / .55) 70%,transparent 100%);
+}
+/* floor */
+.sk-hero::after{
+  left:-45%;right:-45%;bottom:-3%;height:74%;
+  transform-origin:50% 100%;
+  transform:perspective(760px) rotateX(58deg);
+  -webkit-mask-image:linear-gradient(to top,#000 0%,#000 35%,rgb(0 0 0 / .6) 68%,transparent 96%);
+  mask-image:linear-gradient(to top,#000 0%,#000 35%,rgb(0 0 0 / .6) 68%,transparent 96%);
+}
+@media (max-aspect-ratio:1/1){
+  .sk-hero::before,.sk-hero::after{background-image:url(images/sketchbook/grid-bg.jpg)}
+  .sk-hero::after{left:-25%;right:-25%;transform:perspective(620px) rotateX(58deg)}
+}
 .sk-hero .sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2}
 .sk-hero .sb-stage{
   display:flex;align-items:center;justify-content:center;width:100%;
