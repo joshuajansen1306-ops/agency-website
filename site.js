@@ -1,51 +1,4 @@
 (() => {
-  const scroller = document.querySelector('.home-scroll');
-  const stack = document.querySelector('.stack');
-  if (!scroller || !stack || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  // The stack needs about ten cards to travel through; with fewer pieces of work, repeat them.
-  const originals = [...stack.querySelectorAll('.stack-card')];
-  const SETS = Math.max(1, Math.ceil(10 / originals.length));
-  for (let s = 1; s < SETS; s++) {
-    originals.forEach((card, k) => {
-      const clone = card.cloneNode(true);
-      clone.style.setProperty('--i', s * originals.length + k);
-      clone.setAttribute('aria-hidden', 'true');
-      clone.tabIndex = -1;
-      stack.append(clone);
-    });
-  }
-  const cards = [...stack.querySelectorAll('.stack-card')];
-  const index = cards.map(c => parseFloat(c.style.getPropertyValue('--i')));
-  const maxShift = Math.max(1, cards.length - 5);   // the last five cards are the ones left in view at the end
-  scroller.style.height = `calc(${maxShift * 42}vh + 100svh - var(--topbar-h))`;
-
-  const culled = cards.map(() => false);
-  let target = 0, current = 0, frame = null;
-  const render = () => {
-    current += (target - current) * 0.12;
-    if (Math.abs(target - current) < 0.001) current = target;
-    stack.style.setProperty('--shift', current.toFixed(4));
-    cards.forEach((c, n) => {
-      const d = index[n] - current;
-      c.classList.toggle('is-past', d < -0.6);
-      const cull = d < -1.2 || d > 8.5; // fully transparent or off-screen: drop from the render tree
-      if (cull !== culled[n]) { culled[n] = cull; c.classList.toggle('is-culled', cull); }
-    });
-    frame = current === target ? null : requestAnimationFrame(render);
-  };
-  const read = () => {
-    const total = scroller.offsetHeight - innerHeight;
-    const scrolled = Math.min(Math.max(-scroller.getBoundingClientRect().top, 0), total);
-    const p = total > 0 ? scrolled / total : 0;
-    target = p * maxShift;
-    if (!frame) frame = requestAnimationFrame(render);
-  };
-  addEventListener('scroll', read, { passive: true });
-  addEventListener('resize', read);
-  read();
-})();
-(() => {
   const el = document.querySelector('[data-clock]');
   if (!el) return;
   const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit' });
@@ -62,7 +15,7 @@
   // The page below About us starts as the same icy blue, so there is no colour edge, and then
   // turns to #0F1E3D as you scroll into it. It follows the scroll position (not a timer).
   // The text colours flip at the halfway point so nothing sits in muddy mid-tones.
-  const scroller = document.querySelector('.home-scroll');
+  const scroller = document.getElementById('work-stack');
   if (!scroller) return;
   const from = [214, 236, 250], to = [15, 30, 61];    // #D6ECFA -> #0F1E3D
   const bar = [212, 231, 247];                         // the top bar's icy blue, #D4E7F7
