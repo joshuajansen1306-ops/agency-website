@@ -49,7 +49,7 @@
 <script>document.documentElement.classList.add("sk-loading")</script>
 <link rel="preload" as="image" href="images/sketchbook/spread-01.webp?v=9" type="image/webp" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrument-serif.woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=25">
+<link rel="stylesheet" href="styles.css?v=26">
 <link rel="stylesheet" href="sketchbook.css?v=38">
 </head>
 <body class="home">
@@ -120,27 +120,28 @@
   </div>
 </section>
 
-<!-- OUR WORK: move the cursor (or drag a finger) across this stage and photos of our work pop up along the path.
-     To add a piece of work, add another <li><img></li> to the list. Without JavaScript, or with reduced motion, the list shows as a tidy row. -->
-<section class="work-stage" id="work-stack" aria-labelledby="work-title">
-  <h2 id="work-title" class="work-giant">Our work</h2>
-  <ul class="trail-src" aria-label="Our work">
-      <li><img src="images/work/work-01.webp" alt="MHES Inner Collective poster: Queer Collective, a wellness centre event" width="800" height="1000" loading="lazy" decoding="async"></li>
-      <li><img src="images/work/work-02.webp" alt="Illustration of Lord Ganesha seated on a mountain at sunset" width="800" height="1000" loading="lazy" decoding="async"></li>
-      <li><img src="images/work/work-03.webp" alt="Delicious Donuts social post: two donuts on a phone screen" width="800" height="1000" loading="lazy" decoding="async"></li>
-      <li><img src="images/work/work-04.webp" alt="A red cocktail in a martini glass on a lit bar counter" width="800" height="1000" loading="lazy" decoding="async"></li>
-      <li><img src="images/work/work-05.webp" alt="AICUF poster: Open Mic and Trailer Release by The Tortured Poets Society" width="800" height="1000" loading="lazy" decoding="async"></li>
-      <li><img src="images/work/work-06.webp" alt="A mojito with lime and mint on a wooden bar counter" width="800" height="1000" loading="lazy" decoding="async"></li>
-      <li><img src="images/work/work-07.webp" alt="AICUF poster: Onam Fiesta" width="800" height="1000" loading="lazy" decoding="async"></li>
-      <li><img src="images/work/work-08.webp" alt="Illustration of Hanuman in prayer with a glowing spirit figure behind him" width="800" height="1000" loading="lazy" decoding="async"></li>
-      <li><img src="images/work/work-09.webp" alt="Cat Behaviour India post: 5 Ways to Deepen Your Bond With Your Cat" width="800" height="1000" loading="lazy" decoding="async"></li>
-      <li><img src="images/work/work-10.webp" alt="Illustration of a woman in an orange saree standing in flames" width="800" height="1000" loading="lazy" decoding="async"></li>
-      <li><img src="images/work/work-11.webp" alt="Cat Behaviour India post: How to Redirect Destructive Behaviour" width="800" height="1000" loading="lazy" decoding="async"></li>
-      <li><img src="images/work/work-12.webp" alt="Coffee shop social post: Better beans, better coffee" width="800" height="1000" loading="lazy" decoding="async"></li>
-      <li><img src="images/work/work-13.webp" alt="Food social post: Special Sunday, 50% off fried chicken and fries" width="800" height="1000" loading="lazy" decoding="async"></li>
-  </ul>
-  <p class="work-hint"><span class="hint-hover">Move your cursor across the page</span><span class="hint-touch">Drag your finger across the page</span></p>
-  <div class="trail-layer" aria-hidden="true"></div>
+<!-- OUR WORK: as you scroll through this section, photos of our work appear one by one, scattered around the big heading.
+     To add a piece of work, add another <li> with its own --x / --y (position, %) and --r (tilt). Without JavaScript or with reduced motion, all of them simply show at once. -->
+<section class="work-scroll" id="work-stack" aria-labelledby="work-title">
+  <div class="work-pin">
+    <h2 id="work-title" class="work-giant">Our work</h2>
+    <ul class="scatter" aria-label="Our work">
+      <li style="--x:12%;--y:24%;--r:-9deg"><img src="images/work/work-01.webp" alt="MHES Inner Collective poster: Queer Collective, a wellness centre event" width="800" height="1000" loading="lazy" decoding="async"></li>
+      <li style="--x:33%;--y:72%;--r:6deg"><img src="images/work/work-02.webp" alt="Illustration of Lord Ganesha seated on a mountain at sunset" width="800" height="1000" loading="lazy" decoding="async"></li>
+      <li style="--x:52%;--y:20%;--r:4deg"><img src="images/work/work-03.webp" alt="Delicious Donuts social post: two donuts on a phone screen" width="800" height="1000" loading="lazy" decoding="async"></li>
+      <li style="--x:74%;--y:74%;--r:-6deg"><img src="images/work/work-04.webp" alt="A red cocktail in a martini glass on a lit bar counter" width="800" height="1000" loading="lazy" decoding="async"></li>
+      <li style="--x:88%;--y:28%;--r:9deg"><img src="images/work/work-05.webp" alt="AICUF poster: Open Mic and Trailer Release by The Tortured Poets Society" width="800" height="1000" loading="lazy" decoding="async"></li>
+      <li style="--x:20%;--y:52%;--r:5deg"><img src="images/work/work-06.webp" alt="A mojito with lime and mint on a wooden bar counter" width="800" height="1000" loading="lazy" decoding="async"></li>
+      <li style="--x:64%;--y:52%;--r:-10deg"><img src="images/work/work-07.webp" alt="AICUF poster: Onam Fiesta" width="800" height="1000" loading="lazy" decoding="async"></li>
+      <li style="--x:42%;--y:44%;--r:-4deg"><img src="images/work/work-08.webp" alt="Illustration of Hanuman in prayer with a glowing spirit figure behind him" width="800" height="1000" loading="lazy" decoding="async"></li>
+      <li style="--x:92%;--y:58%;--r:7deg"><img src="images/work/work-09.webp" alt="Cat Behaviour India post: 5 Ways to Deepen Your Bond With Your Cat" width="800" height="1000" loading="lazy" decoding="async"></li>
+      <li style="--x:8%;--y:70%;--r:-6deg"><img src="images/work/work-10.webp" alt="Illustration of a woman in an orange saree standing in flames" width="800" height="1000" loading="lazy" decoding="async"></li>
+      <li style="--x:30%;--y:26%;--r:8deg"><img src="images/work/work-11.webp" alt="Cat Behaviour India post: How to Redirect Destructive Behaviour" width="800" height="1000" loading="lazy" decoding="async"></li>
+      <li style="--x:78%;--y:40%;--r:-8deg"><img src="images/work/work-12.webp" alt="Coffee shop social post: Better beans, better coffee" width="800" height="1000" loading="lazy" decoding="async"></li>
+      <li style="--x:56%;--y:78%;--r:5deg"><img src="images/work/work-13.webp" alt="Food social post: Special Sunday, 50% off fried chicken and fries" width="800" height="1000" loading="lazy" decoding="async"></li>
+    </ul>
+    <p class="work-hint">Keep scrolling</p>
+  </div>
 </section>
 
 <!-- PLACEHOLDER FIGURES: the numbers below are made up to show the layout. Replace each data-count / label with real results before relying on this section. -->
@@ -199,7 +200,7 @@
 </nav>
 
 <script src="site.js?v=8"></script>
-<script src="trail.js?v=2" defer></script>
+<script src="scatter.js?v=1" defer></script>
 <script src="sketchbook.js?v=32"></script>
 </body>
 </html>

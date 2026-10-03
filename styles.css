@@ -139,27 +139,20 @@ ul,ol{list-style:none}
 .home-about .row-lead{margin-bottom:18px}
 .home-about-link{margin-top:10px;font-size:var(--fs-small)}
 .home-about .about-statement{font-size:var(--fs-lead);letter-spacing:var(--track-lead);line-height:1.2;max-width:24em;text-wrap:balance;margin-bottom:26px}
-/* our work: a stage where moving the cursor leaves a trail of photos (see trail.js) */
-.work-stage{position:relative;min-height:max(560px,calc(100svh - var(--topbar-h)));display:grid;place-items:center;align-content:center;overflow:hidden;touch-action:pan-y;cursor:crosshair;-webkit-user-select:none;user-select:none}
+/* our work: photos scatter in around the big heading as you scroll through the section (see scatter.js) */
+.work-scroll{position:relative}
+.work-pin{position:relative;height:max(560px,calc(100svh - var(--topbar-h)));overflow:hidden;display:grid;place-items:center}
 .work-giant{position:relative;z-index:1;font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-weight:400;font-size:clamp(5.5rem,24vw,23rem);line-height:.9;letter-spacing:-.02em;text-align:center;color:var(--text);pointer-events:none;transition:color .3s ease}
-.work-hint{position:absolute;left:0;right:0;bottom:calc(var(--dock-clearance) + 6px);z-index:3;text-align:center;font-size:var(--fs-small);color:var(--text-muted);pointer-events:none;transition:opacity .5s ease,color .3s ease}
-.work-hint .hint-touch{display:none}
-@media (hover:none){.work-hint .hint-hover{display:none}.work-hint .hint-touch{display:inline}}
-.work-stage.has-moved .work-hint{opacity:0}
-.trail-layer{position:absolute;inset:0;z-index:2;pointer-events:none}
-.trail-item{--tw:clamp(130px,15vw,220px);position:absolute;width:var(--tw);padding:6px;background:#fff;border-radius:3px;box-shadow:0 14px 30px rgb(0 0 0 / .35);transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(.55);opacity:0;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .3s ease;will-change:transform,opacity}
-.trail-item img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
-.trail-item.in{transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(1);opacity:1}
-.trail-item.out{transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(.85);opacity:0;transition-duration:.45s}
-/* the list of work: a tidy row without JavaScript or with reduced motion; hidden (but still readable by screen readers) once the trail is live */
-.trail-src{position:relative;z-index:2;list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(10px,2vw,22px);width:min(1200px,100%);margin:clamp(24px,4vw,56px) auto 0;padding:0 var(--gutter) calc(var(--dock-clearance) + 20px)}
-.trail-src li{width:clamp(100px,12vw,170px);padding:5px;background:#fff;border-radius:3px;box-shadow:0 10px 22px rgb(0 0 0 / .3);transform:rotate(-3deg)}
-.trail-src li:nth-child(even){transform:rotate(2.5deg)}
-.trail-src li:nth-child(3n){transform:rotate(5deg)}
-.trail-src img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
-.work-stage.is-live .trail-src{position:absolute;width:1px;height:1px;margin:0;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.work-stage:not(.is-live) .work-hint{display:none}
-.work-stage:not(.is-live){place-items:start center;padding-top:clamp(40px,7vw,96px)}
+.scatter{position:absolute;inset:0;z-index:2;list-style:none;pointer-events:none}
+.scatter li{--w:clamp(104px,15vw,230px);position:absolute;left:var(--x);top:var(--y);width:var(--w);padding:6px;background:#fff;border-radius:3px;box-shadow:0 16px 34px rgb(0 0 0 / .34);transform:translate(-50%,-50%) rotate(var(--r,0deg));will-change:transform,opacity}
+.scatter img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
+@media (max-width:640px){.scatter li{--w:clamp(84px,27vw,140px);padding:4px}}
+.work-hint{position:absolute;left:0;right:0;bottom:calc(var(--dock-clearance) + 6px);z-index:3;text-align:center;font-size:var(--fs-small);color:var(--text-muted);pointer-events:none;transition:opacity .4s ease,color .3s ease;display:none}
+/* live: the heading stays pinned while the section scrolls past, and the photos arrive one by one */
+.work-scroll.is-live{height:calc(100svh - var(--topbar-h) + 320svh)}
+.work-scroll.is-live .work-pin{position:sticky;top:var(--topbar-h)}
+.work-scroll.is-live .work-hint{display:block}
+.work-scroll.is-live.has-scrolled .work-hint{opacity:0}
 
 /* proof in numbers: sits after the work stage */
 .home-stats{position:relative;padding-bottom:clamp(40px,6vw,96px)}
