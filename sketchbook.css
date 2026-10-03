@@ -56,6 +56,7 @@
   font-family:var(--display);font-size:var(--sk-logo);letter-spacing:.005em;
   white-space:nowrap;line-height:1;
 }
+.sk-hero .sk-name{color:#1B4F94}   /* the logo's blue (scoped so it beats the hero's plain link colour) */
 
 .sk-botany{
   height:auto;position:absolute;bottom:0;width:clamp(120px,15vw,250px);opacity:.5;
