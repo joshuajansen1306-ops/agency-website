@@ -197,7 +197,7 @@
     let v = T.our(p);  put(D.our, v[0] * W - D.our.offsetWidth / 2, (v[1] + .06 * k) * H - base.our, 0, v[3], 1);
     v = T.work(p);     put(D.work, v[0] * W - D.work.offsetWidth / 2, (v[1] + .06 * k) * H - base.work, 0, v[3], 1);
     v = T.intro(p);    put(D.intro, v[0] * W, v[1] * H, 0, 1, 1);
-    v = T.para(p);     put(D.para, v[0] * W, v[1] * H, 0, 1, entry);
+    v = T.para(p);     put(D.para, v[0] * W, v[1] * H, 0, 1, entry * (1 - smooth(clamp(p / .2, 0, 1))));   /* gone before the caption arrives, so they never overlap */
     v = T.cap(p);      put(D.cap, v[0] * W, v[1] * H, 0, 1, v[4]);
     /* "scroll to continue" sits bottom-right and goes once the ring has settled */
     D.more.style.opacity = (1 - smooth(clamp((p - .50) / .10, 0, 1))).toFixed(3);
