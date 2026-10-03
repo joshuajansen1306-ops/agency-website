@@ -142,6 +142,8 @@
       applyTurn(turn.t);
     }
     layout();
+    syncZoomLayer();
+    placeLoupe();
   }
   function layout() { sb3d.style.setProperty('--bw', book.clientWidth + 'px'); }
   addEventListener('resize', layout);
@@ -166,8 +168,9 @@
       if (k >= 1) { spring = null; const d = s.done; d && d(); }
     }
     viewSpring();
+    const lmoved = loupeEase();
     /* kick() may already have queued the next frame from a done-callback */
-    if ((spring || viewActive) && raf === null) raf = requestAnimationFrame(tick);
+    if ((spring || viewActive || lmoved) && raf === null) raf = requestAnimationFrame(tick);
   }
   function kick() { if (raf === null) { last = performance.now(); raf = requestAnimationFrame(tick); } }
 
@@ -213,10 +216,114 @@
     addEventListener('blur', () => setView(0, 0));
   }
 
+  /* --------------------------------------------------------- the loupe */
+  const loupe = document.getElementById('loupe');
+  const zoomWrap = document.getElementById('zoomWrap');
+  const zoomInner = document.getElementById('zoomInner');
+  const MAG = 2.3;
+  let lx = null, ly = null, lgrab = null, lTarget = null;
+
+  function loupeSize() { return Math.round(Math.max(110, Math.min(262, book.clientWidth * 0.235))); }
+  /* the loupe's own coordinate space: pixels of the book's untransformed frame */
+  function bookBox() { return { x: 0, y: 0, w: book.clientWidth, h: book.clientHeight }; }
+  /* on a narrow screen the resting place sits further in, so the glass is never cut off at the edge */
+  const restX = w => w > 700 ? 0.86 : 0.7;
+  /* park it on the desk at the lower right, half off the book */
+  function restLoupe() {
+    const b = bookBox();
+    lx = b.x + b.w * restX(b.w); ly = b.y + b.h * 0.68;
+    placeLoupe();
+  }
+  /* mirror whatever the book is currently showing into the magnified copy */
+  function syncZoomLayer() {
+    zoomInner.textContent = '';
+    for (const c of book.children) zoomInner.appendChild(c.cloneNode(true));
+  }
+  function placeLoupe() {
+    if (lx === null) return;
+    const B = bookBox(), bw = B.w, bh = B.h;
+    if (!bw) return;
+    const R = loupeSize() / 2, bez = R * 2 * 0.058;
+    loupe.style.setProperty('--lr', R * 2 + 'px');
+    loupe.style.transform = 'translate3d(' + (lx - R).toFixed(1) + 'px,' + (ly - R).toFixed(1) + 'px,0)';
+    loupe.classList.add('on');
+
+    /* where the paper's edges actually land */
+    const cx = bw / 2, cy = bh / 2;
+    const x0 = bw * .051, x1 = bw * .949, y0 = bh * .218, y1 = bh * .782;
+    /* How far the glass's own centre is inside the paper. The copy fades out as it
+       wanders off the sheet, so you are left looking through plain glass rather than
+       at a sliver of page on flat desk. */
+    const nx = Math.max(x0, Math.min(lx, x1));
+    const ny = Math.max(y0, Math.min(ly, y1));
+    const inside = (lx > x0 && lx < x1 && ly > y0 && ly < y1)
+      ? Math.min(lx - x0, x1 - lx, ly - y0, y1 - ly)
+      : -Math.hypot(lx - nx, ly - ny);
+    const k = Math.max(0, Math.min(1, (inside + R * 0.30) / (R * 0.55)));
+
+    zoomWrap.style.opacity = k.toFixed(3);
+    if (k <= 0.002) return;
+    const r = (R - bez).toFixed(1);
+    const mask = 'radial-gradient(circle ' + r + 'px at ' + lx.toFixed(1) + 'px ' + ly.toFixed(1) + 'px,'
+      + '#000 calc(100% - 1px),transparent 100%)';
+    zoomWrap.style.webkitMaskImage = mask;
+    zoomWrap.style.maskImage = mask;
+    /* the page point beneath the glass, magnified about that same spot so the
+       lens keeps showing MAG times whatever is on screen */
+    const px = lx, py = ly, s = MAG;
+    zoomInner.style.transform = 'translate(' + (lx - px * s).toFixed(1) + 'px,' + (ly - py * s).toFixed(1) + 'px) '
+      + 'scale(' + s.toFixed(4) + ')';
+  }
+  /* once the pages have stopped, the glass slides back to its resting place at the lower right */
+  function returnLoupe() {
+    if (lx === null || lgrab) return;
+    const b = bookBox();
+    lTarget = { x: b.x + b.w * restX(b.w), y: b.y + b.h * 0.68 };
+    kick();
+  }
+  /* the leaf shoves the glass aside as it sweeps past */
+  function shoveLoupe(dir) {
+    if (lx === null || lgrab) return;
+    const b = bookBox();
+    const nx = lx / b.w, ny = ly / b.h;
+    if (nx < 0.02 || nx > 0.98 || ny < 0.17 || ny > 0.83) return;      /* already clear of the page */
+    lTarget = { x: b.x + b.w * (dir === 'next' ? 0.14 : restX(b.w)), y: b.y + b.h * 0.68 };
+    kick();
+  }
+  function loupeEase() {
+    if (!lTarget) return false;
+    if (lgrab) { lTarget = null; return false; }
+    const dx = lTarget.x - lx, dy = lTarget.y - ly;
+    if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) { lx = lTarget.x; ly = lTarget.y; lTarget = null; placeLoupe(); return false; }
+    lx += dx * 0.17; ly += dy * 0.17; placeLoupe();
+    return true;
+  }
+  loupe.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    e.preventDefault(); e.stopPropagation();
+    lTarget = null;
+    lgrab = { cx: e.clientX, cy: e.clientY, lx0: lx, ly0: ly };
+    loupe.classList.add('held');
+    loupe.setPointerCapture(e.pointerId);
+  });
+  loupe.addEventListener('pointermove', e => {
+    if (!lgrab) return;
+    const b = bookBox(), R = loupeSize() / 2;
+    /* the glass carries none of the book's transform, so the cursor maps 1:1 */
+    lx = Math.max(b.x - R * 0.7, Math.min(b.x + b.w + R * 0.7, lgrab.lx0 + (e.clientX - lgrab.cx)));
+    ly = Math.max(b.y - R * 0.7, Math.min(b.y + b.h + R * 1.0, lgrab.ly0 + (e.clientY - lgrab.cy)));
+    placeLoupe();
+  });
+  function dropLoupe() { lgrab = null; loupe.classList.remove('held'); }
+  loupe.addEventListener('pointerup', dropLoupe);
+  loupe.addEventListener('pointercancel', dropLoupe);
+  addEventListener('resize', () => { lx = null; restLoupe(); });
+
   /* ------------------------------------------------------ turn control */
   function startTurn(dir, t) {
     spring = null;
     if (turn) { idx = turn.to; turn = null; }      /* settle anything still in flight */
+    shoveLoupe(dir);
     const from = idx;
     turn = { dir: dir, from: from, to: dir === 'next' ? (from + 1) % M : (from - 1 + M) % M, t: t || 0 };
     paint();
@@ -243,14 +350,14 @@
         idx = turn.to; turn = null;
         riffleAt++;
         if (introOn && riffleAt < riffle.length) { paint(); riffleStep(); }
-        else { endIntro(); paint(); }
+        else { endIntro(); paint(); returnLoupe(); }
       });
     };
     if (pageOk[next]) { go(); return; }
     wrap.classList.remove('intro', 'b2');                       /* no blur while waiting on a page */
     within(startPage(next), 6000).then(ok => {
       if (ok && introOn) go();
-      else { endIntro(); idx = LAND; paint(); }                 /* a page never arrived: settle on the last spread */
+      else { endIntro(); idx = LAND; paint(); returnLoupe(); }  /* a page never arrived: settle on the last spread */
     });
   }
   function startIntro() {
@@ -307,12 +414,12 @@
 
   (async function boot() {
     if (STILL) {
-      idx = LAND; paint(); applyView();
+      idx = LAND; paint(); applyView(); restLoupe();
       await within(essentials, HARD_MS);
       await holdLoader(); hideLoader();
       return;
     }
-    idx = 0; paint(); applyView();
+    idx = 0; paint(); applyView(); restLoupe();
     /* every spread starts loading at once; the riffle needs the first few to begin and the rest as it goes */
     /* the first four load first, with the whole connection to themselves; the rest follow straight after */
     startPage = i => pageReady[i] || (pageReady[i] = decodeOne(PAGES[i].url).then(ok => { if (ok) { pageOk[i] = true; progress(loaded + 1); } return ok; }));
