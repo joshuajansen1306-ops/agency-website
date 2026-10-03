@@ -71,6 +71,11 @@
   background:#E0EBF3 url(images/sketchbook/hero-bg-wide.jpg) center / cover no-repeat;
 }
 @media (max-aspect-ratio:1/1){.sk-hero{background-image:url(images/sketchbook/hero-bg.jpg)}}
+/* the wallpaper fades out toward the bottom, into exactly the colour of the About section below, so there is no edge */
+.sk-hero::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:44%;z-index:0;pointer-events:none;
+  background:linear-gradient(to bottom,rgb(214 236 250 / 0) 0%,rgb(214 236 250 / .38) 35%,rgb(214 236 250 / .78) 70%,#D6ECFA 100%);
+}
 .sk-hero .sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2}
 .sk-hero .sb-stage{
   display:flex;align-items:center;justify-content:center;width:100%;
@@ -210,7 +215,6 @@
 .sk-paper{
   --ink:#2b2721;--paper:#D6ECFA;
   position:relative;overflow:hidden;background:var(--paper);color:var(--ink);
-  border-top:1px solid rgba(43,39,33,.22); /* the line between the hero and About us */
 }
 .sk-paper>.wrap{position:relative;z-index:2}
 .sk-paper .label{color:rgba(43,39,33,.58)}

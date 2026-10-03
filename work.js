@@ -1,30 +1,29 @@
 /* =====================================================================
-   Our work: one pinned stage, three sections on a single track.
+   Our work: one pinned stage, two sections on a single track.
 
    Scrolling slides the track sideways, the way the reference pin does:
-     1  intro   "Hey, we're Fable&Co", the giant word "Our", and three photos
-     2  work    the word slides out and "work" slides in (smaller, higher),
-                a ring of photos settles around it and then keeps drifting
-                past, with more photos arriving from the right
-     3  contact a panel slides in from the right as everything else slides
-                out to the left
+     1  intro   "Hey, we're Fable&Co", a paragraph, and three photos
+     2  ring    the intro photos slide away to the left while a ring of
+                photos sweeps in from the right and settles; the caption
+                fades up and everything holds still
 
    Every piece has its own path (position, tilt, scale, opacity) over one
    scroll progress p = 0..1, written as keyframes below. The paths are joined
    with monotone cubic interpolation, so each piece keeps a continuous speed
-   through every keyframe: nothing stops and restarts between sections, and
-   nothing overshoots. The scroll position drives all of it, with a little
-   inertia so it glides, and scrolling back up plays it backwards.
+   through every keyframe and eases to a stop at the end: nothing stops and
+   restarts between sections, and nothing overshoots. The scroll position
+   drives all of it, with a little inertia so it glides, and scrolling back up
+   plays it backwards.
 
-   Reduced motion or no JavaScript leaves the plain page (heading, photos,
-   contact panel) from the stylesheet.
+   Reduced motion or no JavaScript leaves the plain page (heading, caption,
+   photos) from the stylesheet.
    ===================================================================== */
 (() => {
   const sec = document.getElementById('work-stack');
   if (!sec || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const pin = sec.querySelector('.work-pin');
   const q = s => sec.querySelector(s);
-  const D = { intro: q('.w-intro'), our: q('.w-our'), work: q('.w-work'), para: q('.w-para'), cap: q('.w-cap'), more: q('.w-more'), panel: q('.w-panel') };
+  const D = { intro: q('.w-intro'), our: q('.w-our'), work: q('.w-work'), para: q('.w-para'), cap: q('.w-cap'), more: q('.w-more') };
   const photos = [...sec.querySelectorAll('.w-photos li')];
   if (!pin || Object.values(D).some(v => !v) || photos.length < 13) return;
   sec.classList.add('is-live');
@@ -34,7 +33,7 @@
 
   /* ------------------------------------------------ keyframes
      a row is [p, x, y, rotation(deg), scale, opacity]
-     x / y are fractions of the stage width / height (the centre of a photo or panel, the
+     x / y are fractions of the stage width / height (the centre of a photo, the
      baseline of a word, the top-left corner of a text block) */
   const R = (p, x, y, r = 0, s = 1, o = 1) => [p, x, y, r, s, o];
 
@@ -66,7 +65,7 @@
     { fw: .16, k: [R(0, 1.45, .26, 16), R(.42, 1.45, .26, 16), R(.60, .97, .28, -8), R(.94, -.72, .28, -6), R(1, -.72, .28, -6)] }
   ];
 
-  /* the words, texts and panel. landscape = wide stages, portrait = phones */
+  /* the words and texts. landscape = wide stages, portrait = phones */
   const LAYOUT = {
     land: {
       wf: (W, H) => H * .78,
@@ -75,8 +74,6 @@
       intro: [R(0, .076, .14), R(.31, -.58, .12), R(1, -.58, .12)],
       para: [R(0, .05, .80), R(.31, -.65, .76), R(1, -.65, .76)],
       cap: [R(0, .05, .83, 0, 1, 0), R(.24, .05, .83, 0, 1, 0), R(.33, .05, .79, 0, 1, 1), R(.58, .05, .79, 0, 1, 1), R(.90, -.95, .79, 0, 1, 1), R(1, -.95, .79, 0, 1, 1)],
-      panel: [R(0, 1.50, .50), R(.56, 1.50, .50), R(.70, 1.10, .50), R(.90, .50, .50), R(1, .50, .50)],
-      pw: (W) => Math.min(W * .58, 820),
       photoY: y => y, photoW: w => w
     },
     port: {
@@ -86,11 +83,28 @@
       intro: [R(0, .07, .08), R(.31, -.80, .08), R(1, -.80, .08)],
       para: [R(0, .07, .74), R(.31, -.80, .72), R(1, -.80, .72)],
       cap: [R(0, .07, .78, 0, 1, 0), R(.24, .07, .78, 0, 1, 0), R(.33, .07, .75, 0, 1, 1), R(.58, .07, .75, 0, 1, 1), R(.90, -1.0, .75, 0, 1, 1), R(1, -1.0, .75, 0, 1, 1)],
-      panel: [R(0, 1.55, .50), R(.56, 1.55, .50), R(.70, 1.15, .50), R(.90, .50, .50), R(1, .50, .50)],
-      pw: (W) => W * .9,
-      photoY: y => .56 + (y - .5) * .60, photoW: w => Math.min(w * 1.8, .36)
+      photoY: y => .56 + (y - .5) * .60, photoW: (w, i) => i >= 3 ? .25 : Math.min(w * 1.8, .36)
     }
   };
+
+  /* where the ten ring photos come to rest (x, y as fractions of the stage, tilt in degrees), in markup order from the 4th photo on:
+     a loose, balanced spread over two rows on wide stages, and over three rows on phones */
+  const FINAL = {
+    land: [[.31, .58, 12], [.29, .24, 6], [.10, .22, -8], [.49, .24, 4], [.51, .62, -5], [.11, .60, -10], [.70, .60, 7], [.69, .24, -6], [.89, .64, -9], [.89, .24, 8]],
+    port: [[.20, .60, -9], [.38, .20, 5], [.14, .20, -7], [.62, .20, -6], [.50, .40, -8], [.20, .40, 6], [.50, .60, 8], [.86, .20, 8], [.80, .60, -6], [.80, .40, 9]]
+  };
+
+  /* the ring settles and holds: past the settling keyframe every photo (and the caption) eases to a stop a hair further left,
+     instead of drifting off. END is the progress at which the whole timeline finishes. */
+  const END = .70;
+  const settle = k => {
+    const i = k.findIndex(r => r[0] === .58);
+    if (i < 0) return k;
+    const s = k.slice(0, i + 1), l = s[i];
+    return s.concat([R(.64, l[1] - .02, l[2], l[3], l[4], l[5]), R(END, l[1] - .02, l[2], l[3], l[4], l[5])]);
+  };
+  LAYOUT.land.cap = settle(LAYOUT.land.cap);
+  LAYOUT.port.cap = settle(LAYOUT.port.cap);
 
   /* ------------------------------------------------ monotone cubic interpolation of a keyframe list */
   const track = rows => {
@@ -128,7 +142,7 @@
   const topbar = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 56;
 
   /* ------------------------------------------------ layout */
-  let W = 0, H = 0, mode = 'land', L = LAYOUT.land, T = null, PWPX = 600, base = { our: 0, work: 0 };
+  let W = 0, H = 0, mode = 'land', L = LAYOUT.land, T = null, base = { our: 0, work: 0 };
   const baselineOf = el => {
     const probe = document.createElement('i');
     probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
@@ -139,8 +153,14 @@
   };
   const build = () => {
     T = {
-      our: track(L.our), work: track(L.work), intro: track(L.intro), para: track(L.para), cap: track(L.cap), panel: track(L.panel),
-      ph: PH.map(ph => track(ph.k.map(r => [r[0], r[1], L.photoY(r[2]), r[3], r[4], r[5]])))
+      our: track(L.our), work: track(L.work), intro: track(L.intro), para: track(L.para), cap: track(L.cap),
+      ph: PH.map((ph, i) => {
+        const rows = ph.k.map(r => [r[0], r[1], L.photoY(r[2]), r[3], r[4], r[5]]);
+        if (i < 3) return track(rows);
+        /* a ring photo glides in as before, then comes to rest at its own place and stays there */
+        const e = FINAL[mode][i - 3];
+        return track(rows.filter(r => r[0] < .58).concat([R(.58, e[0], e[1], e[2]), R(.64, e[0] - .008, e[1], e[2]), R(END, e[0] - .008, e[1], e[2])]));
+      })
     };
   };
   const layout = () => {
@@ -148,10 +168,8 @@
     mode = (W / H < 1.1) ? 'port' : 'land';
     L = LAYOUT[mode];
     pin.style.setProperty('--wf', L.wf(W, H).toFixed(1) + 'px');
-    PWPX = L.pw(W);
-    pin.style.setProperty('--pw', PWPX.toFixed(1) + 'px');
-    [D.our, D.work, D.intro, D.para, D.cap, D.more, D.panel, ...photos].forEach(e => { e.style.transform = 'none'; });
-    photos.forEach((li, i) => { const f = PH[i] ? L.photoW(PH[i].fw) : .15; li.style.width = (f * W).toFixed(1) + 'px'; });
+    [D.our, D.work, D.intro, D.para, D.cap, D.more, ...photos].forEach(e => { e.style.transform = 'none'; });
+    photos.forEach((li, i) => { const f = PH[i] ? L.photoW(PH[i].fw, i) : .15; li.style.width = (f * W).toFixed(1) + 'px'; });
     /* "scroll to continue" is fixed at the bottom-right, above the dock */
     const dock = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dock-clearance')) || 112;
     D.more.style.transform = 'translate3d(' + (W - D.more.offsetWidth - W * .035).toFixed(1) + 'px,' + (H - D.more.offsetHeight - dock - 18).toFixed(1) + 'px,0)';
@@ -167,7 +185,8 @@
     el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0)' + (r ? ' rotate(' + r.toFixed(2) + 'deg)' : '') + (s !== 1 ? ' scale(' + s.toFixed(4) + ')' : '');
     if (o !== undefined) el.style.opacity = o.toFixed(3);
   };
-  const paint = p => {
+  const paint = prog => {
+    const p = prog * END;                                  /* the timeline above runs 0..END over the pinned scroll */
     const k = 1 - entry;                                   /* 1 while the section is still scrolling into view */
     /* the words: x = centre, y = baseline; the pivot is the baseline's centre, so scaling keeps them put */
     let v = T.our(p);  put(D.our, v[0] * W - D.our.offsetWidth / 2, (v[1] + .06 * k) * H - base.our, 0, v[3], 1);
@@ -175,8 +194,8 @@
     v = T.intro(p);    put(D.intro, v[0] * W, v[1] * H, 0, 1, 1);
     v = T.para(p);     put(D.para, v[0] * W, v[1] * H, 0, 1, entry);
     v = T.cap(p);      put(D.cap, v[0] * W, v[1] * H, 0, 1, v[4]);
-    /* "scroll to continue" sits bottom-right and goes once the contact panel starts to arrive */
-    D.more.style.opacity = (1 - smooth(clamp((p - .50) / .12, 0, 1))).toFixed(3);
+    /* "scroll to continue" sits bottom-right and goes once the ring has settled */
+    D.more.style.opacity = (1 - smooth(clamp((p - .50) / .10, 0, 1))).toFixed(3);
     /* the photos */
     photos.forEach((li, i) => {
       const ph = PH[i];
@@ -189,17 +208,6 @@
       li.style.visibility = off ? 'hidden' : 'visible';
       if (!off) put(li, x - w / 2, y - h / 2, r, s);
     });
-    /* the contact panel */
-    v = T.panel(p);
-    const ph = D.panel.offsetHeight;
-    const pOff = v[0] * W - PWPX / 2 > W;
-    D.panel.style.visibility = pOff ? 'hidden' : 'visible';
-    const dockTop = H - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dock-clearance')) || 112) + 24;
-    const py = Math.min(v[1] * H - ph / 2, Math.max(8, dockTop - ph));
-    put(D.panel, v[0] * W - PWPX / 2, py, 0, 1);
-    const open = p > .74;
-    D.panel.toggleAttribute('inert', !open);
-    D.panel.style.pointerEvents = open ? 'auto' : 'none';
   };
 
   const read = () => {
@@ -227,13 +235,4 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(init);
   init();
 
-  /* the contact form opens the visitor's own mail app with the message filled in (no server involved) */
-  const form = sec.querySelector('.w-form');
-  if (form) form.addEventListener('submit', e => {
-    e.preventDefault();
-    const f = new FormData(form), name = (f.get('name') || '').toString().trim(), email = (f.get('email') || '').toString().trim(), msg = (f.get('body') || '').toString().trim();
-    const subject = 'Hello from ' + (name || 'a visitor');
-    const body = msg + '\n\n' + (name ? name : '') + (email ? ' (' + email + ')' : '');
-    location.href = 'mailto:fableandco@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body.trim());
-  });
 })();
