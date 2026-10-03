@@ -64,20 +64,29 @@
 @media (prefers-reduced-motion:reduce){.sk-down{animation:none;opacity:.5}}
 
 /* ---------------- the book ---------------- */
-/* the grid behind the hero is a floor in perspective: its lines run away toward a horizon behind the book,
-   so the book looks like it is resting on a surface instead of floating on a flat page */
-.sk-hero{perspective-origin:50% 38%}
+/* the grid paper behind the hero, built as a small room around the book so the eye is drawn to it:
+   a flat back wall, a floor and a ceiling whose lines run away toward the book, and a soft light behind it */
+.sk-hero{
+  --grid:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='68' height='68'><path d='M0 .5H68M.5 0V68' stroke='%230A1826' stroke-opacity='.17' stroke-width='1' fill='none'/><path d='M-5 .5H5M.5 -5V5M63 .5H73M67.5 -5V5M-5 67.5H5M.5 63V73' stroke='%230A1826' stroke-opacity='.30' stroke-width='1' fill='none'/></svg>");
+  background:
+    radial-gradient(ellipse 52% 50% at 50% 50%,rgb(255 255 255 / .62) 0%,rgb(255 255 255 / .22) 55%,rgb(255 255 255 / 0) 100%),
+    radial-gradient(ellipse 120% 105% at 50% 50%,rgb(214 236 250 / 0) 55%,rgb(120 160 195 / .22) 100%),
+    var(--paper);
+}
+/* back wall: flat grid, strongest right around the book and fading away to the edges */
 .sk-hero::before{
-  content:"";position:absolute;left:-120%;right:-120%;bottom:-4%;height:90%;z-index:0;pointer-events:none;
-  background-image:
-    linear-gradient(to right,rgb(10 24 38 / .38) 1.5px,transparent 1.5px),
-    linear-gradient(to bottom,rgb(10 24 38 / .38) 1.5px,transparent 1.5px);
-  background-size:96px 96px;
-  background-position:center bottom;
-  transform-origin:50% 100%;
-  transform:perspective(1500px) rotateX(72deg);
-  -webkit-mask-image:linear-gradient(to top,#000 0%,#000 25%,rgb(0 0 0 / .5) 62%,transparent 96%);
-  mask-image:linear-gradient(to top,#000 0%,#000 25%,rgb(0 0 0 / .5) 62%,transparent 96%);
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:var(--grid);background-size:68px 68px;background-position:center center;
+  -webkit-mask-image:radial-gradient(ellipse 70% 66% at 50% 50%,#000 20%,rgb(0 0 0 / .45) 62%,transparent 100%);
+  mask-image:radial-gradient(ellipse 70% 66% at 50% 50%,#000 20%,rgb(0 0 0 / .45) 62%,transparent 100%);
+}
+/* floor and ceiling: the same grid tipped away in perspective, meeting the wall behind the book */
+.sk-hero::after{
+  content:"";position:absolute;left:-100%;right:-100%;top:46%;height:64%;z-index:0;pointer-events:none;
+  background-image:var(--grid);background-size:68px 68px;background-position:center top;
+  transform-origin:50% 0;transform:perspective(900px) rotateX(-68deg) scaleY(1);
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,rgb(0 0 0 / .75) 50%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 0%,rgb(0 0 0 / .75) 50%,transparent 100%);
 }
 .sk-hero .sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2}
 .sk-hero .sb-stage{
