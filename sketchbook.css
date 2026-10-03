@@ -89,7 +89,8 @@
 }
 @media (max-aspect-ratio:1/1){
   .sk-hero::before,.sk-hero::after{background-image:url(images/sketchbook/grid-bg.jpg)}
-  .sk-hero::after{left:-25%;right:-25%;transform:perspective(620px) rotateX(58deg)}
+  .sk-hero::after{display:none}   /* no floor on tall (phone) screens: it only showed as a stray patch under the book */
+  .sk-hero::before{height:100%;-webkit-mask-image:radial-gradient(ellipse 85% 70% at 50% 42%,#000 25%,rgb(0 0 0 / .5) 65%,transparent 100%);mask-image:radial-gradient(ellipse 85% 70% at 50% 42%,#000 25%,rgb(0 0 0 / .5) 65%,transparent 100%)}
 }
 .sk-hero .sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2}
 .sk-hero .sb-stage{
