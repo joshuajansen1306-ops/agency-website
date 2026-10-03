@@ -226,13 +226,12 @@
   function loupeSize() { return Math.round(Math.max(110, Math.min(262, book.clientWidth * 0.235))); }
   /* the loupe's own coordinate space: pixels of the book's untransformed frame */
   function bookBox() { return { x: 0, y: 0, w: book.clientWidth, h: book.clientHeight }; }
-  /* on a narrow screen the resting place sits further in, so the glass is never cut off at the edge */
-  const restX = w => w > 700 ? 0.80 : 0.7;
+  const restX = () => 0.82;      /* the same spot on every screen size: lower right of the book, over the trees and waterline */
   const restY = 0.5;      /* over the domed building, where there is detail to look at */
   /* park it on the desk at the lower right, half off the book */
   function restLoupe() {
     const b = bookBox();
-    lx = b.x + b.w * restX(b.w); ly = b.y + b.h * restY;
+    lx = b.x + b.w * restX(); ly = b.y + b.h * restY;
     placeLoupe();
   }
   /* mirror whatever the book is currently showing into the magnified copy */
