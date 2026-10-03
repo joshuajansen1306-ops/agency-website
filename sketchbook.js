@@ -38,6 +38,7 @@
   /* one spread per spot in the riffle, so no page is ever shown twice */
   const PAGES = Array.from({ length: 16 }, (_, i) => ({ url: DIR + 'spread-' + String(i + 1).padStart(2, '0') + '.webp?v=9' }));
   const M = PAGES.length, LAND = M - 1;
+  const LOOP_REST_MS = 4500;     /* how long the book rests open on its last spread before it turns again */
 
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const conn = navigator.connection;
@@ -307,7 +308,7 @@
         idx = turn.to; turn = null;
         riffleAt++;
         if (introOn && riffleAt < riffle.length) { paint(); riffleStep(); }
-        else { endIntro(); paint(); }
+        else { endIntro(); paint(); scheduleLoop(); }
       });
     };
     if (pageOk[next]) { go(); return; }
@@ -317,8 +318,27 @@
       else { endIntro(); idx = LAND; paint(); }  /* a page never arrived: settle on the last spread */
     });
   }
+  /* keep it going: rest on the last spread for a few seconds, then turn through the whole book again.
+     It only plays while the hero is on screen and the tab is in front, so it costs nothing in the background. */
+  let heroOn = true, loopTimer = null;
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(es => { heroOn = es[es.length - 1].isIntersecting; if (heroOn) queueLoop(); }, { threshold: 0.25 })
+      .observe(document.querySelector('.sk-hero'));
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) queueLoop(); });
+  let loopDue = false;
+  function scheduleLoop() {
+    if (STILL) return;
+    clearTimeout(loopTimer);
+    loopTimer = setTimeout(() => { loopDue = true; queueLoop(); }, LOOP_REST_MS);
+  }
+  function queueLoop() {
+    if (!loopDue || introOn || document.hidden || !heroOn) return;
+    loopDue = false;
+    startIntro();
+  }
   function startIntro() {
-    const steps = LAND;                /* one turn per spot after the first */
+    const steps = idx === 0 ? LAND : M;   /* first play: one turn per spot after the first; later plays start from the last spread and come round through the first */
     riffle = [];
     for (let r = 0; r < steps; r++) {
       const bell = Math.sin(Math.PI * (r / (steps - 1)));
