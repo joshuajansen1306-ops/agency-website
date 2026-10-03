@@ -382,12 +382,9 @@
   const untilCap = () => new Promise(r => setTimeout(r, Math.max(0, CAP_MS - performance.now())));
 
   /* what the hero needs to look right the moment the loading screen leaves:
-     the painted ground, the corner plants and the first (or, with no riffle, the last) spread.
+     the first (or, with no riffle, the last) spread.
      The screen never lifts before these are in, so a slow connection can't show a half-built page. */
-  const essentials = decode([
-    'images/sketchbook/bg-wash-b.jpg', 'images/sketchbook/botany-left.webp', 'images/sketchbook/botany-right.webp',
-    PAGES[STILL ? LAND : 0].url
-  ]);
+  const essentials = decode([PAGES[STILL ? LAND : 0].url]);
 
   /* how fast does this screen really draw? On a slow one (battery saver, old laptop) the page turns
      with fewer strips and without the sideways blur, so it still moves smoothly */
