@@ -64,6 +64,17 @@
 @media (prefers-reduced-motion:reduce){.sk-down{animation:none;opacity:.5}}
 
 /* ---------------- the book ---------------- */
+/* the grid paper behind the hero: fine lines (52 x 46 px cells, as in the reference), fading out toward the edges */
+.sk-hero::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(to right,rgb(10 24 38 / .16) 1px,transparent 1px),
+    linear-gradient(to bottom,rgb(10 24 38 / .16) 1px,transparent 1px);
+  background-size:52px 46px;
+  background-position:center center;
+  -webkit-mask-image:radial-gradient(ellipse 78% 76% at 50% 50%,#000 38%,rgb(0 0 0 / .55) 70%,transparent 100%);
+  mask-image:radial-gradient(ellipse 78% 76% at 50% 50%,#000 38%,rgb(0 0 0 / .55) 70%,transparent 100%);
+}
 .sk-hero .sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2}
 .sk-hero .sb-stage{
   display:flex;align-items:center;justify-content:center;width:100%;
