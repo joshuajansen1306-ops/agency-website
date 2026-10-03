@@ -185,8 +185,21 @@ ul,ol{list-style:none}
 /* four in the first line; the rest are centred on the line below */
 .brand-logo:nth-child(4n+5){grid-column:3 / span 2}
 .brand-logo:nth-child(4n+6){grid-column:5 / span 2}
-.brand-logo img{width:100%;height:auto;aspect-ratio:1;border-radius:50%;transition:transform .35s ease}
-@media (hover:hover){.brand-logo img:hover{transform:scale(1.05)}}
+.brand-link{position:relative;display:block;border-radius:50%}
+/* a soft icy light that blooms behind the logo on hover or keyboard focus */
+.brand-link::before{content:"";position:absolute;inset:-22%;z-index:0;border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgb(214 236 250 / .85),rgb(214 236 250 / .38) 55%,rgb(214 236 250 / 0) 100%);
+  opacity:0;transform:scale(.78);transition:opacity .4s ease,transform .5s cubic-bezier(.2,.7,.2,1)}
+.brand-logo img{position:relative;z-index:1;width:100%;height:auto;aspect-ratio:1;border-radius:50%;box-shadow:0 0 0 rgb(214 236 250 / 0);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s ease}
+a.brand-link:focus-visible{outline:none}
+a.brand-link:focus-visible img{outline:2px solid var(--text);outline-offset:6px}
+@media (hover:hover){
+  a.brand-link:hover::before{opacity:1;transform:scale(1)}
+  a.brand-link:hover img{transform:translateY(-10px) scale(1.06);box-shadow:0 22px 44px rgb(0 0 0 / .38),0 0 0 6px rgb(214 236 250 / .12)}
+}
+a.brand-link:focus-visible::before{opacity:1;transform:scale(1)}
+a.brand-link:focus-visible img{transform:translateY(-10px) scale(1.06)}
+@media (prefers-reduced-motion:reduce){.brand-link::before,.brand-logo img{transition:none}a.brand-link:hover img,a.brand-link:focus-visible img{transform:none}}
 @media (max-width:1100px){.brand-grid{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:40px}.brand-logo,.brand-logo:nth-child(n){grid-column:auto;max-width:200px}}
 @media (max-width:640px){.brand-grid{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:32px}.brand-logo,.brand-logo:nth-child(n){max-width:170px}}
 /* closing call to action */
