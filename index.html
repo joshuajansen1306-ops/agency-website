@@ -49,7 +49,7 @@
 <script>document.documentElement.classList.add("sk-loading")</script>
 <link rel="preload" as="image" href="images/sketchbook/spread-01.webp?v=9" type="image/webp" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="fonts/instrument-serif.woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=36">
+<link rel="stylesheet" href="styles.css?v=41">
 <link rel="stylesheet" href="sketchbook.css?v=43">
 </head>
 <body class="home">
@@ -120,31 +120,43 @@
   </div>
 </section>
 
-<!-- OUR WORK: a pinned stage in three scroll scenes. The big word slides sideways ("Our" out, "work" in) the whole way through,
-     and photos of our work glide across at different speeds: scene 1 (g1) slides in, settles, then slides away as scene 2 (g2) arrives,
-     which in turn gives way to scene 3 (g3). --x / --y: where a photo rests (% of the stage); --r: tilt; --w: width (vw).
-     Without JavaScript or with reduced motion, the last scene simply shows as it is. -->
+<!-- OUR WORK: one pinned stage with three sections laid out side by side on a single track, which scrolling slides across:
+     1) an intro (the giant word "Our", a few photos), 2) "work" (a ring of photos that keeps drifting past it), 3) a contact panel that slides in
+     as everything else slides out. Everything moves on one continuous scroll (see work.js); the photos have set places there, in the order below
+     (3 for the intro, 6 for the ring, 4 that drift in after). Without JavaScript or with reduced motion it is a plain page: heading, photos, contact panel. -->
 <section class="work-scroll" id="work-stack" aria-labelledby="work-title">
   <div class="work-pin">
-    <p class="work-intro"><span>Hey, we&rsquo;re Fable&amp;Co</span><b>Here&rsquo;s what we&rsquo;ve made</b></p>
-    <h2 id="work-title" class="work-track"><span class="wd wd1">Our</span><span class="wd wd2">work</span></h2>
-    <ul class="scatter" aria-label="Our work">
-      <li class="g1" style="--x:18;--y:30;--r:-8;--w:16" data-dr="-14" data-dy="-36"><img src="images/work/work-01.webp" alt="MHES Inner Collective poster: Queer Collective, a wellness centre event" width="800" height="1000" decoding="async"></li>
-      <li class="g1" style="--x:40;--y:66;--r:6;--w:15" data-dr="14" data-dy="36"><img src="images/work/work-02.webp" alt="Illustration of Lord Ganesha seated on a mountain at sunset" width="800" height="1000" decoding="async"></li>
-      <li class="g1" style="--x:66;--y:28;--r:10;--w:16" data-dr="-14" data-dy="36"><img src="images/work/work-03.webp" alt="Delicious Donuts social post: two donuts on a phone screen" width="800" height="1000" decoding="async"></li>
-      <li class="g1" style="--x:86;--y:60;--r:-6;--w:15" data-dr="14" data-dy="-36"><img src="images/work/work-04.webp" alt="A red cocktail in a martini glass on a lit bar counter" width="800" height="1000" decoding="async"></li>
-      <li class="g2" style="--x:12;--y:62;--r:9;--w:15" data-dr="-14" data-dy="-36"><img src="images/work/work-05.webp" alt="AICUF poster: Open Mic and Trailer Release by The Tortured Poets Society" width="800" height="1000" decoding="async"></li>
-      <li class="g2" style="--x:34;--y:26;--r:-7;--w:16" data-dr="14" data-dy="36"><img src="images/work/work-06.webp" alt="A mojito with lime and mint on a wooden bar counter" width="800" height="1000" decoding="async"></li>
-      <li class="g2" style="--x:60;--y:66;--r:5;--w:16" data-dr="-14" data-dy="36"><img src="images/work/work-07.webp" alt="AICUF poster: Onam Fiesta" width="800" height="1000" decoding="async"></li>
-      <li class="g2" style="--x:84;--y:30;--r:-9;--w:15" data-dr="14" data-dy="-36"><img src="images/work/work-08.webp" alt="Illustration of Hanuman in prayer with a glowing spirit figure behind him" width="800" height="1000" decoding="async"></li>
-      <li class="g3" style="--x:14;--y:28;--r:-10;--w:14" data-dr="-14" data-dy="-36"><img src="images/work/work-09.webp" alt="Cat Behaviour India post: 5 Ways to Deepen Your Bond With Your Cat" width="800" height="1000" decoding="async"></li>
-      <li class="g3" style="--x:36;--y:64;--r:7;--w:14" data-dr="14" data-dy="36"><img src="images/work/work-10.webp" alt="Illustration of a woman in an orange saree standing in flames" width="800" height="1000" decoding="async"></li>
-      <li class="g3" style="--x:54;--y:26;--r:4;--w:14" data-dr="-14" data-dy="36"><img src="images/work/work-11.webp" alt="Cat Behaviour India post: How to Redirect Destructive Behaviour" width="800" height="1000" decoding="async"></li>
-      <li class="g3" style="--x:74;--y:62;--r:-6;--w:14" data-dr="14" data-dy="-36"><img src="images/work/work-12.webp" alt="Coffee shop social post: Better beans, better coffee" width="800" height="1000" decoding="async"></li>
-      <li class="g3" style="--x:90;--y:30;--r:9;--w:13" data-dr="-14" data-dy="36"><img src="images/work/work-13.webp" alt="Food social post: Special Sunday, 50% off fried chicken and fries" width="800" height="1000" decoding="async"></li>
+    <p class="w-intro"><span class="w-hey">Hey, we&rsquo;re Fable&amp;Co</span><b class="w-tag">A social media agency</b><i class="w-rule"></i></p>
+    <h2 id="work-title" class="w-words"><span class="w-our">Our</span> <span class="w-work">work</span></h2>
+    <p class="w-para">Fable&amp;Co plans, films, produces and manages short-form content for brands that expect their marketing to pay for itself.</p>
+    <p class="w-cap">We turn ideas into stories, and stories into brands people remember.</p>
+    <ul class="w-photos" aria-label="Our work">
+      <li><img src="images/work/work-01.webp" alt="MHES Inner Collective poster: Queer Collective, a wellness centre event" width="800" height="1000" decoding="async"></li>
+      <li><img src="images/work/work-02.webp" alt="Illustration of Lord Ganesha seated on a mountain at sunset" width="800" height="1000" decoding="async"></li>
+      <li><img src="images/work/work-03.webp" alt="Delicious Donuts social post: two donuts on a phone screen" width="800" height="1000" decoding="async"></li>
+      <li><img src="images/work/work-04.webp" alt="A red cocktail in a martini glass on a lit bar counter" width="800" height="1000" decoding="async"></li>
+      <li><img src="images/work/work-05.webp" alt="AICUF poster: Open Mic and Trailer Release by The Tortured Poets Society" width="800" height="1000" decoding="async"></li>
+      <li><img src="images/work/work-06.webp" alt="A mojito with lime and mint on a wooden bar counter" width="800" height="1000" decoding="async"></li>
+      <li><img src="images/work/work-07.webp" alt="AICUF poster: Onam Fiesta" width="800" height="1000" decoding="async"></li>
+      <li><img src="images/work/work-08.webp" alt="Illustration of Hanuman in prayer with a glowing spirit figure behind him" width="800" height="1000" decoding="async"></li>
+      <li><img src="images/work/work-09.webp" alt="Cat Behaviour India post: 5 Ways to Deepen Your Bond With Your Cat" width="800" height="1000" decoding="async"></li>
+      <li><img src="images/work/work-10.webp" alt="Illustration of a woman in an orange saree standing in flames" width="800" height="1000" decoding="async"></li>
+      <li><img src="images/work/work-11.webp" alt="Cat Behaviour India post: How to Redirect Destructive Behaviour" width="800" height="1000" decoding="async"></li>
+      <li><img src="images/work/work-12.webp" alt="Coffee shop social post: Better beans, better coffee" width="800" height="1000" decoding="async"></li>
+      <li><img src="images/work/work-13.webp" alt="Food social post: Special Sunday, 50% off fried chicken and fries" width="800" height="1000" decoding="async"></li>
     </ul>
-    <p class="work-caption">We turn ideas into stories, and stories into brands people remember.</p>
-    <p class="work-more"><i></i>Scroll to continue</p>
+    <p class="w-more"><i></i>Scroll to continue</p>
+    <div class="w-panel" id="say-hello">
+      <h3 class="w-ptitle">Say hello</h3>
+      <p class="w-ptext">Drop us a line about your brand and what you&rsquo;re looking to build, No fluff, no pressure just open communication.</p>
+      <form class="w-form" action="mailto:fableandco@gmail.com" method="get">
+        <label><span>Name</span><input type="text" name="name" autocomplete="name" required></label>
+        <label><span>Email</span><input type="email" name="email" autocomplete="email" required></label>
+        <label><span>Message</span><textarea name="body" rows="2" required></textarea></label>
+        <button class="w-send" type="submit">Say Hello</button>
+      </form>
+      <p class="w-foot"><span>Email <a href="mailto:fableandco@gmail.com">fableandco@gmail.com</a></span><span>Instagram <a href="https://www.instagram.com/fableandco.in?stkn=MTFhMmJxeDd2bzNhcg==" target="_blank" rel="noopener">@fableandco.in</a></span></p>
+    </div>
   </div>
 </section>
 
@@ -204,7 +216,7 @@
 </nav>
 
 <script src="site.js?v=8"></script>
-<script src="scatter.js?v=5" defer></script>
+<script src="work.js?v=8" defer></script>
 <script src="sketchbook.js?v=32"></script>
 </body>
 </html>
