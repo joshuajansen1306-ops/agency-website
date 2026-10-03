@@ -61,7 +61,7 @@
   paperUnderFooter();
 
   /* ------------------------------------------------ the turning leaf */
-  const N = 18;            /* strips: enough for a smooth curve          */
+  let N = 18;              /* strips: enough for a smooth curve (fewer on a slow screen) */
   const SPAN = 0.449;      /* gutter to outer page edge, as a fraction   */
   const BETA = 0.60;       /* peak curl of the arc, radians              */
   let idx = 0, turn = null; /* turn = {dir, from, to, t}                 */
@@ -142,7 +142,7 @@
       applyTurn(turn.t);
     }
     layout();
-    syncZoomLayer();
+    if (!introOn) syncZoomLayer();   /* no magnified copy while the pages are flying: it doubles the work */
     placeLoupe();
   }
   function layout() { sb3d.style.setProperty('--bw', book.clientWidth + 'px'); }
@@ -152,7 +152,7 @@
   /* the riffle wants a fixed tempo, not a spring settling time */
   let spring = null;
   function tweenTo(target, dur, onDone) {
-    spring = { from: turn ? turn.t : 0, target: target, dur: dur, e: 0, done: onDone };
+    spring = { from: turn ? turn.t : 0, target: target, dur: dur, t0: performance.now(), done: onDone };
     kick();
   }
   let raf = null, last = 0;
@@ -161,8 +161,9 @@
     const dt = Math.min(0.032, (now - last) / 1000 || 0.016); last = now;
     if (spring && turn) {
       const s = spring;
-      s.e += dt;
-      const k = Math.min(1, s.e / s.dur);
+      /* measured on the clock, not frame by frame: a slow or battery-saving screen drops frames
+         but the page still turns in the same time, instead of crawling */
+      const k = Math.min(1, (performance.now() - s.t0) / (s.dur * 1000));
       turn.t = s.from + (s.target - s.from) * k;
       applyTurn(turn.t);
       if (k >= 1) { spring = null; const d = s.done; d && d(); }
@@ -247,6 +248,7 @@
     loupe.style.setProperty('--lr', R * 2 + 'px');
     loupe.style.transform = 'translate3d(' + (lx - R).toFixed(1) + 'px,' + (ly - R).toFixed(1) + 'px,0)';
     loupe.classList.add('on');
+    if (introOn) { zoomWrap.style.opacity = '0'; return; }
 
     /* where the paper's edges actually land */
     const cx = bw / 2, cy = bh / 2;
@@ -408,9 +410,22 @@
      the painted ground, the corner plants and the first (or, with no riffle, the last) spread.
      The screen never lifts before these are in, so a slow connection can't show a half-built page. */
   const essentials = decode([
-    'images/sketchbook/bg-wash.jpg', 'images/sketchbook/botany-left.webp', 'images/sketchbook/botany-right.webp',
+    'images/sketchbook/bg-wash-b.jpg', 'images/sketchbook/botany-left.webp', 'images/sketchbook/botany-right.webp',
     PAGES[STILL ? LAND : 0].url
   ]);
+
+  /* how fast does this screen really draw? On a slow one (battery saver, old laptop) the page turns
+     with fewer strips and without the sideways blur, so it still moves smoothly */
+  const sampleFrames = () => new Promise(r => {
+    const ts = [];
+    const f = t => {
+      ts.push(t);
+      if (ts.length < 14) { requestAnimationFrame(f); return; }
+      const d = []; for (let i = 1; i < ts.length; i++) d.push(ts[i] - ts[i - 1]);
+      d.sort((a, b) => a - b); r(d[Math.floor(d.length / 2)]);
+    };
+    requestAnimationFrame(f);
+  });
 
   (async function boot() {
     if (STILL) {
@@ -420,6 +435,7 @@
       return;
     }
     idx = 0; paint(); applyView(); restLoupe();
+    sampleFrames().then(ms => { if (ms > 36) { N = 9; wrap.classList.add('lite'); } });
     /* every spread starts loading at once; the riffle needs the first few to begin and the rest as it goes */
     /* the first four load first, with the whole connection to themselves; the rest follow straight after */
     startPage = i => pageReady[i] || (pageReady[i] = decodeOne(PAGES[i].url).then(ok => { if (ok) { pageOk[i] = true; progress(loaded + 1); } return ok; }));
