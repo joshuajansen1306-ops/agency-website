@@ -3,9 +3,9 @@
   const stack = document.querySelector('.stack');
   if (!scroller || !stack || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  // Repeat the real posts so the stack has enough depth to travel through.
+  // The stack needs about ten cards to travel through; with fewer pieces of work, repeat them.
   const originals = [...stack.querySelectorAll('.stack-card')];
-  const SETS = matchMedia('(max-width: 640px)').matches ? 2 : 3;
+  const SETS = Math.max(1, Math.ceil(10 / originals.length));
   for (let s = 1; s < SETS; s++) {
     originals.forEach((card, k) => {
       const clone = card.cloneNode(true);
@@ -17,7 +17,7 @@
   }
   const cards = [...stack.querySelectorAll('.stack-card')];
   const index = cards.map(c => parseFloat(c.style.getPropertyValue('--i')));
-  const maxShift = cards.length - originals.length;
+  const maxShift = Math.max(1, cards.length - 5);   // the last five cards are the ones left in view at the end
   scroller.style.height = `calc(${maxShift * 42}vh + 100svh - var(--topbar-h))`;
 
   const culled = cards.map(() => false);
