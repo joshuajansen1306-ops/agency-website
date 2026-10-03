@@ -10,7 +10,7 @@
   src:url(fonts/newsreader.woff2) format('woff2')}
 
 .sk-hero{
-  --paper:#D6ECFA;
+  --paper:#E0EBF3;
   --ink:#2b2721;
   --ink-soft:rgba(43,39,33,.58);
   --display:'Instrument Serif',"New York",Georgia,'Times New Roman',serif;
@@ -31,7 +31,7 @@
   position:relative;display:grid;justify-items:center;align-content:center;
   height:calc(100svh - var(--topbar-h));min-height:520px;overflow:hidden;
   padding:var(--sk-pt) 0 var(--sk-pb);
-  background:var(--paper);color:var(--ink);
+  color:var(--ink);
   font-family:var(--font);font-weight:400;-webkit-font-smoothing:antialiased;
   overflow-anchor:none;
 }
@@ -65,33 +65,12 @@
 @media (prefers-reduced-motion:reduce){.sk-down{animation:none;opacity:.5}}
 
 /* ---------------- the book ---------------- */
-/* the grid-paper picture behind the hero, set up as a room around the book:
-   a flat back wall at the top, and a floor made from the same picture tipped away in perspective, so the lines
-   run toward a horizon behind the book. Multiplied over the pale blue, so the white lets the blue through. */
-.sk-hero::before,.sk-hero::after{
-  content:"";position:absolute;z-index:0;pointer-events:none;
-  background:url(images/sketchbook/grid-bg-wide.jpg) center / 100% 100% no-repeat;
-  mix-blend-mode:multiply;
+/* the damask wallpaper behind the hero. The picture repeats exactly every 366px sideways, so a widened copy is
+   used on landscape screens (no stretching, no visible join); phones use the original tall picture. */
+.sk-hero{
+  background:#E0EBF3 url(images/sketchbook/hero-bg-wide.jpg) center / cover no-repeat;
 }
-/* back wall */
-.sk-hero::before{
-  left:0;right:0;top:0;height:62%;
-  -webkit-mask-image:linear-gradient(to bottom,#000 0%,rgb(0 0 0 / .55) 70%,transparent 100%);
-  mask-image:linear-gradient(to bottom,#000 0%,rgb(0 0 0 / .55) 70%,transparent 100%);
-}
-/* floor */
-.sk-hero::after{
-  left:-45%;right:-45%;bottom:-3%;height:74%;
-  transform-origin:50% 100%;
-  transform:perspective(760px) rotateX(58deg);
-  -webkit-mask-image:linear-gradient(to top,#000 0%,#000 35%,rgb(0 0 0 / .6) 68%,transparent 96%);
-  mask-image:linear-gradient(to top,#000 0%,#000 35%,rgb(0 0 0 / .6) 68%,transparent 96%);
-}
-@media (max-aspect-ratio:1/1){
-  .sk-hero::before,.sk-hero::after{background-image:url(images/sketchbook/grid-bg.jpg)}
-  .sk-hero::after{display:none}   /* no floor on tall (phone) screens: it only showed as a stray patch under the book */
-  .sk-hero::before{height:100%;-webkit-mask-image:radial-gradient(ellipse 85% 70% at 50% 42%,#000 25%,rgb(0 0 0 / .5) 65%,transparent 100%);mask-image:radial-gradient(ellipse 85% 70% at 50% 42%,#000 25%,rgb(0 0 0 / .5) 65%,transparent 100%)}
-}
+@media (max-aspect-ratio:1/1){.sk-hero{background-image:url(images/sketchbook/hero-bg.jpg)}}
 .sk-hero .sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2}
 .sk-hero .sb-stage{
   display:flex;align-items:center;justify-content:center;width:100%;

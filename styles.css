@@ -190,7 +190,7 @@ ul,ol{list-style:none}
 .work-scroll.is-live :where(.w-intro,.w-our,.w-work,.w-para,.w-cap,.w-photos li,.w-more,.w-panel){position:absolute;left:0;top:0;margin:0;will-change:transform,opacity;white-space:nowrap}
 .work-scroll.is-live .w-photos{position:absolute;inset:0;margin:0;max-width:none;display:block;pointer-events:none;z-index:3}
 .work-scroll.is-live .w-photos li{padding:clamp(3px,.42vw,6px);box-sizing:border-box;box-shadow:0 14px 30px rgb(0 0 0 / .32);transform:none}
-.work-scroll.is-live .w-our,.work-scroll.is-live .w-work{z-index:1;font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-size:var(--wf,200px);line-height:1;letter-spacing:-.02em;color:var(--text);pointer-events:none;transition:color .3s ease}
+.work-scroll.is-live .w-our,.work-scroll.is-live .w-work{visibility:hidden;z-index:1;font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-size:var(--wf,200px);line-height:1;letter-spacing:-.02em;color:var(--text);pointer-events:none;transition:color .3s ease}
 .work-scroll.is-live .w-intro{z-index:4;display:grid;gap:3px;font-size:var(--fs-small);color:var(--text-muted);transition:color .3s ease}
 .work-scroll.is-live .w-tag{font-weight:400;font-size:clamp(1rem,1.6vw,1.5rem);letter-spacing:-.01em;color:var(--text);transition:color .3s ease}
 .work-scroll.is-live .w-rule{display:block;width:4.2rem;height:1px;margin-top:10px;background:var(--text-muted)}

@@ -28,6 +28,9 @@
   const photos = [...sec.querySelectorAll('.w-photos li')];
   if (!pin || Object.values(D).some(v => !v) || photos.length < 13) return;
   sec.classList.add('is-live');
+  /* the giant words are no longer drawn behind the photos; the heading stays for screen readers */
+  const hd = q('.w-words');
+  if (hd) { hd.querySelectorAll('span').forEach(s => s.setAttribute('aria-hidden', 'true')); const t = document.createElement('span'); t.className = 'visually-hidden'; t.textContent = 'Our work'; hd.appendChild(t); }
 
   /* ------------------------------------------------ keyframes
      a row is [p, x, y, rotation(deg), scale, opacity]
