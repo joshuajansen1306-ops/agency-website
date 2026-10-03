@@ -139,20 +139,32 @@ ul,ol{list-style:none}
 .home-about .row-lead{margin-bottom:18px}
 .home-about-link{margin-top:10px;font-size:var(--fs-small)}
 .home-about .about-statement{font-size:var(--fs-lead);letter-spacing:var(--track-lead);line-height:1.2;max-width:24em;text-wrap:balance;margin-bottom:26px}
-/* our work: photos scatter in around the big heading as you scroll through the section (see scatter.js) */
+/* our work: a pinned stage where scrolling slides the big word and the photos sideways (see scatter.js) */
 .work-scroll{position:relative}
-.work-pin{position:relative;height:max(560px,calc(100svh - var(--topbar-h)));overflow:hidden;display:grid;place-items:center}
-.work-giant{position:relative;z-index:1;font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-weight:400;font-size:clamp(5.5rem,24vw,23rem);line-height:.9;letter-spacing:-.02em;text-align:center;color:var(--text);pointer-events:none;transition:color .3s ease}
+.work-pin{position:relative;height:max(560px,calc(100svh - var(--topbar-h)));overflow:hidden}
+.work-track{position:absolute;left:0;top:50%;transform:translateY(-52%);z-index:1;display:flex;align-items:baseline;gap:.5em;white-space:nowrap;width:100%;justify-content:center;
+  font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-weight:400;font-size:clamp(5.5rem,24vw,23rem);line-height:.9;letter-spacing:-.02em;color:var(--text);pointer-events:none;transition:color .3s ease}
+.work-intro{position:absolute;left:var(--gutter);top:clamp(20px,4vw,48px);z-index:3;display:grid;gap:4px;font-size:var(--fs-small);color:var(--text-muted);transition:color .3s ease}
+.work-intro b{font-weight:400;font-size:1.0625rem;color:var(--text);padding-bottom:10px;border-bottom:1px solid var(--line);transition:color .3s ease}
+.work-caption{position:absolute;left:var(--gutter);bottom:calc(var(--dock-clearance) + 18px);z-index:3;max-width:min(24em,52vw);font-size:clamp(.75rem,1.05vw,.9375rem);font-weight:600;letter-spacing:.01em;line-height:1.3;text-transform:uppercase;color:var(--text);transition:color .3s ease}
+.work-more{position:absolute;right:var(--gutter);bottom:calc(var(--dock-clearance) + 18px);z-index:3;display:flex;align-items:center;gap:10px;font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);transition:color .3s ease}
+.work-more i{display:block;width:22px;height:1px;background:currentColor}
 .scatter{position:absolute;inset:0;z-index:2;list-style:none;pointer-events:none}
-.scatter li{--w:clamp(104px,15vw,230px);position:absolute;left:var(--x);top:var(--y);width:var(--w);padding:6px;background:#fff;border-radius:3px;box-shadow:0 16px 34px rgb(0 0 0 / .34);transform:translate(-50%,-50%) rotate(var(--r,0deg));will-change:transform,opacity}
+.scatter li{--m:1;position:absolute;left:calc(var(--x) * 1%);top:calc(var(--y) * 1%);width:calc(var(--w) * var(--m) * 1vw);padding:calc(var(--w) * var(--m) * .02vw + 2px);background:#fff;box-shadow:0 14px 30px rgb(0 0 0 / .3);transform:translate(-50%,-50%) rotate(calc(var(--r) * 1deg));will-change:transform}
 .scatter img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
-@media (max-width:640px){.scatter li{--w:clamp(84px,27vw,140px);padding:4px}}
-.work-hint{position:absolute;left:0;right:0;bottom:calc(var(--dock-clearance) + 6px);z-index:3;text-align:center;font-size:var(--fs-small);color:var(--text-muted);pointer-events:none;transition:opacity .4s ease,color .3s ease;display:none}
-/* live: the heading stays pinned while the section scrolls past, and the photos arrive one by one */
-.work-scroll.is-live{height:calc(100svh - var(--topbar-h) + 320svh)}
+@media (max-width:640px){.scatter li{--m:1.9}.work-caption{max-width:62vw}}
+/* the words side by side as a plain heading, and the final arrangement of photos, when nothing slides */
+.scatter li.a{display:none}
+.work-intro,.work-more{display:none}
+/* live: pinned, and driven by the scroll position */
+.work-scroll.is-live{height:calc(max(560px,100svh - var(--topbar-h)) + 340svh)}
 .work-scroll.is-live .work-pin{position:sticky;top:var(--topbar-h)}
-.work-scroll.is-live .work-hint{display:block}
-.work-scroll.is-live.has-scrolled .work-hint{opacity:0}
+.work-scroll.is-live .work-track{justify-content:flex-start;gap:.9em;width:max-content;left:0}
+.work-scroll.is-live .scatter li{left:0;top:0}
+.work-scroll.is-live .scatter li.a{display:block}
+.work-scroll.is-live .work-intro,.work-scroll.is-live .work-more{display:flex}
+.work-scroll.is-live .work-intro{display:grid}
+.work-scroll.is-live .work-caption{opacity:0}
 
 /* proof in numbers: sits after the work stage */
 .home-stats{position:relative;padding-bottom:clamp(40px,6vw,96px)}
