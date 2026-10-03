@@ -239,15 +239,6 @@ body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:
 .outputs li::before{content:"";position:absolute;left:0;top:.68em;width:5px;height:5px;background:var(--text-muted)}
 .row .fee{margin-top:18px;font-size:var(--fs-small);color:var(--text-muted)}
 .fine-print{margin-top:22px;font-size:var(--fs-small);color:var(--text-muted);max-width:34em}
-/* content creation packages */
-.packages{width:100%;max-width:36em;border-collapse:collapse;margin-bottom:6px;font-variant-numeric:tabular-nums}
-.packages th,.packages td{padding:14px 12px 14px 0;text-align:left;font-weight:400;border-bottom:1px solid var(--line);vertical-align:baseline}
-.packages thead th{font-size:var(--fs-small);color:var(--text-muted);padding-top:6px}
-.packages tbody th{font-size:1.125rem;white-space:nowrap}
-.packages tbody td{font-size:1.125rem}
-.packages td[colspan]{font-size:var(--fs-small);color:var(--text-muted);line-height:1.45}
-.packages .tag{display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid var(--line);border-radius:999px;font-size:.6875rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);vertical-align:2px}
-@media (max-width:640px){.packages th,.packages td{padding-right:6px}.packages tbody th{white-space:normal}.packages .tag{display:block;margin:4px 0 0;width:max-content}}
 .note{padding-block:32px;color:var(--text-muted);max-width:44em;font-size:var(--fs-small)}
 
 /* process stages */
