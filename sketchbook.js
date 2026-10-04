@@ -41,8 +41,7 @@
   const LOOP_REST_MS = 4500;     /* how long the book rests open on its last spread before it turns again */
 
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const conn = navigator.connection;
-  const STILL = REDUCED || !!(conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')));
+  const STILL = REDUCED;          /* only a visitor who asked for reduced motion gets the still book; a slow connection just starts later */
 
   /* the footer is pinned to the bottom of the viewport, so give it dark ink
      while the cream hero is what sits behind it */
@@ -337,6 +336,14 @@
     loopDue = false;
     startIntro();
   }
+  /* safety net: whatever stopped it (a slow connection, a throttled tab, a missed event), if the book has been resting
+     longer than it should and the hero is on screen, turn the pages again */
+  let lastBusy = performance.now(), booted = false;
+  setInterval(() => {
+    if (introOn) { lastBusy = performance.now(); return; }
+    if (STILL || !booted || document.hidden || !heroOn || !pageOk[0] || !pageOk[1] || !pageOk[2] || !pageOk[3]) return;
+    if (performance.now() - lastBusy > LOOP_REST_MS + 2500) { lastBusy = performance.now(); loopDue = false; startIntro(); }
+  }, 1500);
   function startIntro() {
     const steps = idx === 0 ? LAND : M;   /* first play: one turn per spot after the first; later plays start from the last spread and come round through the first */
     riffle = [];
@@ -418,11 +425,12 @@
     await holdLoader();
     hideLoader();
     const ready = await within(firstFew, 12000);
-    if (!ready) { await within(decodeOne(PAGES[LAND].url), 8000); idx = LAND; paint(); return; }
+    if (!ready) { await within(decodeOne(PAGES[LAND].url), 8000); idx = LAND; paint(); booted = true; lastBusy = performance.now(); return; }   /* the watchdog starts the riffle once the first pages have arrived */
     if (document.fonts && document.fonts.ready) await within(document.fonts.ready.then(() => true, () => true), 1500);
     if (document.hidden) await new Promise(r => document.addEventListener('visibilitychange', function f() {
       if (!document.hidden) { document.removeEventListener('visibilitychange', f); r(); }
     }));
+    booted = true; lastBusy = performance.now();
     setTimeout(startIntro, 350);          /* the screen is fading as the first page turns */
   })();
 })();
