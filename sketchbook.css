@@ -10,7 +10,7 @@
   src:url(fonts/newsreader.woff2) format('woff2')}
 
 .sk-hero{
-  --paper:#E0EBF3;
+  --paper:#F8F8F8;
   --ink:#2b2721;
   --ink-soft:rgba(43,39,33,.58);
   --display:'Instrument Serif',"New York",Georgia,'Times New Roman',serif;
@@ -65,10 +65,10 @@
 @media (prefers-reduced-motion:reduce){.sk-down{animation:none;opacity:.5}}
 
 /* ---------------- the book ---------------- */
-/* the damask wallpaper behind the hero. The picture repeats exactly every 366px sideways, so a widened copy is
-   used on landscape screens (no stretching, no visible join); phones use the original tall picture. */
+/* the floral sketch behind the hero. Landscape screens use a widened copy made by mirroring the picture side to side
+   (so there is no visible join and no stretching); phones use the original tall picture. */
 .sk-hero{
-  background:#E0EBF3 url(images/sketchbook/hero-bg-wide.jpg) center / cover no-repeat;
+  background:#FAFAFA url(images/sketchbook/hero-bg-wide.jpg) center / cover no-repeat;
 }
 @media (max-aspect-ratio:1/1){.sk-hero{background-image:url(images/sketchbook/hero-bg.jpg)}}
 /* the wallpaper fades out toward the bottom, into exactly the colour of the About section below, so there is no edge */
