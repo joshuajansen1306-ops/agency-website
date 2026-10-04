@@ -232,6 +232,7 @@
     v = T.intro(p);    put(D.intro, v[0] * W, v[1] * H, 0, 1, 1);
     v = T.para(p);     put(D.para, v[0] * W, v[1] * H, 0, 1, entry * (1 - smooth(clamp(p / .2, 0, 1))));   /* gone before the caption arrives, so they never overlap */
     v = T.cap(p);      put(D.cap, v[0] * W, v[1] * H, 0, 1, v[4]);
+    D.cap.style.pointerEvents = v[4] > .6 ? 'auto' : 'none';   /* the case-study link inside it is only clickable once it has appeared */
     /* "scroll to continue" sits bottom-right and goes once the ring has settled */
     D.more.style.opacity = (1 - smooth(clamp((p - .50) / .10, 0, 1))).toFixed(3);
     /* the photos */
