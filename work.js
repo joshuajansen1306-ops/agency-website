@@ -82,7 +82,7 @@
       work: [R(0, 1.75, .42, 0, 1), R(.31, .50, .47, 0, .70), R(.58, .47, .47, 0, .70), R(.92, -1.1, .47, 0, .70), R(1, -1.1, .47, 0, .70)],
       intro: [R(0, .07, .07), R(.31, -.80, .07), R(1, -.80, .07)],
       para: [R(0, .07, .715), R(.31, -.80, .70), R(1, -.80, .70)],
-      cap: [R(0, .07, .79, 0, 1, 0), R(.52, .07, .79, 0, 1, 0), R(.64, .07, .79, 0, 1, 1), R(.70, .07, .79, 0, 1, 1)],
+      cap: [R(0, .07, .79, 0, 1, 0), R(.50, .07, .79, 0, 1, 0), R(.60, .07, .79, 0, 1, 1), R(.70, .07, .79, 0, 1, 1)],
       photoY: y => .56 + (y - .5) * .60, photoW: (w, i) => i >= 3 ? Math.min(portScene(i).w, 200 / W) * PS.wf : Math.min(w * 1.8, .36, 220 / W)
     }
   };
@@ -92,9 +92,9 @@
   /* phones show the work in four short scenes of 3, 4, 2 and 4 photos: the intro trio, then each group slides in from the right,
      holds, and slides away left as the next arrives; the last four settle and stay. in / out are progress windows (0..END). */
   const PORT_SCENES = [
-    { idx: [3, 4, 5, 6], w: .40, in: [.12, .28], out: [.34, .44], pos: [[.28, .30, -6], [.72, .34, 6], [.30, .62, 5], [.70, .58, -5]] },
-    { idx: [7, 8], w: .46, in: [.34, .46], out: [.50, .58], pos: [[.30, .36, -6], [.68, .62, 7]] },
-    { idx: [9, 10, 11, 12], w: .40, in: [.50, .64], out: null, pos: [[.28, .28, 5], [.72, .32, -6], [.28, .60, -5], [.72, .58, 6]] }
+    { idx: [3, 4, 5, 6], w: .40, in: [.10, .24], out: [.30, .40], pos: [[.28, .30, -6], [.72, .34, 6], [.30, .62, 5], [.70, .58, -5]] },
+    { idx: [7, 8], w: .46, in: [.28, .40], out: [.46, .54], pos: [[.30, .36, -6], [.68, .62, 7]] },
+    { idx: [9, 10, 11, 12], w: .40, in: [.44, .56], out: null, pos: [[.28, .28, 5], [.72, .32, -6], [.28, .60, -5], [.72, .58, 6]] }
   ];
   const portScene = i => PORT_SCENES.find(s => s.idx.includes(i));
   /* on short phones the caption sits higher (clear of the nav pill) and the scenes are squeezed into the room above it */
@@ -102,12 +102,12 @@
   const portKeys = i => {
     const s = portScene(i), n = s.idx.indexOf(i), lag = n * .018;
     const p = [s.pos[n][0], .10 + (s.pos[n][1] - .10) * PS.sy, s.pos[n][2]];
-    const a = s.in[0] + lag, b = Math.min(s.in[1] + lag * .5, s.in[1] + .02);
+    const a = s.in[0] + lag * .7, b = s.in[1] + lag * .4;
     const sign = n % 2 ? 1 : -1;
-    const rows = [R(0, 1.35, p[1] + .03, p[2] + 12 * sign), R(a, 1.35, p[1] + .03, p[2] + 12 * sign), R(b, p[0], p[1], p[2])];
+    const rows = [R(0, 1.18, p[1] + .03, p[2] + 12 * sign), R(a, 1.18, p[1] + .03, p[2] + 12 * sign), R(b, p[0], p[1], p[2])];
     if (s.out) {
       const c = s.out[0] + lag * .5, d = s.out[1] + lag * .5;
-      rows.push(R(c, p[0], p[1], p[2]), R(d, -.40, p[1] - .02, p[2] - 10 * sign), R(END, -.40, p[1] - .02, p[2] - 10 * sign));
+      rows.push(R(c, p[0], p[1], p[2]), R(d, -.24, p[1] - .02, p[2] - 10 * sign), R(END, -.24, p[1] - .02, p[2] - 10 * sign));
     } else rows.push(R(END, p[0] - .006, p[1], p[2]));
     return rows;
   };
