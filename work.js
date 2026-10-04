@@ -82,13 +82,36 @@
       work: [R(0, 1.75, .42, 0, 1), R(.31, .50, .47, 0, .70), R(.58, .47, .47, 0, .70), R(.92, -1.1, .47, 0, .70), R(1, -1.1, .47, 0, .70)],
       intro: [R(0, .07, .07), R(.31, -.80, .07), R(1, -.80, .07)],
       para: [R(0, .07, .715), R(.31, -.80, .70), R(1, -.80, .70)],
-      cap: [R(0, .07, .78, 0, 1, 0), R(.24, .07, .78, 0, 1, 0), R(.33, .07, .75, 0, 1, 1), R(.58, .07, .75, 0, 1, 1), R(.90, -1.0, .75, 0, 1, 1), R(1, -1.0, .75, 0, 1, 1)],
-      photoY: y => .56 + (y - .5) * .60, photoW: (w, i) => i >= 3 ? .25 : Math.min(w * 1.8, .36)
+      cap: [R(0, .07, .79, 0, 1, 0), R(.52, .07, .79, 0, 1, 0), R(.64, .07, .79, 0, 1, 1), R(.70, .07, .79, 0, 1, 1)],
+      photoY: y => .56 + (y - .5) * .60, photoW: (w, i) => i >= 3 ? Math.min(portScene(i).w, 200 / W) * PS.wf : Math.min(w * 1.8, .36, 220 / W)
     }
   };
 
   /* where the ten ring photos come to rest (x, y as fractions of the stage, tilt in degrees), in markup order from the 4th photo on:
      a loose, balanced spread over two rows on wide stages, and over three rows on phones */
+  /* phones show the work in four short scenes of 3, 4, 2 and 4 photos: the intro trio, then each group slides in from the right,
+     holds, and slides away left as the next arrives; the last four settle and stay. in / out are progress windows (0..END). */
+  const PORT_SCENES = [
+    { idx: [3, 4, 5, 6], w: .40, in: [.12, .28], out: [.34, .44], pos: [[.28, .30, -6], [.72, .34, 6], [.30, .62, 5], [.70, .58, -5]] },
+    { idx: [7, 8], w: .46, in: [.34, .46], out: [.50, .58], pos: [[.30, .36, -6], [.68, .62, 7]] },
+    { idx: [9, 10, 11, 12], w: .40, in: [.50, .64], out: null, pos: [[.28, .28, 5], [.72, .32, -6], [.28, .60, -5], [.72, .58, 6]] }
+  ];
+  const portScene = i => PORT_SCENES.find(s => s.idx.includes(i));
+  /* on short phones the caption sits higher (clear of the nav pill) and the scenes are squeezed into the room above it */
+  let PS = { sy: 1, wf: 1, capY: .79 };
+  const portKeys = i => {
+    const s = portScene(i), n = s.idx.indexOf(i), lag = n * .018;
+    const p = [s.pos[n][0], .10 + (s.pos[n][1] - .10) * PS.sy, s.pos[n][2]];
+    const a = s.in[0] + lag, b = Math.min(s.in[1] + lag * .5, s.in[1] + .02);
+    const sign = n % 2 ? 1 : -1;
+    const rows = [R(0, 1.35, p[1] + .03, p[2] + 12 * sign), R(a, 1.35, p[1] + .03, p[2] + 12 * sign), R(b, p[0], p[1], p[2])];
+    if (s.out) {
+      const c = s.out[0] + lag * .5, d = s.out[1] + lag * .5;
+      rows.push(R(c, p[0], p[1], p[2]), R(d, -.40, p[1] - .02, p[2] - 10 * sign), R(END, -.40, p[1] - .02, p[2] - 10 * sign));
+    } else rows.push(R(END, p[0] - .006, p[1], p[2]));
+    return rows;
+  };
+
   /* phones: where the three intro photos sit at the start, kept above the paragraph and clear of the nav pill */
   const INTRO_PORT = [[.28, .56, -5], [.52, .33, 7], [.74, .53, -4]];
     const FINAL = {
@@ -155,13 +178,14 @@
   };
   const build = () => {
     T = {
-      our: track(L.our), work: track(L.work), intro: track(L.intro), para: track(L.para), cap: track(L.cap),
+      our: track(L.our), work: track(L.work), intro: track(L.intro), para: track(L.para), cap: track(mode === 'port' ? L.cap.map(r => [r[0], r[1], PS.capY, r[3], r[4], r[5]]) : L.cap),
       ph: PH.map((ph, i) => {
         const rows = ph.k.map(r => [r[0], r[1], L.photoY(r[2]), r[3], r[4], r[5]]);
         if (i < 3) {
           if (mode === 'port') { const s = INTRO_PORT[i]; rows[0][1] = s[0]; rows[0][2] = s[1]; rows[0][3] = s[2]; }
           return track(rows);
         }
+        if (mode === 'port') return track(portKeys(i));   /* phones: the 4 / 2 / 4 scenes */
         /* a ring photo glides in as before, then comes to rest at its own place and stays there */
         const e = FINAL[mode][i - 3];
         return track(rows.filter(r => r[0] < .58).concat([R(.58, e[0], e[1], e[2]), R(.64, e[0] - .008, e[1], e[2]), R(END, e[0] - .008, e[1], e[2])]));
@@ -173,6 +197,15 @@
     mode = (W / H < 1.1) ? 'port' : 'land';
     L = LAYOUT[mode];
     pin.style.setProperty('--wf', L.wf(W, H).toFixed(1) + 'px');
+    {
+      const dock0 = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dock-clearance')) || 112;
+      if (mode === 'port') {
+        const capH = D.cap.offsetHeight || 54;
+        const capY = Math.min(.79, (H - dock0 - capH - 14) / H);     /* top of the caption, kept above the nav pill */
+        const sy = clamp((capY - .12) / (.79 - .12), .55, 1);          /* 1 on a normal phone, less on a short one */
+        PS = { sy: sy, wf: Math.min(1, sy * .94), capY: capY };
+      } else PS = { sy: 1, wf: 1, capY: .79 };
+    }
     [D.our, D.work, D.intro, D.para, D.cap, D.more, ...photos].forEach(e => { e.style.transform = 'none'; });
     photos.forEach((li, i) => { const f = PH[i] ? L.photoW(PH[i].fw, i) : .15; li.style.width = (f * W).toFixed(1) + 'px'; });
     /* "scroll to continue" is fixed at the bottom-right, above the dock */
