@@ -10,7 +10,7 @@
   src:url(fonts/newsreader.woff2) format('woff2')}
 
 .sk-hero{
-  --paper:#F8F8F8;
+  --paper:#D4E7F7;
   --ink:#2b2721;
   --ink-soft:rgba(43,39,33,.58);
   --display:'Instrument Serif',"New York",Georgia,'Times New Roman',serif;
@@ -68,9 +68,15 @@
 /* the floral sketch behind the hero. Landscape screens use a widened copy made by mirroring the picture side to side
    (so there is no visible join and no stretching); phones use the original tall picture. */
 .sk-hero{
-  background:#FAFAFA url(images/sketchbook/hero-bg-wide.jpg) center / cover no-repeat;
+  background-color:#D4E7F7;   /* exactly the icy blue of the top bar */
 }
-@media (max-aspect-ratio:1/1){.sk-hero{background-image:url(images/sketchbook/hero-bg.jpg)}}
+/* the sketch is white with grey lines, so it is multiplied over the blue: the white turns into the blue and the lines stay */
+.sk-hero::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:url(images/sketchbook/hero-bg-wide.jpg) center / cover no-repeat;
+  mix-blend-mode:multiply;
+}
+@media (max-aspect-ratio:1/1){.sk-hero::before{background-image:url(images/sketchbook/hero-bg.jpg)}}
 /* the wallpaper fades out toward the bottom, into exactly the colour of the About section below, so there is no edge */
 .sk-hero::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:44%;z-index:0;pointer-events:none;
