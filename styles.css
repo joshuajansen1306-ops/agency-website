@@ -196,7 +196,7 @@ ul,ol{list-style:none}
 @media (max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:40px}}
 
 /* brands we've worked with: lots of room, ready for logos */
-.home-brands{padding-top:clamp(72px,10vw,160px);padding-bottom:clamp(96px,14vw,240px)}
+.home-brands{padding-top:clamp(72px,10vw,160px);padding-bottom:clamp(8px,1.5vw,24px)}
 .brand-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:clamp(18px,2.4vw,40px);padding-top:clamp(48px,7vw,112px);align-items:center;justify-items:center}
 .brand-logo{grid-column:span 2;width:100%;max-width:clamp(150px,17vw,250px)}
 /* four logos to a line */
@@ -232,7 +232,7 @@ a.brand-link:focus-visible img{transform:translateY(-10px) scale(1.06)}
 .case-shots img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
 @media (max-width:900px){.case{grid-template-columns:1fr}.case-shots li{width:calc(50% - 6px);max-width:240px}}
 /* the case studies button under the brand logos */
-.brand-more{display:flex;justify-content:center;padding-top:clamp(40px,6vw,88px)}
+.brand-more{display:flex;justify-content:center;padding-top:clamp(32px,4.5vw,64px)}
 .brand-more .btn{padding:clamp(16px,1.6vw,22px) clamp(28px,3vw,44px);font-size:clamp(1rem,1.3vw,1.25rem)}
 /* closing call to action */
 .home-cta{padding-bottom:calc(var(--dock-clearance) + clamp(40px,5vw,72px))}
@@ -308,6 +308,7 @@ body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:
 .cta .fine a:hover{border-color:var(--text)}
 /* the "Let's be friends!" closing section is a big, confident finale (home and About) */
 .cta-big{padding-block:clamp(88px,12vw,200px) clamp(48px,6vw,96px)}
+.home-cta.cta-big{padding-top:clamp(40px,5vw,84px)}
 .cta-big .label{font-size:clamp(.9375rem,1.3vw,1.25rem);margin-bottom:clamp(18px,2.4vw,32px)}
 .cta-big h2{font-size:clamp(3.5rem,11vw,11rem);line-height:.92;letter-spacing:-.05em;max-width:none;margin-bottom:clamp(28px,3.4vw,52px)}
 .cta-big p{font-size:clamp(1.1875rem,2.1vw,2rem);line-height:1.35;max-width:26em;margin-bottom:clamp(32px,4vw,60px)}
