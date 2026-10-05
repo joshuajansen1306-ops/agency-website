@@ -302,6 +302,7 @@ body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:
 .cta .label{margin-bottom:18px}
 .cta h2{font-size:var(--fs-title);font-weight:400;letter-spacing:var(--track-title);line-height:1.02;max-width:15em;margin-bottom:22px}
 .cta p{max-width:36em;color:var(--text-muted);margin-bottom:32px}
+.cta h2 + .btn{margin-top:14px}
 .cta .fine{margin:24px 0 0;font-size:var(--fs-small)}
 .cta .fine a{color:var(--text);border-bottom:1px solid var(--line)}
 .cta .fine a:hover{border-color:var(--text)}
