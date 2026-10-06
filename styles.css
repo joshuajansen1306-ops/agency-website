@@ -25,9 +25,9 @@
 
   --font-sans:"Neue Haas Grotesk Display Pro","Neue Haas Grotesk Text Pro","Neue Haas Grotesk","Neue Haas Unica","Helvetica Neue",Helvetica,"Inter",Arial,system-ui,sans-serif;
   --font-mark:"Newsreader",Georgia,serif;
-  /* headings: Auriol Regular; sub-headings: Marcellus, a free look-alike for Albertus Nova. Auriol is licensed, so until their web-font files are added
-     (see the @font-face note at the end of this file) visitors who do not have them installed get the free look-alikes. */
-  --font-head:"Auriol","Auriol LT Std","Auriol LT Pro","Auriol Regular","Instrument Serif",Georgia,"Times New Roman",serif;
+  /* headings: Federo, a free look-alike for Auriol Regular; sub-headings: Marcellus, a free look-alike for Albertus Nova.
+     Both originals are licensed, so these free faces are used instead. */
+  --font-head:"Federo","Instrument Serif",Georgia,"Times New Roman",serif;   /* free (OFL) Art Nouveau face, the closest match to Auriol */
   --font-sub:"Marcellus","Optima",Candara,"Gill Sans",sans-serif;   /* free (OFL) flared face, the closest match to Albertus Nova */
 
   --fs-display:clamp(3.25rem,6vw,5.5rem);
@@ -406,11 +406,9 @@ body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:
 }
 
 /* ---------- type roles ----------
-   Heading text (page titles, section titles, the big closing line): Auriol Regular.
+   Heading text (page titles, section titles, the big closing line): Federo (free, similar to Auriol).
    Sub-heading text (labels, service names, the lines under a heading, legal clause titles): Marcellus (free, similar to Albertus Nova).
-   Body copy keeps the sans. To use the real fonts, drop the licensed files in /fonts and add, e.g.:
-   @font-face{font-family:"Auriol";src:url(fonts/auriol-regular.woff2) format("woff2");font-weight:400;font-display:swap}
-   */
+   Body copy keeps the sans. */
 @font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/instrument-serif.woff2) format('woff2')}
 body .display,body .home-about .row-title,body .section-head h2,body .cta h2,body .home-cta.cta-big .label,body .w-words{
   font-family:var(--font-head);font-weight:400;letter-spacing:-.012em}
