@@ -291,9 +291,9 @@ body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:
 .about-body{padding-block:clamp(40px,5vw,72px);border-bottom:1px solid var(--line)}
 .about-body p{max-width:38em;font-size:1.125rem;margin-bottom:20px}
 .about-body p:last-child{margin-bottom:0}
-.team{display:flex;gap:clamp(12px,1.6vw,24px);align-items:flex-end;margin-top:32px}
+.team{display:flex;gap:clamp(12px,1.6vw,24px);align-items:flex-start;margin-top:32px}
 .member{flex:1 1 0;min-width:0}
-.member img{width:100%;height:auto;border-radius:4px}
+.member img{width:100%;height:auto;aspect-ratio:640/1138;object-fit:cover;border-radius:4px;display:block}
 .member figcaption{margin-top:12px;font-size:1.125rem;display:flex;flex-direction:column;gap:2px}
 .m-role{font-size:var(--fs-small);color:var(--text-muted)}
 .m-des{font-size:var(--fs-small);color:var(--text-muted);opacity:.85}
