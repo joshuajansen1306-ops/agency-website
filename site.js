@@ -20,6 +20,7 @@
   const from = [214, 236, 250], to = [19, 35, 61];    // #D6ECFA -> #13233D
   const bar = [212, 231, 247];                         // the top bar's icy blue, #D4E7F7
   const root = document.documentElement;
+  const bar_el = document.querySelector('.topbar'), hero = document.querySelector('.sk-hero');
   let queued = false;
   const update = () => {
     queued = false;
@@ -38,6 +39,8 @@
     root.style.setProperty('--line', dark ? 'rgb(178 206 226 / .2)' : 'rgb(19 35 61 / .16)');
     root.style.setProperty('--topbar-text', dark ? '#B2CEE2' : '#13233D');
     root.style.setProperty('--topbar-muted', dark ? 'rgb(178 206 226 / .7)' : 'rgb(19 35 61 / .72)');
+    // while the sketch hero is under the bar, the bar is clear; once the hero has scrolled past it, it goes solid again
+    if (bar_el && hero) bar_el.classList.toggle('is-clear', hero.getBoundingClientRect().bottom > bar_el.offsetHeight + 1);
   };
   const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
   addEventListener('scroll', queue, { passive: true });

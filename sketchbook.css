@@ -29,8 +29,10 @@
      bottom margin (15.4% of its width each) is pulled back with negative margin. */
   --sk-w:min(1450px,104vw,calc((var(--sk-h) - var(--sk-pt) - var(--sk-pb) - var(--sk-extra)) / .397));
   position:relative;display:grid;justify-items:center;align-content:center;
-  height:calc(100svh - var(--topbar-h));min-height:520px;overflow:hidden;
-  padding:var(--sk-pt) 0 var(--sk-pb);
+  /* the hero starts at the very top of the page, behind the (clear) top bar, so the sketch runs right up to the edge */
+  margin-top:calc(-1 * var(--topbar-h));
+  height:100svh;min-height:calc(520px + var(--topbar-h));overflow:hidden;
+  padding:calc(var(--sk-pt) + var(--topbar-h)) 0 var(--sk-pb);
   color:var(--ink);
   font-family:var(--font);font-weight:400;-webkit-font-smoothing:antialiased;
   overflow-anchor:none;
@@ -202,7 +204,7 @@
 .sk-hero .sb-wrap.intro.b2 .sb-full img,.sk-hero .sb-wrap.intro.b2 .sb-half-img{filter:url(#sb-mblur-2)}
 
 @media (max-width:640px){
-  .sk-hero{--sk-logo:52px;--sk-h:max(460px,calc(100svh - var(--topbar-h)));min-height:460px}
+  .sk-hero{--sk-logo:52px;--sk-h:max(460px,calc(100svh - var(--topbar-h)));min-height:calc(460px + var(--topbar-h))}
   /* one line on a phone: the size follows the screen width so the whole sentence always fits */
   .sk-kicker{font-size:clamp(9.5px,3vw,15px);white-space:nowrap;max-width:none;padding-inline:0;letter-spacing:0}
   .sk-hero .sb-wrap{width:100vw;margin-inline:calc(50% - 50vw)}

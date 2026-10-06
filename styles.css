@@ -96,7 +96,9 @@ ul,ol{list-style:none}
 .mark--lg{width:64px;height:64px;font-size:2rem}
 
 /* ---------- top bar ---------- */
-.topbar{position:sticky;top:0;z-index:40;background:var(--topbar-bg);color:var(--topbar-text);height:var(--topbar-h);border-bottom:1px solid var(--topbar-line,transparent);transition:color .25s ease}
+.topbar{position:sticky;top:0;z-index:40;background:var(--topbar-bg);color:var(--topbar-text);height:var(--topbar-h);border-bottom:1px solid var(--topbar-line,transparent);transition:color .25s ease,background-color .25s ease}
+/* over the home hero the bar is clear, so the sketch shows through it and moves with the page */
+.topbar.is-clear{background:transparent;border-bottom-color:transparent}
 .topbar :focus-visible{outline-color:var(--topbar-text)}
 .dock :focus-visible{outline-color:var(--navy)}
 .topbar-inner{height:100%;display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px}
