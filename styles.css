@@ -25,6 +25,10 @@
 
   --font-sans:"Neue Haas Grotesk Display Pro","Neue Haas Grotesk Text Pro","Neue Haas Grotesk","Neue Haas Unica","Helvetica Neue",Helvetica,"Inter",Arial,system-ui,sans-serif;
   --font-mark:"Newsreader",Georgia,serif;
+  /* headings: Auriol Regular; sub-headings: Albertus Nova. Both are licensed, so until their web-font files are added
+     (see the @font-face note at the end of this file) visitors who do not have them installed get the free look-alikes. */
+  --font-head:"Auriol","Auriol LT Std","Auriol LT Pro","Auriol Regular","Instrument Serif",Georgia,"Times New Roman",serif;
+  --font-sub:"Albertus Nova","Albertus Nova Regular","Albertus","Marcellus","Optima",Candara,"Gill Sans",sans-serif;
 
   --fs-display:clamp(3.25rem,6vw,5.5rem);
   --fs-title:clamp(2rem,3.4vw,3rem);
@@ -161,7 +165,7 @@ ul,ol{list-style:none}
    ========================================================== */
 .work-scroll{position:relative}
 .work-pin{position:relative;padding:clamp(48px,8vw,110px) var(--gutter) calc(var(--dock-clearance) + 24px)}
-.w-words{font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-weight:400;font-size:clamp(4.5rem,15vw,13rem);line-height:.95;letter-spacing:-.02em;text-align:center;color:var(--text);transition:color .3s ease}
+.w-words{font-family:var(--font-head);font-weight:400;font-size:clamp(4.5rem,15vw,13rem);line-height:.95;letter-spacing:-.02em;text-align:center;color:var(--text);transition:color .3s ease}
 .w-case{display:inline-block;margin-top:10px;color:var(--text);border-bottom:1px solid currentColor;text-transform:none;font-weight:500;letter-spacing:0}
 .w-case:hover{opacity:.8}
 .w-cap{margin:clamp(20px,3vw,40px) auto;max-width:30em;text-align:center;font-weight:600;text-transform:uppercase;letter-spacing:.01em;line-height:1.3;font-size:clamp(.8125rem,1.2vw,1rem);color:var(--text);transition:color .3s ease}
@@ -182,7 +186,7 @@ ul,ol{list-style:none}
 .work-scroll.is-live :where(.w-intro,.w-our,.w-work,.w-para,.w-cap,.w-photos li,.w-more){position:absolute;left:0;top:0;margin:0;will-change:transform,opacity;white-space:nowrap}
 .work-scroll.is-live .w-photos{position:absolute;inset:0;margin:0;max-width:none;display:block;pointer-events:none;z-index:3}
 .work-scroll.is-live .w-photos li{padding:clamp(3px,.42vw,6px);box-sizing:border-box;box-shadow:0 14px 30px rgb(0 0 0 / .32);transform:none}
-.work-scroll.is-live .w-our,.work-scroll.is-live .w-work{visibility:hidden;z-index:1;font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-size:var(--wf,200px);line-height:1;letter-spacing:-.02em;color:var(--text);pointer-events:none;transition:color .3s ease}
+.work-scroll.is-live .w-our,.work-scroll.is-live .w-work{visibility:hidden;z-index:1;font-family:var(--font-head);font-size:var(--wf,200px);line-height:1;letter-spacing:-.02em;color:var(--text);pointer-events:none;transition:color .3s ease}
 .work-scroll.is-live .w-intro{z-index:4;display:grid;gap:3px;font-size:var(--fs-small);color:var(--text-muted);transition:color .3s ease}
 .work-scroll.is-live .w-tag{font-weight:400;font-size:clamp(1rem,1.6vw,1.5rem);letter-spacing:-.01em;color:var(--text);transition:color .3s ease}
 .work-scroll.is-live .w-rule{display:block;width:4.2rem;height:1px;margin-top:10px;background:var(--text-muted)}
@@ -400,3 +404,23 @@ body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none !important}
 }
+
+/* ---------- type roles ----------
+   Heading text (page titles, section titles, the big closing line): Auriol Regular.
+   Sub-heading text (labels, service names, the lines under a heading, legal clause titles): Albertus Nova.
+   Body copy keeps the sans. To use the real fonts, drop the licensed files in /fonts and add, e.g.:
+   @font-face{font-family:"Auriol";src:url(fonts/auriol-regular.woff2) format("woff2");font-weight:400;font-display:swap}
+   @font-face{font-family:"Albertus Nova";src:url(fonts/albertus-nova.woff2) format("woff2");font-weight:400;font-display:swap} */
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/instrument-serif.woff2) format('woff2')}
+body .display,body .home-about .row-title,body .section-head h2,body .cta h2,body .home-cta.cta-big .label,body .w-words{
+  font-family:var(--font-head);font-weight:400;letter-spacing:-.012em}
+body .display{line-height:1}
+body .cta-big h2,body .home-about .row-title{line-height:.98}
+body .row-title,body .label,body .sublabel,body .crumb,body .legal h2,body .stage h3,
+body .cta p,body .home-cta p,body .section-head p{
+  font-family:var(--font-sub);font-weight:400;letter-spacing:.01em}
+body .home-about .row-title{letter-spacing:-.012em}
+body .home-cta.cta-big .label{letter-spacing:-.005em}
+body .row-title{letter-spacing:0}
+body .home-about .row-title{letter-spacing:-.012em}
+body .home-cta.cta-big .label{font-size:calc(clamp(1.5rem,3vw,2.75rem) * 1.12)}   /* the heading serif reads smaller than the sub-heading face at the same size */
