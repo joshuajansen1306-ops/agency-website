@@ -7,10 +7,9 @@
   --navy:#13233D;          /* 60%: background */
   --sky:#B2CEE2;           /* 30%: text */
   --cream:#ECECE5;         /* 20%: icons, buttons */
-  --indigo:#3A4F99;        /* held in reserve for accents */
+  --indigo:#3A4F99;        /* accent (the logo on the pale hero) */
   --sky-70:rgb(178 206 226 / .7);
   --sky-20:rgb(178 206 226 / .2);
-  --sky-10:rgb(178 206 226 / .1);
 
   /* semantic */
   --bg:var(--navy);
@@ -39,11 +38,10 @@
   --topbar-h:56px;
   --dock-clearance:112px;
 
-  /* component */
-  --topbar-bg:var(--navy);
-  --topbar-text:var(--sky);
-  --topbar-muted:var(--sky-70);
-  --topbar-line:var(--sky-20);
+  /* component (the home page changes these as you scroll: icy blue at the top, the navy further down) */
+  --topbar-bg:#D4E7F7;
+  --topbar-text:var(--navy);
+  --topbar-muted:rgb(19 35 61 / .72);
   --dock-bg:var(--cream);
   --dock-border:rgb(19 35 61 / .16);
   --dock-text:var(--navy);
@@ -97,7 +95,7 @@ ul,ol{list-style:none}
 
 /* ---------- top bar ---------- */
 .topbar{position:sticky;top:0;z-index:40;background:var(--topbar-bg);color:var(--topbar-text);height:var(--topbar-h);border-bottom:1px solid var(--topbar-line,transparent);transition:color .25s ease}
-.topbar :focus-visible{outline-color:var(--cream)}
+.topbar :focus-visible{outline-color:var(--topbar-text)}
 .dock :focus-visible{outline-color:var(--navy)}
 .topbar-inner{height:100%;display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px}
 .clock{display:flex;align-items:baseline;gap:10px;font-size:var(--fs-small);font-variant-numeric:tabular-nums}
@@ -166,7 +164,7 @@ ul,ol{list-style:none}
 .work-scroll.is-live .w-words{position:static;font-size:inherit;line-height:inherit;letter-spacing:inherit;text-align:inherit}
 .work-scroll.is-live :where(.w-intro,.w-our,.w-work,.w-para,.w-cap,.w-photos li,.w-more){position:absolute;left:0;top:0;margin:0;will-change:transform,opacity;white-space:nowrap}
 .work-scroll.is-live .w-photos{position:absolute;inset:0;margin:0;max-width:none;display:block;pointer-events:none;z-index:3}
-.work-scroll.is-live .w-photos li{padding:clamp(3px,.42vw,6px);box-sizing:border-box;box-shadow:0 14px 30px rgb(0 0 0 / .4);transform:none}
+.work-scroll.is-live .w-photos li{padding:clamp(3px,.42vw,6px);box-sizing:border-box;box-shadow:0 14px 30px rgb(0 0 0 / .32);transform:none}
 .work-scroll.is-live .w-our,.work-scroll.is-live .w-work{visibility:hidden;z-index:1;font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-size:var(--wf,200px);line-height:1;letter-spacing:-.02em;color:var(--text);pointer-events:none;transition:color .3s ease}
 .work-scroll.is-live .w-intro{z-index:4;display:grid;gap:3px;font-size:var(--fs-small);color:var(--text-muted);transition:color .3s ease}
 .work-scroll.is-live .w-tag{font-weight:400;font-size:clamp(1rem,1.6vw,1.5rem);letter-spacing:-.01em;color:var(--text);transition:color .3s ease}
@@ -243,6 +241,9 @@ a.brand-link:focus-visible img{transform:translateY(-10px) scale(1.06)}
 .home-foot nav a:hover,.home-foot .mail:hover{color:var(--text)}
 /* the pinned footer sits over the cream sketchbook hero before the page scrolls */
 .home-foot,.home-foot nav{transition:color .2s ease}
+body.on-paper .home-foot{color:#13233D}
+body.on-paper .home-foot nav{color:rgb(19 35 61 / .72)}
+body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:#13233D}
 
 /* ==========================================================
    Inner pages
