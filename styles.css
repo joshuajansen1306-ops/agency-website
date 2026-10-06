@@ -422,3 +422,6 @@ body .home-cta.cta-big .label{letter-spacing:-.005em}
 body .row-title{letter-spacing:0}
 body .home-about .row-title{letter-spacing:-.012em}
 body .home-cta.cta-big .label{font-size:calc(clamp(1.5rem,3vw,2.75rem) * 1.12)}   /* the heading serif reads smaller than the sub-heading face at the same size */
+
+/* the Fable&Co wordmark face (the same serif as the logo on the home hero) wherever the name is written in the copy */
+.fc{font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-weight:inherit;font-size:1.14em;line-height:1;letter-spacing:0;white-space:nowrap}
