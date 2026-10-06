@@ -292,7 +292,9 @@ body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:
 .team{display:flex;gap:clamp(12px,1.6vw,24px);align-items:flex-end;margin-top:32px}
 .member{flex:1 1 0;min-width:0}
 .member img{width:100%;height:auto;border-radius:4px}
-.member figcaption{margin-top:12px;font-size:1.125rem}
+.member figcaption{margin-top:12px;font-size:1.125rem;display:flex;flex-direction:column;gap:2px}
+.m-role{font-size:var(--fs-small);color:var(--text-muted)}
+.m-des{font-size:var(--fs-small);color:var(--text-muted);opacity:.85}
 .team-follow{margin-top:28px;font-size:var(--fs-small)}
 
 /* call to action */
