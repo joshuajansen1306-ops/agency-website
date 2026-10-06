@@ -2,7 +2,7 @@
    Our work: one pinned stage, two sections on a single track.
 
    Scrolling slides the track sideways, the way the reference pin does:
-     1  intro   "Hey, we're Fable&Co" and three photos
+     1  intro   three photos
      2  ring    the intro photos slide away to the left while a ring of
                 photos sweeps in from the right and settles; the caption
                 fades up and everything holds still
@@ -23,7 +23,7 @@
   if (!sec || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const pin = sec.querySelector('.work-pin');
   const q = s => sec.querySelector(s);
-  const D = { intro: q('.w-intro'), our: q('.w-our'), work: q('.w-work'), cap: q('.w-cap'), more: q('.w-more') };
+  const D = { our: q('.w-our'), work: q('.w-work'), cap: q('.w-cap'), more: q('.w-more') };
   const photos = [...sec.querySelectorAll('.w-photos li')];
   if (!pin || Object.values(D).some(v => !v) || photos.length < 13) return;
   sec.classList.add('is-live');
@@ -71,7 +71,6 @@
       wf: (W, H) => H * .78,
       our: [R(0, .42, .80, 0, 1), R(.31, -.75, .56, 0, .80), R(1, -.75, .56, 0, .80)],
       work: [R(0, 1.78, .80, 0, 1), R(.31, .50, .56, 0, .92), R(.58, .46, .56, 0, .92), R(.92, -1.15, .56, 0, .92), R(1, -1.15, .56, 0, .92)],
-      intro: [R(0, .076, .14), R(.31, -.58, .12), R(1, -.58, .12)],
       cap: [R(0, .05, .83, 0, 1, 0), R(.24, .05, .83, 0, 1, 0), R(.33, .05, .79, 0, 1, 1), R(.58, .05, .79, 0, 1, 1), R(.90, -.95, .79, 0, 1, 1), R(1, -.95, .79, 0, 1, 1)],
       photoY: y => y, photoW: w => w
     },
@@ -79,7 +78,6 @@
       wf: (W, H) => W * .52,
       our: [R(0, .50, .42, 0, 1), R(.31, -.75, .47, 0, .70), R(1, -.75, .47, 0, .70)],
       work: [R(0, 1.75, .42, 0, 1), R(.31, .50, .47, 0, .70), R(.58, .47, .47, 0, .70), R(.92, -1.1, .47, 0, .70), R(1, -1.1, .47, 0, .70)],
-      intro: [R(0, .07, .07), R(.31, -.80, .07), R(1, -.80, .07)],
       cap: [R(0, .07, .79, 0, 1, 0), R(.52, .07, .79, 0, 1, 0), R(.64, .07, .79, 0, 1, 1), R(.70, .07, .79, 0, 1, 1)],
       photoY: y => .56 + (y - .5) * .60, photoW: (w, i) => i >= 3 ? Math.min(portScene(i).w, 200 / W) * PS.wf : Math.min(w * 1.8, .36, 220 / W)
     }
@@ -176,7 +174,7 @@
   };
   const build = () => {
     T = {
-      our: track(L.our), work: track(L.work), intro: track(L.intro), cap: track(mode === 'port' ? L.cap.map(r => [r[0], r[1], PS.capY, r[3], r[4], r[5]]) : L.cap),
+      our: track(L.our), work: track(L.work), cap: track(mode === 'port' ? L.cap.map(r => [r[0], r[1], PS.capY, r[3], r[4], r[5]]) : L.cap),
       ph: PH.map((ph, i) => {
         const rows = ph.k.map(r => [r[0], r[1], L.photoY(r[2]), r[3], r[4], r[5]]);
         if (i < 3) {
@@ -204,7 +202,7 @@
         PS = { sy: sy, wf: Math.min(1, sy * .94), capY: capY };
       } else PS = { sy: 1, wf: 1, capY: .79 };
     }
-    [D.our, D.work, D.intro, D.cap, D.more, ...photos].forEach(e => { e.style.transform = 'none'; });
+    [D.our, D.work, D.cap, D.more, ...photos].forEach(e => { e.style.transform = 'none'; });
     photos.forEach((li, i) => { const f = PH[i] ? L.photoW(PH[i].fw, i) : .15; li.style.width = (f * W).toFixed(1) + 'px'; });
     /* "scroll to continue" is fixed at the bottom-right, above the dock */
     const dock = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dock-clearance')) || 112;
@@ -227,7 +225,6 @@
     /* the words: x = centre, y = baseline; the pivot is the baseline's centre, so scaling keeps them put */
     let v = T.our(p);  put(D.our, v[0] * W - D.our.offsetWidth / 2, (v[1] + .06 * k) * H - base.our, 0, v[3], 1);
     v = T.work(p);     put(D.work, v[0] * W - D.work.offsetWidth / 2, (v[1] + .06 * k) * H - base.work, 0, v[3], 1);
-    v = T.intro(p);    put(D.intro, v[0] * W, v[1] * H, 0, 1, 1);
     v = T.cap(p);      put(D.cap, v[0] * W, v[1] * H, 0, 1, v[4]);
     D.cap.style.pointerEvents = v[4] > .6 ? 'auto' : 'none';   /* the case-study link inside it is only clickable once it has appeared */
     /* "scroll to continue" sits bottom-right and goes once the ring has settled */
