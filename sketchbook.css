@@ -14,7 +14,7 @@
   --ink:#13233D;
   --ink-soft:rgba(19,35,61,.58);
   --display:'Instrument Serif',"New York",Georgia,'Times New Roman',serif;
-  --font:'Newsreader Upright',"New York",Georgia,'Times New Roman',serif;
+  --font:var(--font-sans);
   --track-caps:.24em;
   /* room the book may use: the hero's height minus its padding and kicker */
   --sk-h:max(520px,calc(100svh - var(--topbar-h)));
