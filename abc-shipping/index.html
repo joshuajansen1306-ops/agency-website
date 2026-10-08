@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>ABC Shipping – Booking Portal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/my-day" aria-label="ABC Shipping home">
+      <span class="brand-mark">ABC</span>
+      <span class="brand-sub">SHIPPING · SUPPLY CHAINS IN SYNC</span>
+    </a>
+    <div class="quick-search">
+      <input id="quickSearch" type="text" placeholder="Quick Search… (booking #)" autocomplete="off">
+      <button id="quickClear" title="Clear" aria-label="Clear search">✕</button>
+    </div>
+    <div class="top-right">
+      <span class="user-id" id="userId">ABC-OPS01</span>
+      <span class="top-link">PORTAL ↗</span>
+      <button class="top-icon" id="btnReset" title="Reset demo data" aria-label="Reset demo data"></button>
+      <button class="top-icon" id="btnLogout" title="Sign out (resets session)" aria-label="Sign out"></button>
+    </div>
+  </header>
+
+  <div class="shell" id="shell">
+    <nav class="sidebar" id="sidebar" aria-label="Main menu"></nav>
+    <main class="content" id="content" tabindex="-1"></main>
+  </div>
+
+  <div id="modalRoot"></div>
+  <div id="toastRoot" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
