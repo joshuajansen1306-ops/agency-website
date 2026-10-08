@@ -48,3 +48,9 @@ After **Confirm**, the booking waits under *Bookings Not Yet Moved to Shipment*.
 ## Data
 All sample data is in `data.js` (fictional). State (confirmed/declined/edits) is kept in the browser's
 `localStorage`; the reset icon in the top bar restores the originals.
+
+## Visitor log (published page only)
+When the page is published as an artifact, every open is recorded: the visitor's id and the time (shared `visits`
+collection, one document per person, last 200 opens). Names are looked up when the log is shown. The owner and editors
+get a **VISITORS** link in the top bar; everyone else sees a notice that visits are recorded. Only people with
+Contributor access or higher can be recorded. Opened as a plain file, nothing is logged.

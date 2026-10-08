@@ -740,10 +740,59 @@
     $('#content').innerHTML = '<div class="page-head"><h1>' + esc(TITLES[slug] || 'Module') + '</h1></div><div class="panel empty">This module isn’t part of the demo.<br><br><a class="btn primary" href="#/booking" style="text-decoration:none">Go to Booking</a></div>';
   }
 
+  /* ------------------------------------------------------- visitor log */
+  /* Uses the artifact runtime (window.claude) when the page is published; does nothing when opened as a plain file.
+     Each visitor has one document, visits/<their id>: first/last time, count and their last 200 opens (ISO times).
+     Only ids are stored; names are looked up when the log is shown. */
+  let unsubVisits = null;
+  async function cl(name) { try { return window.claude && window.claude.use ? await window.claude.use(name) : null; } catch (e) { return null; } }
+  const fmtTime = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }); };
+
+  async function trackVisit() {
+    try {
+      const [db, user] = await Promise.all([cl('db'), cl('user')]);
+      if (!db || !user) return;
+      $('#privacy').hidden = false;
+      const id = await user.id();
+      if (!id || (await user.can('data.write')) === false) return;
+      const ref = db.doc('visits/' + id), snap = await ref.get(), old = (snap.exists && snap.data()) || {};
+      const now = new Date().toISOString(), log = Array.isArray(old.log) ? old.log : [];
+      if (log.length && Date.now() - Date.parse(log[log.length - 1]) < 60000) return;   // reload within a minute = same visit
+      await ref.set({ userId: id, firstSeen: old.firstSeen || now, lastSeen: now, count: (old.count || 0) + 1, log: log.concat(now).slice(-200) });
+    } catch (e) { /* tracking must never break the page */ }
+  }
+  async function revealVisitors() {
+    const user = await cl('user');
+    if (user && (await user.canEdit())) $('#visLink').hidden = false;
+  }
+  async function viewVisitors() {
+    const c = $('#content');
+    c.innerHTML = '<div class="page-head"><h1>Visitors</h1></div><div class="panel empty" id="visBody">Loading…</div>';
+    const [db, user] = await Promise.all([cl('db'), cl('user')]);
+    const body = () => $('#visBody');
+    if (!db || !user || !(await user.canEdit())) { if (body()) body().textContent = 'Only the owner and editors can see who opened this page.'; return; }
+    if (location.hash !== '#/visitors') return;
+    const me = await user.id();
+    const draw = async (snap) => {
+      if (!body()) return;
+      const rows = snap.docs.map((d) => d.data()).filter(Boolean).sort((p, q) => String(q.lastSeen).localeCompare(String(p.lastSeen)));
+      const ps = rows.length ? await user.profiles(rows.map((r) => r.userId)) : {};
+      const opens = rows.reduce((n, r) => n + (r.count || 0), 0);
+      body().className = '';
+      body().innerHTML = '<div class="grid-bar"><span class="left">' + rows.length + ' people · ' + opens + ' opens. Updates live. Only people with Contributor access or higher are recorded; view-only and signed-out visitors cannot be.</span></div>' +
+        (rows.length ? '<div class="grid-wrap"><table class="grid ship"><thead><tr><th class="nosort">NAME</th><th class="nosort">FIRST OPENED</th><th class="nosort">LAST OPENED</th><th class="nosort">TIMES OPENED</th><th class="nosort">RECENT OPENS</th></tr></thead><tbody>' +
+          rows.map((r) => '<tr><td><b>' + esc((ps[r.userId] && ps[r.userId].name) || 'Unnamed visitor') + '</b>' + (r.userId === me ? ' <span class="muted">(you)</span>' : '') + '</td><td>' + esc(fmtTime(r.firstSeen)) + '</td><td>' + esc(fmtTime(r.lastSeen)) + '</td><td class="num">' + (r.count || 0) +
+            '</td><td class="keys">' + (r.log || []).slice(-5).reverse().map((t) => '<span>' + esc(fmtTime(t)) + '</span>').join('') + '</td></tr>').join('') + '</tbody></table></div>'
+          : '<div class="panel empty">Nobody has opened it yet.</div>');
+    };
+    unsubVisits = db.collection('visits').onSnapshot(draw, () => { if (body()) body().textContent = 'The visitor log could not be loaded.'; });
+  }
+
   /* --------------------------------------------------------------- router */
   function route() {
     const parts = (location.hash.replace(/^#\/?/, '') || 'my-day').split('/');
     const seg = parts[0], arg = parts[1] ? decodeURIComponent(parts[1]) : '';
+    if (unsubVisits) { unsubVisits(); unsubVisits = null; }
     setActive(seg, arg);
     $('#content').scrollTop = 0; window.scrollTo(0, 0);
     if (seg === 'booking' && arg) return viewWorkspace(arg);
@@ -752,6 +801,7 @@
       return seg === 'booking' ? viewOverview() : viewManage();
     }
     if (seg === 'shipments') return viewShipments();
+    if (seg === 'visitors') return viewVisitors();
     if (seg === 'module') return viewModule(arg);
     return viewMyDay();
   }
@@ -759,6 +809,7 @@
   /* ----------------------------------------------------------------- init */
   function init() {
     buildSidebar();
+    $('#sidebar').insertAdjacentHTML('beforeend', '<div class="privacy" id="privacy" hidden>Opening this page is recorded with your name and the time.</div>');
     $('#btnReset').innerHTML = ico('rotate'); $('#btnLogout').innerHTML = ico('logout');
     $('#btnReset').addEventListener('click', () => modal({
       title: 'Reset demo data', body: '<p>This restores every booking to its original state (all confirmations, declines and edits are cleared).</p>',
@@ -776,6 +827,7 @@
     document.addEventListener('click', () => { const m = $('#menuList'); if (m) m.classList.remove('open'); });
     window.addEventListener('hashchange', route);
     route();
+    trackVisit(); revealVisitors();
   }
   init();
 })();
