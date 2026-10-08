@@ -31,6 +31,20 @@ Example: delivery 10/13/2026 → FOB ETD 10/19, ETAs 11/19, SI cutoff 10/14, car
 - **⚡ Auto-Process Selected** (overview) does Auto-Fill + Confirm for every ticked booking; bookings flagged
   *Ready to Decline* / *Not Ready to Process* are skipped for a human.
 
+## Step 2 – Move Booking to Shipment
+After **Confirm**, the booking waits under *Bookings Not Yet Moved to Shipment*. Open it → **☰ menu → Move Booking to Shipment**
+(or click *Move to Shipment* in the prompt that appears right after Confirm).
+
+- The **ship key depends on the FOB ETD**. The sailing schedule (NEW YORK (MAERSK) / EFLR, Mondays) is in
+  `data.js` → `SHIPMENT_LANES`, copied from the planning sheet. FOB ETD 10/19/2026 → `981N002185BB0`,
+  10/26/2026 → `981N002188BB0`.
+- The dialog suggests the right key ("Use this key"). A key that sails on a different date, a closed (green) shipment
+  or an unknown key is rejected with the reason.
+- On submit the booking key is saved under the ship key. **Shipping → Shipment Schedule** lists every ship key with
+  its booking keys and the total cartons / volume / weight, ready for container booking later.
+- **⚡ Auto-Process Selected** can do the whole chain (fill → confirm → move) in one go; the "Also move confirmed
+  bookings to their shipment" box controls the last step.
+
 ## Data
 All sample data is in `data.js` (fictional). State (confirmed/declined/edits) is kept in the browser's
 `localStorage`; the reset icon in the top bar restores the originals.

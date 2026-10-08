@@ -77,6 +77,21 @@ window.ABC_DATA = (function () {
     'Sneha Kulkarni': ['sneha.kulkarni@abcshipping.example', '91-22-40002001'],
   };
 
+
+  /* Sailing schedule – NEW YORK (MAERSK) / EFLR, Monday, from the planning sheet.
+     closed = green row in the sheet (containers already booked). Years assumed 2026. */
+  const SHIPMENT_LANES = [{
+    id: 'NEW YORK', title: 'NEW YORK (MAERSK) / EFLR', weekday: 'Monday', carrier: 'Maersk(MAEU)', dest: 'New York', service: 'EFLR',
+    shipments: [
+      ['981N002122BB0', '08/17/2026', 1], ['981N002126BB0', '08/24/2026', 1], ['981N002132BB0', '08/31/2026', 1],
+      ['981N002151BB0', '09/07/2026', 1], ['981N002141BB0', '09/14/2026', 1], ['981N002165BB0', '09/20/2026', 1],
+      ['981N002166BB0', '09/20/2026', 1], ['981N002160BB0', '09/21/2026', 0], ['981N002176BB0', '09/21/2026', 0],
+      ['981N002164BB0', '09/28/2026', 0], ['981N002167BB0', '10/12/2026', 0], ['981N002185BB0', '10/19/2026', 0],
+      ['981N002188BB0', '10/26/2026', 0], ['981N002196BB0', '11/02/2026', 0],
+    ].map((r) => ({ key: r[0], etd: r[1], closed: !!r[2] })),
+  }];
+  const LANE_TABS = ['SHEKOU', 'SHANGHAI', 'ROTTERDAM', 'NEW YORK'];
+
   /* ---------- item generator ---------- */
   const SIZES = ['XX SMALL', 'X SMALL', 'SMALL', 'MEDIUM', 'LARGE', 'X LARGE', 'XXLARGE'];
   function items(po, productBase, color, desc, n, bulkIdx, seed) {
@@ -115,6 +130,7 @@ window.ABC_DATA = (function () {
       vendorContact: o.vendorContact || 'Kavita Rao', vendorPhone: '', vendorEmail: o.vendorEmail,
       subVendor: '', subContact: '', subPhone: '', subEmail: '',
       usVendor: 'No', vendorRef: '', incoterms: '', bookingType: '',
+      shipKey: '', shipMovedDate: '',
       createdDate: o.created, receivedDate: o.received, confirmDate: o.confirmDate,
       contactName: o.contactName, contactPhone: o.contactPhone || '022-48044300', contactFax: '022-48006311', contactEmail: o.contactEmail,
       opContact: o.op || 'Meera Iyer', opEmail: op[0], opPhone: op[1],
@@ -177,7 +193,7 @@ window.ABC_DATA = (function () {
       shipperAddress: '88, MANGALAM ROAD, KUMARAN NAGAR\nTIRUPPUR, TAMIL NADU 641604\nState Code: 33  State Name: Tamil Nadu',
       mfrName: 'Kaveri Knitwear - Unit 2', mfrAddr1: '88 MANGALAM ROAD', mfrCity: 'TIRUPPUR', mfrState: 'TN', mfrPostal: '641604',
       fobPort: 'Chennai', fobEtd: '10/21/2026', dischargeEta: '11/24/2026', estDelivery: '10/15/2026', cutoff: '10/19/2026',
-      carrier: 'MSC(MSCU)', finalDest: 'Savannah, GA', dc: 'Savannah, GA', shipTo: 'Summit USA, GA',
+     
       items: items('3209114', 676300110, 'HEATHER GREY', 'MENS FLEECE JOGGER', 6, 2, 2),
     }),
     booking({
@@ -187,7 +203,7 @@ window.ABC_DATA = (function () {
       shipperAddress: '14 INDUSTRIAL AREA PHASE II\nLUDHIANA, PUNJAB 141003\nState Code: 3  State Name: Punjab',
       mfrName: 'Bluewave Garments - Woven Unit', mfrAddr1: '14 INDUSTRIAL AREA', mfrAddr2: 'PHASE II', mfrCity: 'LUDHIANA', mfrState: 'PB', mfrPostal: '141003',
       fobPort: 'Mundra', fobEtd: '10/24/2026', dischargeEta: '11/26/2026', estDelivery: '10/17/2026', cutoff: '10/22/2026',
-      carrier: 'Hapag-Lloyd(HLCU)',
+     
       items: items('3209201', 676410220, 'INDIGO WASH', 'MENS DENIM SHIRT', 7, 1, 4),
     }),
     booking({
@@ -197,7 +213,7 @@ window.ABC_DATA = (function () {
       shipperAddress: 'GALA 7-9, ANDHERI INDUSTRIAL ESTATE\nMUMBAI, MAHARASHTRA 400093\nState Code: 27  State Name: Maharashtra',
       mfrName: 'Sunrise Textiles - Unit 1', mfrAddr1: 'GALA 7-9', mfrCity: 'MUMBAI', mfrState: 'MH', mfrPostal: '400093',
       fobPort: 'Nhava Sheva', fobEtd: '10/27/2026', dischargeEta: '11/30/2026', estDelivery: '10/20/2026', cutoff: '10/25/2026',
-      carrier: 'ONE(ONEY)', finalDest: 'Reno, NV', dc: 'Reno, NV', shipTo: 'Summit USA, NV',
+     
       items: items('3209255', 676520330, 'OATMEAL', 'WMNS CASHMERE BLEND SWEATER', 5, 3, 1),
     }),
     booking({
@@ -207,7 +223,7 @@ window.ABC_DATA = (function () {
       shipperAddress: '5 SEEPZ SPECIAL ECONOMIC ZONE\nMUMBAI, MAHARASHTRA 400096\nState Code: 27  State Name: Maharashtra',
       mfrName: 'Orchid Apparel - SEEPZ', mfrAddr1: '5 SEEPZ SEZ', mfrCity: 'MUMBAI', mfrState: 'MH', mfrPostal: '400096',
       fobPort: 'Nhava Sheva', fobEtd: '10/09/2026', dischargeEta: '11/10/2026', estDelivery: '10/05/2026', cutoff: '10/05/2026',
-      carrier: 'CMA CGM(CMDU)',
+     
       items: items('3209070', 676110440, 'WHITE', 'GIRLS WOVEN BLOUSE', 4, 0, 5),
     }),
     booking({
@@ -217,7 +233,7 @@ window.ABC_DATA = (function () {
       shipperAddress: 'SURVEY 212, GIDC ESTATE, SACHIN\nSURAT, GUJARAT 394230\nState Code: 24  State Name: Gujarat',
       mfrName: 'Lotus Home Textiles - Terry Unit', mfrAddr1: 'SURVEY 212, GIDC', mfrCity: 'SURAT', mfrState: 'GJ', mfrPostal: '394230',
       fobPort: 'Mundra', fobEtd: '10/28/2026', dischargeEta: '11/29/2026', estDelivery: '10/22/2026', cutoff: '10/26/2026',
-      carrier: 'Evergreen(EGLV)', finalDest: 'Savannah, GA', dc: 'Savannah, GA', shipTo: 'Summit USA, GA',
+     
       items: items('3209310', 676630550, 'NATURAL', 'COTTON TERRY BATH TOWEL', 6, 5, 3),
     }),
     booking({
@@ -251,5 +267,5 @@ window.ABC_DATA = (function () {
     }));
   }
 
-  return { COMPANIES, STUFFING, RULES, LISTS, OPS, DOCS, bookings: open.concat(declined) };
+  return { COMPANIES, STUFFING, RULES, LISTS, OPS, DOCS, SHIPMENT_LANES, LANE_TABS, bookings: open.concat(declined) };
 })();

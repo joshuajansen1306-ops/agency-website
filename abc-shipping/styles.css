@@ -226,3 +226,25 @@ table.grid { border-collapse: collapse; width: 100%; min-width: 1100px; }
   .print-doc, .print-doc * { visibility: visible; }
   .print-doc { position: absolute; left: 0; top: 0; width: 100%; border: 0; }
 }
+
+/* ---------- shipment step ---------- */
+.mv label { display: block; font-size: 12.5px; color: #3c4d66; margin: 12px 0 3px; }
+.mv label:first-child { margin-top: 0; }
+.mv select:disabled { background: var(--ro); color: #3a465a; cursor: not-allowed; }
+.mv-hint { font-size: 12.5px; color: #3c4d66; margin-top: 8px; line-height: 1.45; }
+.linkbtn { border: 0; background: transparent; color: var(--blue); text-decoration: underline; font-size: 12.5px; padding: 0; }
+.optrow { display: flex; gap: 8px; align-items: center; margin: 4px 0 10px; font-size: 13px; }
+.optrow input { width: auto; }
+.menu-wrap { position: relative; }
+.menu { display: none; position: absolute; right: 0; top: calc(100% + 4px); min-width: 250px; background: #fff; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 8px 22px rgba(10, 30, 70, .25); z-index: 15; padding: 4px 0; }
+.menu.open { display: block; }
+.menu button { display: block; width: 100%; text-align: left; border: 0; background: transparent; padding: 10px 16px; font-size: 13.5px; color: var(--ink); }
+.menu button:hover { background: #eef3fb; color: var(--blue); }
+.lane-band { background: #d9634a; color: #fff; font-weight: 700; text-align: center; padding: 10px; border-radius: 4px 4px 0 0; letter-spacing: .5px; }
+.grid.ship { min-width: 980px; }
+.grid.ship td.keys a { display: block; line-height: 1.7; }
+.grid.ship td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.grid.ship tr.closed td { background: #bfe8a3; }
+.grid.ship tr.flash td { background: var(--yellow); }
+.muted { color: var(--muted); }
+.legend i.g { background: #bfe8a3; border-color: #8cc46a; }

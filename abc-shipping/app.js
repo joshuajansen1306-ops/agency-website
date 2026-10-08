@@ -2,7 +2,7 @@
   'use strict';
   const D = window.ABC_DATA;
   const L = D.LISTS;
-  const KEY = 'abc-shipping-demo-v2';
+  const KEY = 'abc-shipping-demo-v3';
   const CO_KEY = 'abc-shipping-company';
   const VIEWED_KEY = 'abc-shipping-viewed';
   const PAGE_SIZE = 10;
@@ -154,6 +154,84 @@
     return { filled, missing, stuffing: name || '' };
   }
 
+  /* ------------------------------------------------------------ shipments */
+  const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function longDate(s) { const d = parseDate(s); return d ? d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()] : (s || ''); }
+  const laneFor = (b) => D.SHIPMENT_LANES.find((l) => l.carrier === b.fields.carrier && String(b.fields.finalDest || '').toLowerCase().indexOf(l.dest.toLowerCase()) === 0);
+  /* The ship key depends on the FOB ETD: find the open shipment that sails that day. */
+  function suggestShip(b) {
+    const lane = laneFor(b);
+    if (!lane) return { lane: null, key: '', note: 'No sailing schedule is loaded for ' + (b.fields.carrier || 'this carrier') + ' to ' + (b.fields.finalDest || 'this destination') + '.' };
+    const etd = String(b.fields.fobEtd || '').trim();
+    if (!etd) return { lane, key: '', note: 'Fill in the FOB ETD first, the ship key depends on it.' };
+    const open = lane.shipments.filter((s) => s.etd === etd && !s.closed);
+    if (!open.length) return { lane, key: '', note: 'No open shipment sails on ' + etd + ' in the ' + lane.title + ' schedule.' };
+    return { lane, key: open[0].key, note: 'FOB ETD ' + etd + ' (' + longDate(etd) + ') sails as ' + open[0].key + (open.length > 1 ? '. ' + open.length + ' shipments sail that day: ' + open.map((s) => s.key).join(', ') + '.' : '.') };
+  }
+  function moveError(b, key) {
+    if (b.status !== 'Confirmed') return 'Only a confirmed booking can be moved to a shipment.';
+    if (b.fields.shipKey) return 'This booking is already in shipment ' + b.fields.shipKey + '.';
+    key = String(key || '').trim();
+    if (!key) return 'Enter a ship key.';
+    const sg = suggestShip(b);
+    if (!sg.lane) return sg.note;
+    const s = sg.lane.shipments.find((x) => x.key.toLowerCase() === key.toLowerCase());
+    if (!s) return 'Ship key ' + key + ' is not in the ' + sg.lane.title + ' schedule.';
+    if (s.closed) return 'Shipment ' + s.key + ' is closed (containers already booked).';
+    const etd = String(b.fields.fobEtd || '').trim();
+    if (s.etd !== etd) return 'Ship key ' + s.key + ' sails on ' + longDate(s.etd) + ' but this booking’s FOB ETD is ' + (etd ? longDate(etd) : 'empty') + '.' + (sg.key ? ' Use ' + sg.key + '.' : '');
+    return '';
+  }
+  function doMove(b, key) {
+    const s = laneFor(b).shipments.find((x) => x.key.toLowerCase() === String(key).trim().toLowerCase());
+    b.fields.shipKey = s.key; b.fields.shipMovedDate = today(); persist();
+    return s;
+  }
+  let lastMoved = '', laneTab = 'NEW YORK';
+  const afterMove = (s) => { lastMoved = s.key; location.hash = '#/shipments'; };
+
+  /* The "Move Booking To Shipment" dialog from the ☰ menu. */
+  function openMove(b, after) {
+    const sg = suggestShip(b);
+    modal({
+      title: 'Move Booking To Shipment',
+      body: '<div class="mv"><label>Select Move Type</label><select id="mvType"><option>Move Booking to Existing Shipment</option></select>' +
+        '<label>Select Ship Mode</label><select id="mvMode" disabled><option>' + esc(b.fields.shipMode) + '</option></select>' +
+        '<label>Select Carrier</label><select id="mvCarrier" disabled><option></option></select>' +
+        '<label>Select Service Contract</label><select id="mvSvc" disabled><option></option></select>' +
+        '<label for="mvKey">Enter Ship Key:</label><input id="mvKey" autocomplete="off" spellcheck="false">' +
+        '<div class="mv-hint" id="mvHint"></div><div class="err" id="mvErr"></div></div>',
+      buttons: [
+        {
+          label: 'Submit', cls: 'primary', onClick: (bg) => {
+            const key = $('#mvKey', bg).value, err = moveError(b, key);
+            if (err) { $('#mvErr', bg).textContent = err; return false; }
+            const s = doMove(b, key);
+            toast('Booking ' + b.id + ' moved to shipment ' + s.key + ' (' + longDate(s.etd) + ')', 'ok');
+            if (after) after(s);
+          },
+        },
+        { label: 'Cancel' },
+      ],
+      onMount: (bg) => {
+        const key = $('#mvKey', bg), submit = $$('.mf .btn', bg)[0], hint = $('#mvHint', bg);
+        hint.innerHTML = esc(sg.note) + (sg.key ? ' <button type="button" class="linkbtn" id="mvUse">Use this key</button>' : '');
+        const sync = () => {
+          submit.disabled = !key.value.trim();
+          const s = sg.lane && sg.lane.shipments.find((x) => x.key.toLowerCase() === key.value.trim().toLowerCase());
+          $('#mvCarrier', bg).innerHTML = '<option>' + esc(s ? sg.lane.carrier : '') + '</option>';
+          $('#mvSvc', bg).innerHTML = '<option>' + esc(s ? sg.lane.service : '') + '</option>';
+          $('#mvErr', bg).textContent = '';
+        };
+        key.addEventListener('input', sync);
+        key.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !submit.disabled) submit.click(); });
+        const use = $('#mvUse', bg);
+        if (use) use.addEventListener('click', () => { key.value = sg.key; sync(); key.focus(); });
+        sync(); key.focus();
+      },
+    });
+  }
+
   /* -------------------------------------------------------------- sidebar */
   const MENU = [
     ['My Day', 'sun', 'my-day', false], ['My Favorites', 'star', 'favorites', false], ['Order Management', 'file', 'order-management', true],
@@ -164,6 +242,7 @@
     ['SLA Management', 'clock', 'sla-management', true], ['Resources', 'link', 'resources', false],
   ];
   const FLYOUT = [['Booking Overview', '#/booking'], ['Manage Bookings', '#/manage'], ['Amazon Globe New Bookings', '#/module/amazon-globe-new-bookings'], ['Globe Carrier SO Management', '#/module/globe-carrier-so-management']];
+  const FLY = { booking: FLYOUT, shipping: [['Shipment Schedule', '#/shipments']] };
   const TITLES = { favorites: 'My Favorites', 'amazon-globe-new-bookings': 'Amazon Globe New Bookings', 'globe-carrier-so-management': 'Globe Carrier SO Management' };
   MENU.forEach((m) => { TITLES[m[2]] = m[0]; });
 
@@ -171,16 +250,16 @@
     const sb = $('#sidebar');
     sb.innerHTML = '<button class="collapse" id="sbCollapse" title="Collapse menu" aria-label="Collapse menu">' + ico('lleft') + '</button>' +
       MENU.map((m) => {
-        const href = m[2] === 'my-day' ? '#/my-day' : m[2] === 'booking' ? '#/booking' : '#/module/' + m[2];
-        const fly = m[2] === 'booking'
-          ? '<div class="flyout"><h4>Workflow</h4>' + FLYOUT.map((f) => '<a href="' + f[1] + '">' + f[0] + '</a>').join('') + '</div>' : '';
+        const href = m[2] === 'my-day' ? '#/my-day' : m[2] === 'booking' ? '#/booking' : m[2] === 'shipping' ? '#/shipments' : '#/module/' + m[2];
+        const fly = FLY[m[2]]
+          ? '<div class="flyout"><h4>Workflow</h4>' + FLY[m[2]].map((f) => '<a href="' + f[1] + '">' + f[0] + '</a>').join('') + '</div>' : '';
         return '<div class="sb-item" data-m="' + m[2] + '"><a class="sb-link" href="' + href + '"><span class="ico">' + ico(m[1]) + '</span><span class="lbl">' + m[0] + '</span>' +
           (m[3] ? '<span class="chev">' + ico('chev') + '</span>' : '') + '</a>' + fly + '</div>';
       }).join('');
     $('#sbCollapse').addEventListener('click', () => sb.classList.toggle('collapsed'));
   }
   function setActive(seg, arg) {
-    const key = seg === 'manage' || seg === 'booking' ? 'booking' : seg === 'module' ? arg : seg;
+    const key = seg === 'manage' || seg === 'booking' ? 'booking' : seg === 'shipments' ? 'shipping' : seg === 'module' ? arg : seg;
     $$('.sb-item').forEach((el) => el.classList.toggle('active', el.dataset.m === key));
   }
 
@@ -220,8 +299,10 @@
     { k: 'mode', t: 'SHIP MODE', get: (b) => b.fields.shipMode },
     { k: 'frt', t: 'FREIGHT TYPE', get: (b) => b.fields.freightType },
     { k: 'vendor', t: 'VENDOR', get: (b) => b.fields.vendorName },
+    { k: 'ship', t: 'SHIP KEY', get: (b) => b.fields.shipKey || '' },
     { k: 'reason', t: 'REASON CODE', get: (b) => b.reason },
   ];
+  const selectable = (b) => b.status === 'Sent' || (b.status === 'Confirmed' && !b.fields.shipKey);
   const kpiClass = (k) => (k === 'On Time' ? 'ok' : k === 'At Risk' ? 'warn' : 'bad');
 
   function mountGrid(root, st, getRows, onSel) {
@@ -247,20 +328,20 @@
       if (st.page > pages) st.page = pages;
       const slice = view.slice((st.page - 1) * PAGE_SIZE, st.page * PAGE_SIZE);
       tbody.innerHTML = slice.length ? slice.map((b) => {
-        const open = b.status === 'Sent';
+        const open = selectable(b);
         return '<tr class="' + (st.sel.has(b.id) ? 'sel' : '') + '"><td><a href="#/booking/' + encodeURIComponent(b.id) + '">' + esc(b.id) + '</a></td>' +
           '<td><span class="pill ' + kpiClass(b.kpi) + '">' + esc(b.kpi) + '</span></td><td>' + esc(COLS[2].get(b)) + '</td>' +
           '<td><input type="checkbox" data-sel="' + esc(b.id) + '" ' + (st.sel.has(b.id) ? 'checked' : '') + ' ' + (open ? '' : 'disabled') + ' aria-label="Select ' + esc(b.id) + '"></td>' +
           '<td>' + esc(b.fields.companyCode) + '</td><td>' + esc(b.workId) + '</td><td><span class="pill st">' + esc(b.status) + '</span></td>' +
           '<td>' + esc(b.fields.shipMode) + '</td><td>' + esc(b.fields.freightType) + '</td><td><a href="#/booking/' + encodeURIComponent(b.id) + '">' + esc(b.fields.vendorName) + '</a></td>' +
-          '<td>' + esc(b.reason) + '</td></tr>';
+          '<td>' + esc(b.fields.shipKey) + '</td><td>' + esc(b.reason) + '</td></tr>';
       }).join('') : '<tr><td colspan="' + COLS.length + '"><div class="empty">No bookings to show.</div></td></tr>';
       const from = view.length ? (st.page - 1) * PAGE_SIZE + 1 : 0, to = Math.min(view.length, st.page * PAGE_SIZE);
       foot.innerHTML = '<span>' + from + ' to ' + to + ' of ' + view.length + '</span>' +
         '<button data-p="first" ' + (st.page <= 1 ? 'disabled' : '') + '>⏮</button><button data-p="prev" ' + (st.page <= 1 ? 'disabled' : '') + '>‹</button>' +
         '<span>Page ' + st.page + ' of ' + pages + '</span><button data-p="next" ' + (st.page >= pages ? 'disabled' : '') + '>›</button><button data-p="last" ' + (st.page >= pages ? 'disabled' : '') + '>⏭</button>';
       const all = $('#selAll', root);
-      if (all) { const openRows = view.filter((b) => b.status === 'Sent'); all.checked = openRows.length > 0 && openRows.every((b) => st.sel.has(b.id)); all.disabled = !openRows.length; }
+      if (all) { const openRows = view.filter(selectable); all.checked = openRows.length > 0 && openRows.every((b) => st.sel.has(b.id)); all.disabled = !openRows.length; }
       if (onSel) onSel();
     }
     thead.addEventListener('click', (e) => {
@@ -271,7 +352,7 @@
     thead.addEventListener('input', (e) => {
       if (e.target.dataset.f) { st.cols[e.target.dataset.f] = e.target.value; st.page = 1; drawBody(); }
       if (e.target.id === 'selAll') {
-        view.filter((b) => b.status === 'Sent').forEach((b) => (e.target.checked ? st.sel.add(b.id) : st.sel.delete(b.id)));
+        view.filter(selectable).forEach((b) => (e.target.checked ? st.sel.add(b.id) : st.sel.delete(b.id)));
         drawBody();
       }
     });
@@ -305,7 +386,7 @@
       case 'decline': return open.filter((b) => b.readiness === 'decline');
       case 'notready': return open.filter((b) => b.readiness === 'notready');
       case 'declined': return mine.filter((b) => b.status === 'Declined');
-      case 'moved': return mine.filter((b) => b.status === 'Confirmed');
+      case 'moved': return mine.filter((b) => b.status === 'Confirmed' && !b.fields.shipKey);
       case 'all': return mine;
       default: return [];
     }
@@ -329,7 +410,7 @@
       '<div class="tile"><h3><a data-f="moved">Bookings Not Yet Moved to Shipment</a><span class="badge">' + cnt('moved') + '</span></h3><div class="chips">' + chip('moved', 'All') + '</div></div>' +
       '</div>' +
       '<div class="grid-bar"><span class="left" id="viewLbl"></span>' +
-      '<button class="btn auto" id="btnAuto" title="Applies the vendor rules (Stuffing Location) and confirms the selected bookings">⚡ Auto-Process Selected (<span id="selN">0</span>)</button>' +
+      '<button class="btn auto" id="btnAuto" title="Fills, confirms and moves the selected bookings to their shipment">⚡ Auto-Process Selected (<span id="selN">0</span>)</button>' +
       '<button class="btn" id="btnStd">Standard View ▾</button><button class="btn sq" id="btnFind" title="Search">' + ico('search') + '</button><button class="btn sq" id="btnRefresh" title="Refresh">' + ico('rotate') + '</button></div>' +
       '<div id="gridRoot"></div>';
     bindCo();
@@ -359,28 +440,46 @@
     const li = (b) => '<li class="run" data-id="' + esc(b.id) + '"><span class="t">…</span><span><b>' + esc(b.id) + '</b> – queued</span></li>';
     modal({
       title: 'Auto-Process Bookings', wide: true,
-      body: '<p>For each selected booking, the automation fills the <b>Stuffing Location</b> (vendor rule), <b>FOB ETD</b>, both <b>ETAs</b>, <b>SI</b> and <b>Cargo cutoff dates</b> (from the Estimated Cargo Delivery Date), and the fixed <b>Vessel</b>, <b>Voyage</b> and <b>Cargo Cutoff Time</b>, then confirms it. Bookings that are flagged <i>Ready to Decline</i> or <i>Not Ready to Process</i> are skipped for manual review.</p><ul class="log">' + list.map(li).join('') + '</ul>',
+      body: '<p>For each selected booking the automation fills the <b>Stuffing Location</b> (vendor rule), <b>FOB ETD</b>, both <b>ETAs</b>, <b>SI</b> and <b>Cargo cutoff dates</b> (from the Estimated Cargo Delivery Date) and the fixed <b>Vessel</b>, <b>Voyage</b> and <b>Cargo Cutoff Time</b>, then confirms it. Bookings flagged <i>Ready to Decline</i> or <i>Not Ready to Process</i> are skipped for a person to review.</p>' +
+        '<label class="optrow"><input type="checkbox" id="optMove" checked> Also move confirmed bookings to their shipment (ship key looked up from the FOB ETD)</label><ul class="log">' + list.map(li).join('') + '</ul>',
       buttons: [
         { label: 'Cancel', onClick: () => { } },
         {
           label: 'Run automation', cls: 'primary', onClick: (bg) => {
             const btns = $$('.mf .btn', bg); btns.forEach((x) => (x.disabled = true));
+            const optMove = $('#optMove', bg); const move = optMove.checked; optMove.disabled = true;
             let ok = 0, skipped = 0, i = 0;
+            /* returns [kind, message] for one booking */
+            const process = (b) => {
+              const parts = []; let acted = false;
+              if (b.status === 'Sent') {
+                if (b.readiness !== 'process') return ['skip', b.readiness === 'decline' ? 'flagged Ready to Decline – needs a person to decide.' : 'flagged Not Ready to Process – needs a person to check.'];
+                const r = autoFill(b), left = validate(b);
+                if (left.length) return ['skip', 'still missing: ' + esc(r.missing.concat(left.map((x) => x.label)).join(', ')) + '.'];
+                doConfirm(b); acted = true;
+                parts.push(esc(b.fields.stuffing) + ' · FOB ETD <b>' + esc(b.fields.fobEtd) + '</b> · ETAs ' + esc(b.fields.dischargeEta) + ' · SI ' + esc(b.fields.siCutoffDate) + ' · cargo cutoff ' + esc(b.fields.cargoCutoffDate) + ' ' + esc(b.fields.cargoCutoffTime) + ' · confirmed');
+              }
+              if (b.status === 'Confirmed' && !b.fields.shipKey) {
+                if (!move) { if (!acted) return ['skip', 'already confirmed. Tick “Also move confirmed bookings” to move it to a shipment.']; }
+                else {
+                  const sg = suggestShip(b), err = sg.key ? moveError(b, sg.key) : sg.note;
+                  if (err) parts.push('<i>not moved: ' + esc(err) + '</i>');
+                  else { doMove(b, sg.key); acted = true; parts.push('moved to shipment <b>' + sg.key + '</b> (' + longDate(b.fields.fobEtd) + ')'); }
+                }
+              }
+              if (!acted) return ['skip', b.fields.shipKey ? 'already in shipment ' + esc(b.fields.shipKey) + '.' : 'nothing to do.'];
+              return ['ok', parts.join('; ') + '.'];
+            };
             const step = () => {
               if (i >= list.length) {
                 btns[1].textContent = 'Done'; btns[1].disabled = false;
-                btns[1].onclick = () => { bg.remove(); toast(ok + ' confirmed, ' + skipped + ' skipped', ok ? 'ok' : ''); done(); };
+                btns[1].onclick = () => { bg.remove(); toast(ok + ' processed, ' + skipped + ' skipped', ok ? 'ok' : ''); done(); };
                 return;
               }
               const b = list[i++]; const row = $('li[data-id="' + b.id + '"]', bg);
-              const set = (cls, t, msg) => { row.className = cls; $('.t', row).textContent = t; row.lastChild.innerHTML = '<b>' + esc(b.id) + '</b> – ' + msg; };
-              if (b.readiness !== 'process') { skipped++; set('skip', 'SKIP', b.readiness === 'decline' ? 'flagged Ready to Decline – needs a person to decide.' : 'flagged Not Ready to Process – needs a person to check.'); }
-              else {
-                const r = autoFill(b);
-                const left = validate(b);
-                if (left.length) { skipped++; set('skip', 'SKIP', 'still missing: ' + esc(r.missing.concat(left.map((x) => x.label)).join(', ')) + '.'); }
-                else { doConfirm(b); ok++; set('ok', 'OK', esc(b.fields.stuffing) + ' · FOB ETD <b>' + esc(b.fields.fobEtd) + '</b> · ETAs ' + esc(b.fields.dischargeEta) + ' · SI ' + esc(b.fields.siCutoffDate) + ' · cargo cutoff ' + esc(b.fields.cargoCutoffDate) + ' ' + esc(b.fields.cargoCutoffTime) + '; confirmed.'); }
-              }
+              const res = process(b);
+              if (res[0] === 'ok') ok++; else skipped++;
+              row.className = res[0]; $('.t', row).textContent = res[0] === 'ok' ? 'OK' : 'SKIP'; row.lastChild.innerHTML = '<b>' + esc(b.id) + '</b> – ' + res[1];
               setTimeout(step, 450);
             };
             step();
@@ -437,7 +536,7 @@
       F('vendorName', 'Main Vendor Code/Name', 6, { val: f.vendorCode + ' - ' + f.vendorName }) + F('vendorContact', 'Main Vendor Contact', 2, R) + F('vendorPhone', 'Main Vendor Phone', 2, R) + F('vendorEmail', 'Main Vendor Email', 2, R) +
       F('subVendor', 'Subvendor Code/Name', 6, R) + F('subContact', 'Subvendor Contact', 2, R) + F('subPhone', 'Subvendor Phone', 2, R) + F('subEmail', 'Subvendor Email', 2, R) +
       F('usVendor', 'US Vendor', 2, R) + F('vendorRef', 'Vendor Reference Number (optional)', 4, E) + F('incoterms', 'Incoterms', 3, R) + F('bookingType', 'Booking Type', 3, R) +
-      F('createdDate', 'Booked Created Date', 3, R) + F('receivedDate', 'Booking Received Date', 3, R) + F('confirmDate', 'Booking Confirmation Date', 3, R) + '<div class="s3"></div>' +
+      F('createdDate', 'Booked Created Date', 3, R) + F('receivedDate', 'Booking Received Date', 3, R) + F('confirmDate', 'Booking Confirmation Date', 3, R) + F('shipKey', 'Shipment Key', 3, R) +
       F('contactName', 'Contact Name (optional)', 3, E) + F('contactPhone', 'Contact Phone (optional)', 3, E) + F('contactFax', 'Contact Fax (optional)', 3, E) + F('contactEmail', 'Contact Email', 3, E) +
       '</div></div>' +
       sec('abc', 'ABC Contact', 'sub') + '<div class="g12">' +
@@ -501,13 +600,16 @@
         '<button class="btn auto" id="btnAutoFill" ' + (editable ? '' : 'disabled') + ' title="Fill Stuffing Location, FOB ETD, ETAs, cutoffs, Vessel, Voyage and Cargo Cutoff Time from the rules">⚡ Auto-Fill</button>' +
         '<button class="btn primary" id="btnConfirm" ' + (editable ? '' : 'disabled') + '>Confirm</button>' +
         '<button class="btn primary" id="btnDecline" ' + (editable ? '' : 'disabled') + '>Decline</button>' +
-        '<button class="btn primary" id="btnVoid" ' + (editable ? '' : 'disabled') + '>Void</button></div>' + buildHeader();
+        '<button class="btn primary" id="btnVoid" ' + (editable ? '' : 'disabled') + '>Void</button>' +
+        '<span class="menu-wrap"><button class="btn sq" id="btnMenu" title="More actions" aria-haspopup="true">☰</button><div class="menu" id="menuList">' +
+        [['issues', 'Operation Issue Count'], ['move', 'Move Booking to Shipment'], ['message', 'Create Booking Header Message'], ['isf', 'Refresh ISF Data'], ['files', 'View/Upload Files'], ['cbr', 'Create Carrier Booking Request'], ['dg', 'DG Declaration']]
+          .map((m) => '<button type="button" data-act="' + m[0] + '">' + m[1] + '</button>').join('') + '</div></span></div>' + buildHeader();
     }
 
     function paint() {
       c.innerHTML =
         '<div class="qnav"><b>Quick Navigation</b><span>Previously Viewed Bookings:</span><select id="qnViewed"><option value="">Select One</option>' + viewed().map((v) => '<option>' + esc(v) + '</option>').join('') + '</select>' +
-        '<span>Booking #:</span><input id="qnId" size="18"><button class="btn primary" id="qnGo" style="padding:5px 10px">Go To Booking</button><span class="ml" id="qnStatus">Booking #: ' + esc(b.id) + ' ' + esc(b.status) + '</span></div>' +
+        '<span>Booking #:</span><input id="qnId" size="18"><button class="btn primary" id="qnGo" style="padding:5px 10px">Go To Booking</button><span class="ml" id="qnStatus">Booking #: ' + esc(b.id) + ' ' + esc(b.status) + (b.fields.shipKey ? ' · Ship key ' + esc(b.fields.shipKey) : '') + '</span></div>' +
         '<div class="tabs">' + [['header', 'Booking Header'], ['vibe', 'VIBE and Certificate Approval'], ['notes', 'Notes and Messages'], ['print', 'Print Booking Confirmation']].map((x) => '<button class="tab ' + (wsState.tab === x[0] ? 'on' : '') + '" data-tab="' + x[0] + '">' + x[1] + '</button>').join('') + '</div>' +
         '<div class="ws" id="wsBody">' + tabBody() + '</div>';
       wire();
@@ -527,6 +629,21 @@
       on('#btnPrint', () => window.print());
       on('#noteAdd', () => { const v = $('#noteText').value.trim(); if (!v) return; b.notes.push({ by: 'ABC-OPS01', at: new Date().toLocaleString(), text: v }); persist(); paint(); });
       on('#btnSave', () => { persist(); toast('Draft saved', 'ok'); });
+      on('#btnMenu', (e) => { e.stopPropagation(); $('#menuList').classList.toggle('open'); });
+      const act = {
+        issues: () => modal({ title: 'Operation Issue Count', body: '<p>Open operation issues for <b>' + esc(b.id) + '</b>: <b>0</b></p>', buttons: [{ label: 'Close', cls: 'primary' }] }),
+        move: () => {
+          if (b.fields.shipKey) toast('Already in shipment ' + b.fields.shipKey, 'bad');
+          else if (b.status !== 'Confirmed') toast('Confirm the booking before moving it to a shipment.', 'bad');
+          else openMove(b, afterMove);
+        },
+        message: () => { wsState.tab = 'notes'; paint(); },
+        isf: () => toast('ISF data refreshed', 'ok'),
+        files: () => toast('View/Upload Files is not part of this demo'),
+        cbr: () => toast('Carrier booking request comes after the shipment step and is not part of this demo yet'),
+        dg: () => toast('DG Declaration is not needed: this booking has no dangerous goods'),
+      };
+      $$('#menuList [data-act]').forEach((el) => el.addEventListener('click', () => { $('#menuList').classList.remove('open'); act[el.dataset.act](); }));
       on('#btnAutoFill', () => {
         const r = autoFill(b);
         paint();
@@ -540,7 +657,14 @@
           errs.forEach((er) => { const w = $('[data-wrap="' + er.key + '"]'); if (w) { w.classList.add('err'); w.insertAdjacentHTML('beforeend', '<span class="hint-err">' + er.msg + '</span>'); w.scrollIntoView({ block: 'center', behavior: 'smooth' }); } });
           toast(errs.length === 1 ? errs[0].msg : errs.length + ' required fields are empty: ' + errs.map((x) => x.label).join(', '), 'bad'); return;
         }
-        modal({ title: 'Confirm Booking', body: '<p>Confirm booking <b>' + esc(b.id) + '</b> with Stuffing Location <b>' + esc(b.fields.stuffing) + '</b>?</p>', buttons: [{ label: 'Cancel' }, { label: 'Confirm', cls: 'primary', onClick: () => { doConfirm(b); toast('Booking ' + b.id + ' confirmed', 'ok'); location.hash = '#/booking'; } }] });
+        modal({ title: 'Confirm Booking', body: '<p>Confirm booking <b>' + esc(b.id) + '</b> with Stuffing Location <b>' + esc(b.fields.stuffing) + '</b>?</p>', buttons: [{ label: 'Cancel' }, { label: 'Confirm', cls: 'primary', onClick: () => {
+          doConfirm(b); toast('Booking ' + b.id + ' confirmed', 'ok');
+          const sg = suggestShip(b);
+          modal({
+            title: 'Booking Confirmed', body: '<p>Booking <b>' + esc(b.id) + '</b> is confirmed.</p><p>Next step: move it to its shipment. ' + esc(sg.note) + '</p>',
+            buttons: [{ label: 'Later', onClick: () => { location.hash = '#/booking'; } }, { label: 'Move to Shipment', cls: 'primary', onClick: () => { paint(); openMove(b, afterMove); } }],
+          });
+        } }] });
       });
       on('#btnDecline', () => {
         modal({
@@ -576,9 +700,35 @@
       '<div class="card"><div class="n">' + open.length + '</div><div class="l">Bookings waiting for action</div></div>' +
       '<div class="card"><div class="n">' + n((b) => b.status === 'Sent' && b.readiness === 'process') + '</div><div class="l">Ready to process</div></div>' +
       '<div class="card"><div class="n">' + n((b) => b.status === 'Sent' && b.readiness !== 'process') + '</div><div class="l">Need attention</div></div>' +
-      '<div class="card"><div class="n">' + n((b) => b.status === 'Confirmed') + '</div><div class="l">Confirmed this session</div></div></div>' +
+      '<div class="card"><div class="n">' + n((b) => b.status === 'Confirmed' && !b.fields.shipKey) + '</div><div class="l">Confirmed, waiting for a shipment</div></div>' +
+      '<div class="card"><div class="n">' + n((b) => !!b.fields.shipKey) + '</div><div class="l">Moved to a shipment</div></div></div>' +
       '<div class="panel todo"><div class="todo-row"><b style="flex:1">Bookings to do</b><a class="btn primary" href="#/booking" style="text-decoration:none">Open Booking Overview →</a></div>' +
       (open.length ? open.map((b) => '<div class="todo-row"><span class="id">' + esc(b.id) + '</span><span class="v">' + esc(b.fields.vendorName) + '</span><span class="pill ' + kpiClass(b.kpi) + '">' + esc(b.kpi) + '</span><a href="#/booking/' + encodeURIComponent(b.id) + '">Open</a></div>').join('') : '<div class="empty">All caught up – nothing waiting.</div>') + '</div>';
+  }
+  function viewShipments() {
+    const c = $('#content');
+    const lane = D.SHIPMENT_LANES.find((l) => l.id === laneTab);
+    let body;
+    if (!lane) body = '<div class="panel empty">No sailing schedule is loaded for ' + esc(laneTab) + ' in this demo.</div>';
+    else {
+      const rows = lane.shipments.map((s) => {
+        const bs = bookings.filter((b) => b.fields.shipKey === s.key);
+        const tot = bs.reduce((x, b) => { const t = totals(b); x.c += t.cartons; x.v += t.volume; x.w += t.weight; return x; }, { c: 0, v: 0, w: 0 });
+        const ecdd = bs.map((b) => parseDate(b.fields.estDelivery)).filter(Boolean).sort((p, q) => p - q)[0];
+        const eta = fmtDate(addDays(parseDate(s.etd), D.RULES.schedule.etaDaysAfterFobEtd));
+        return '<tr class="' + (s.closed ? 'closed ' : '') + (s.key === lastMoved ? 'flash' : '') + '"><td><b>' + s.key + '</b></td><td>' + (ecdd ? longDate(fmtDate(ecdd)) : '') + '</td><td>' + longDate(s.etd) + '</td><td>' + longDate(eta) + '</td>' +
+          '<td>' + (s.closed ? '<span class="pill ok">Containers booked</span>' : '<span class="pill st">Open</span>') + '</td>' +
+          '<td class="keys">' + (bs.length ? bs.map((b) => '<a href="#/booking/' + encodeURIComponent(b.id) + '">' + esc(b.id) + '</a>').join('') : '<span class="muted">–</span>') + '</td>' +
+          '<td class="num">' + (bs.length ? tot.c : '') + '</td><td class="num">' + (bs.length ? Math.round(tot.v * 1000) / 1000 : '') + '</td><td class="num">' + (bs.length ? Math.round(tot.w * 100) / 100 : '') + '</td></tr>';
+      }).join('');
+      const inShip = bookings.filter((b) => b.fields.shipKey).length;
+      body = '<div class="lane-band">' + esc(lane.title) + ' · ' + esc(lane.weekday) + '</div>' +
+        '<div class="grid-bar"><span class="left">' + inShip + ' booking(s) saved under a shipment. Their booking keys are listed against the ship key so containers can be booked from here later.</span><span class="legend"><i class="g"></i>green = containers already booked</span></div>' +
+        '<div class="grid-wrap"><table class="grid ship"><thead><tr><th class="nosort">SHIPMENT KEY</th><th class="nosort">ECDD</th><th class="nosort">ETD</th><th class="nosort">ETA</th><th class="nosort">STATUS</th><th class="nosort">BOOKING KEYS</th><th class="nosort">CARTONS</th><th class="nosort">VOLUME (CBM)</th><th class="nosort">WEIGHT (KG)</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+    }
+    c.innerHTML = '<div class="page-head"><h1>Shipment Schedule</h1></div><div class="tabs">' + D.LANE_TABS.map((t) => '<button class="tab ' + (t === laneTab ? 'on' : '') + '" data-lane="' + t + '">' + t + '</button>').join('') + '</div><div class="ws">' + body + '</div>';
+    $$('[data-lane]', c).forEach((x) => x.addEventListener('click', () => { laneTab = x.dataset.lane; viewShipments(); }));
+    lastMoved = '';
   }
   function viewModule(slug) {
     $('#content').innerHTML = '<div class="page-head"><h1>' + esc(TITLES[slug] || 'Module') + '</h1></div><div class="panel empty">This module isn’t part of the demo.<br><br><a class="btn primary" href="#/booking" style="text-decoration:none">Go to Booking</a></div>';
@@ -595,6 +745,7 @@
       if (!company) { $('#content').innerHTML = ''; return askCompany(route, () => { location.hash = '#/my-day'; }); }
       return seg === 'booking' ? viewOverview() : viewManage();
     }
+    if (seg === 'shipments') return viewShipments();
     if (seg === 'module') return viewModule(arg);
     return viewMyDay();
   }
@@ -616,6 +767,7 @@
       if (hit) { location.hash = '#/booking/' + encodeURIComponent(hit.id); qs.value = ''; } else toast('No booking matches “' + qs.value + '”', 'bad');
     });
     $('#quickClear').addEventListener('click', () => { qs.value = ''; qs.focus(); });
+    document.addEventListener('click', () => { const m = $('#menuList'); if (m) m.classList.remove('open'); });
     window.addEventListener('hashchange', route);
     route();
   }
