@@ -257,6 +257,12 @@
           (m[3] ? '<span class="chev">' + ico('chev') + '</span>' : '') + '</a>' + fly + '</div>';
       }).join('');
     $('#sbCollapse').addEventListener('click', () => sb.classList.toggle('collapsed'));
+    /* flyouts are position:fixed (so the sidebar can scroll); place each next to its menu item */
+    $$('.sb-item', sb).forEach((it) => {
+      const fl = $('.flyout', it); if (!fl) return;
+      const place = () => { const r = it.getBoundingClientRect(); fl.style.left = r.right + 'px'; fl.style.top = Math.max(8, Math.min(r.top, window.innerHeight - 240)) + 'px'; };
+      it.addEventListener('mouseenter', place); it.addEventListener('focusin', place);
+    });
   }
   function setActive(seg, arg) {
     const key = seg === 'manage' || seg === 'booking' ? 'booking' : seg === 'shipments' ? 'shipping' : seg === 'module' ? arg : seg;

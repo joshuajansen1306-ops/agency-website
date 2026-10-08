@@ -60,7 +60,7 @@ svg.i { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-widt
 .sb-link .chev { width: 13px; height: 13px; opacity: .8; }
 .sb-link:hover, .sb-item.active > .sb-link { background: rgba(255, 255, 255, .1); color: var(--orange); }
 .flyout {
-  display: none; position: absolute; left: 100%; top: 0; min-width: 240px; background: #fff; color: var(--ink);
+  display: none; position: fixed; left: 262px; top: 0; min-width: 240px; background: #fff; color: var(--ink);
   border: 1px solid var(--line); border-radius: 0 4px 4px 4px; box-shadow: 0 8px 22px rgba(10, 30, 70, .25); padding: 14px 14px 10px;
 }
 .sb-item:hover .flyout, .sb-item:focus-within .flyout { display: block; }
@@ -248,3 +248,29 @@ table.grid { border-collapse: collapse; width: 100%; min-width: 1100px; }
 .grid.ship tr.flash td { background: var(--yellow); }
 .muted { color: var(--muted); }
 .legend i.g { background: #bfe8a3; border-color: #8cc46a; }
+
+/* ---------- laptop app shell (1366x768 and up) ---------- */
+html, body { height: 100%; }
+body { display: flex; flex-direction: column; overflow: hidden; }
+.topbar { flex: none; height: 52px; padding: 0 18px; }
+.brand-mark { font-size: 26px; }
+.shell { flex: 1; min-height: 0; height: auto; }
+.sidebar { width: 236px; overflow-y: auto; overflow-x: hidden; padding-top: 2px; }
+.sidebar.collapsed { width: 56px; }
+.sidebar .collapse { margin-bottom: 0; }
+.sb-link { padding: 8px 14px; font-size: 14px; gap: 11px; }
+.sb-link .ico { width: 18px; height: 18px; }
+.content { overflow: auto; min-height: 0; padding: 12px 16px 28px; scrollbar-gutter: stable; }
+.page-head { margin-bottom: 10px; }
+.page-head h1 { font-size: 22px; }
+.co-btn { padding: 7px 14px; font-size: 13px; }
+.tiles { padding: 12px 18px; gap: 16px; margin-bottom: 10px; }
+.tile h3 { font-size: 15px; margin-bottom: 6px; }
+.grid th { padding: 9px 10px 6px; }
+.grid tbody td { padding: 8px 10px; }
+.ws { padding: 12px 16px 20px; }
+@media (max-height: 760px) {
+  .sb-link { padding: 6px 14px; font-size: 13.5px; }
+  .tiles { padding: 10px 16px; }
+}
+@media (max-width: 1100px) { .sidebar { width: 56px; } .sidebar .lbl, .sidebar .chev { display: none; } }
