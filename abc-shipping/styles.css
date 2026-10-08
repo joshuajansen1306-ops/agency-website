@@ -209,7 +209,7 @@ table.grid { border-collapse: collapse; width: 100%; min-width: 1100px; }
   .tiles { grid-template-columns: 1fr 1fr; }
   .brand { width: auto; }
   .quick-search { max-width: 40vw; }
-  .user-id, .top-link { display: none; }
+  .user-id, .top-link:not(#visLink):not(#nameChip) { display: none; }
 }
 @media (max-width: 760px) {
   .sidebar { width: 56px; }
@@ -298,3 +298,6 @@ a.top-link:hover { border-color: var(--orange); color: var(--orange); }
 button.name-chip { background: transparent; cursor: pointer; font-family: inherit; max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .gate-credit { position: absolute; top: 0; left: 0; right: 0; padding: 18px 16px; text-align: center; color: #fff; font-size: 15px; font-weight: 600; letter-spacing: .6px; }
+
+#visLink { white-space: nowrap; }
+@media (max-width: 760px) { #nameChip { display: none; } }
