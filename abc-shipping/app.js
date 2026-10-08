@@ -745,6 +745,24 @@
      Each visitor has one document, visits/<their id>: first/last time, count and their last 200 opens (ISO times).
      Only ids are stored; names are looked up when the log is shown. */
   let unsubVisits = null;
+  const NAME_KEY = 'abc-shipping-visitor-name';
+  let visitorName = String(store.get('localStorage', NAME_KEY) || '').trim().slice(0, 60);
+
+  /* "Type your name to enter" screen; the name is remembered on this device and added to the visit record when signed in */
+  function renderChip() {
+    const chip = $('#nameChip'); chip.hidden = !visitorName; chip.textContent = visitorName ? visitorName + ' ✎' : '';
+  }
+  function openGate(onDone) {
+    const gate = $('#nameGate'), form = $('#gateForm'), input = $('#gateName'), err = $('#gateErr');
+    gate.hidden = false; input.value = visitorName; err.textContent = ''; input.focus();
+    form.onsubmit = (e) => {
+      e.preventDefault();
+      const v = input.value.replace(/\s+/g, ' ').trim();
+      if (v.length < 2) { err.textContent = 'Please type your name (at least 2 letters).'; return; }
+      visitorName = v.slice(0, 60); store.set('localStorage', NAME_KEY, visitorName);
+      gate.hidden = true; renderChip(); onDone();
+    };
+  }
   async function cl(name) { try { return window.claude && window.claude.use ? await window.claude.use(name) : null; } catch (e) { return null; } }
   const fmtTime = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }); };
 
@@ -757,8 +775,10 @@
       if (!id || (await user.can('data.write')) === false) return;
       const ref = db.doc('visits/' + id), snap = await ref.get(), old = (snap.exists && snap.data()) || {};
       const now = new Date().toISOString(), log = Array.isArray(old.log) ? old.log : [];
-      if (log.length && Date.now() - Date.parse(log[log.length - 1]) < 60000) return;   // reload within a minute = same visit
-      await ref.set({ userId: id, firstSeen: old.firstSeen || now, lastSeen: now, count: (old.count || 0) + 1, log: log.concat(now).slice(-200) });
+      const names = Array.isArray(old.names) ? old.names : [];
+      if (visitorName && names.indexOf(visitorName) < 0) names.push(visitorName);
+      if (log.length && Date.now() - Date.parse(log[log.length - 1]) < 60000 && old.typedName === visitorName) return;   // reload within a minute = same visit
+      await ref.set({ userId: id, typedName: visitorName, names: names.slice(-5), firstSeen: old.firstSeen || now, lastSeen: now, count: (old.count || 0) + 1, log: log.concat(now).slice(-200) });
     } catch (e) { /* tracking must never break the page */ }
   }
   async function revealVisitors() {
@@ -780,8 +800,8 @@
       const opens = rows.reduce((n, r) => n + (r.count || 0), 0);
       body().className = '';
       body().innerHTML = '<div class="grid-bar"><span class="left">' + rows.length + ' people · ' + opens + ' opens. Updates live. Only people with Contributor access or higher are recorded; view-only and signed-out visitors cannot be.</span></div>' +
-        (rows.length ? '<div class="grid-wrap"><table class="grid ship"><thead><tr><th class="nosort">NAME</th><th class="nosort">FIRST OPENED</th><th class="nosort">LAST OPENED</th><th class="nosort">TIMES OPENED</th><th class="nosort">RECENT OPENS</th></tr></thead><tbody>' +
-          rows.map((r) => '<tr><td><b>' + esc((ps[r.userId] && ps[r.userId].name) || 'Unnamed visitor') + '</b>' + (r.userId === me ? ' <span class="muted">(you)</span>' : '') + '</td><td>' + esc(fmtTime(r.firstSeen)) + '</td><td>' + esc(fmtTime(r.lastSeen)) + '</td><td class="num">' + (r.count || 0) +
+        (rows.length ? '<div class="grid-wrap"><table class="grid ship"><thead><tr><th class="nosort">NAME</th><th class="nosort">NAME TYPED</th><th class="nosort">FIRST OPENED</th><th class="nosort">LAST OPENED</th><th class="nosort">TIMES OPENED</th><th class="nosort">RECENT OPENS</th></tr></thead><tbody>' +
+          rows.map((r) => '<tr><td><b>' + esc((ps[r.userId] && ps[r.userId].name) || 'Unnamed visitor') + '</b>' + (r.userId === me ? ' <span class="muted">(you)</span>' : '') + '</td><td>' + esc((r.names && r.names.length ? r.names.join(', ') : r.typedName) || '') + '</td><td>' + esc(fmtTime(r.firstSeen)) + '</td><td>' + esc(fmtTime(r.lastSeen)) + '</td><td class="num">' + (r.count || 0) +
             '</td><td class="keys">' + (r.log || []).slice(-5).reverse().map((t) => '<span>' + esc(fmtTime(t)) + '</span>').join('') + '</td></tr>').join('') + '</tbody></table></div>'
           : '<div class="panel empty">Nobody has opened it yet.</div>');
     };
@@ -827,7 +847,10 @@
     document.addEventListener('click', () => { const m = $('#menuList'); if (m) m.classList.remove('open'); });
     window.addEventListener('hashchange', route);
     route();
-    trackVisit(); revealVisitors();
+    const begin = () => { trackVisit(); revealVisitors(); };
+    renderChip();
+    $('#nameChip').addEventListener('click', () => openGate(trackVisit));
+    if (visitorName) begin(); else openGate(begin);
   }
   init();
 })();

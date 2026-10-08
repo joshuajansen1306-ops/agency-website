@@ -19,6 +19,7 @@
     </div>
     <div class="top-right">
       <span class="user-id" id="userId">ABC-OPS01</span>
+      <button class="top-link name-chip" id="nameChip" type="button" title="Change name" hidden></button>
       <a class="top-link" id="visLink" href="#/visitors" hidden>VISITORS</a>
       <span class="top-link">PORTAL ↗</span>
       <button class="top-icon" id="btnReset" title="Reset demo data" aria-label="Reset demo data"></button>
@@ -29,6 +30,19 @@
   <div class="shell" id="shell">
     <nav class="sidebar" id="sidebar" aria-label="Main menu"></nav>
     <main class="content" id="content" tabindex="-1"></main>
+  </div>
+
+  <div class="gate" id="nameGate" role="dialog" aria-modal="true" aria-labelledby="gateTitle" hidden>
+    <form class="gate-card" id="gateForm" autocomplete="off">
+      <div class="gate-mark">ABC</div>
+      <h2 id="gateTitle">Welcome to the booking portal</h2>
+      <p>Type your name to enter.</p>
+      <label for="gateName">Your name</label>
+      <input id="gateName" name="visitor-name" maxlength="60" autocomplete="name" spellcheck="false">
+      <div class="err" id="gateErr"></div>
+      <button class="btn primary" type="submit">Enter</button>
+      <p class="gate-note">If you are signed in to Claude, your name and the time you opened the page are recorded for the owner.</p>
+    </form>
   </div>
 
   <div id="modalRoot"></div>
