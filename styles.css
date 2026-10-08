@@ -5,26 +5,26 @@
 :root{
   --r-btn:14px;            /* rounded call-to-action boxes */
   --r-btn-lg:18px;
-  /* the brand palette: 60% cream background, 30% red text, 10% light blue for calls to action and icons */
-  --red:#EB2627;           /* 30%: text (headings, key lines) */
-  --sky:#A6DCF8;           /* 10%: buttons, icons, the nav bar */
-  --cream:#FBF4E3;         /* 60%: background */
-  --ink:#9E1519;           /* a deep shade of the brand red, for small text: plain red is a little faint at small sizes */
+  /* the brand palette: 60% warm cream (paper), 30% deep charcoal for structure and type, 10% Fable red for the accent */
+  --cream:#F7F1E3;         /* 60%: backgrounds */
+  --ink:#171717;           /* 30%: headings, body text, navigation, footer */
+  --red:#FF292D;           /* 10%: logo, buttons, links, hover states, small accents */
   --navy:var(--ink);       /* legacy names kept so older rules still resolve */
+  --sky:var(--cream);
   --indigo:var(--red);
-  --sky-70:rgb(158 21 25 / .8);
-  --sky-20:rgb(158 21 25 / .28);
+  --sky-70:rgb(23 23 23 / .72);
+  --sky-20:rgb(23 23 23 / .18);
 
   /* semantic */
   --bg:var(--cream);
-  --surface:#F4EAD0;
-  --surface-raised:#EFE2C2;
-  --head:var(--red);
+  --surface:#EFE8D6;
+  --surface-raised:#E8E0CB;
+  --head:var(--ink);
   --text:var(--ink);
-  --text-muted:rgb(158 21 25 / .8);
-  --line:rgb(158 21 25 / .28);
-  --accent:var(--sky);
-  --accent-hover:var(--red);
+  --text-muted:rgb(23 23 23 / .72);
+  --line:rgb(23 23 23 / .18);
+  --accent:var(--red);
+  --accent-hover:var(--ink);
 
   --font-sans:"Neue Haas Grotesk Display Pro","Neue Haas Grotesk Text Pro","Neue Haas Grotesk","Neue Haas Unica","Helvetica Neue",Helvetica,"Inter",Arial,system-ui,sans-serif;
   --font-mark:"Newsreader",Georgia,serif;
@@ -50,19 +50,19 @@
   /* component */
   --topbar-bg:var(--cream);
   --topbar-text:var(--ink);
-  --topbar-muted:rgb(158 21 25 / .78);
-  --dock-bg:var(--sky);
-  --dock-border:rgb(158 21 25 / .25);
-  --dock-text:var(--ink);
-  --dock-hover-bg:rgb(251 244 227 / .5);
+  --topbar-muted:rgb(23 23 23 / .7);
+  --dock-bg:var(--ink);
+  --dock-border:rgb(23 23 23 / .9);
+  --dock-text:var(--cream);
+  --dock-hover-bg:rgb(247 241 227 / .14);
   --dock-active-bg:var(--red);
   --dock-active-text:var(--cream);
-  --btn-primary-bg:var(--sky);
-  --btn-primary-bg-hover:var(--red);
-  --btn-primary-text:var(--ink);
-  --mark-bg:var(--sky);
-  --mark-text:var(--ink);
-  --card-shadow:0 24px 48px rgb(158 21 25 / .25);
+  --btn-primary-bg:var(--red);
+  --btn-primary-bg-hover:var(--ink);
+  --btn-primary-text:var(--cream);
+  --mark-bg:var(--red);
+  --mark-text:var(--cream);
+  --card-shadow:0 24px 48px rgb(23 23 23 / .22);
 }
 
 /* ---------- base ---------- */
@@ -79,7 +79,7 @@ a{color:inherit;text-decoration:none}
 a,button{touch-action:manipulation}
 ul,ol{list-style:none}
 :focus-visible{outline:2px solid var(--text);outline-offset:3px;border-radius:2px}
-::selection{background:var(--sky);color:var(--ink)}
+::selection{background:var(--red);color:var(--cream)}
 
 .wrap{max-width:1600px;margin-inline:auto;padding-left:max(var(--gutter),env(safe-area-inset-left));padding-right:max(var(--gutter),env(safe-area-inset-right))}
 .skip{position:absolute;left:16px;top:-60px;z-index:100;background:var(--text);color:var(--bg);padding:10px 16px;border-radius:2px;font-size:var(--fs-small);font-weight:500;transition:top .2s ease}
@@ -89,7 +89,7 @@ ul,ol{list-style:none}
 .label{font-size:var(--fs-label);color:var(--text-muted);letter-spacing:.02em}
 .muted{color:var(--text-muted)}
 .arrow-link{display:inline-flex;align-items:center;gap:8px;padding-bottom:2px;border-bottom:1px solid var(--line);transition:border-color .2s ease}
-.arrow-link:hover{border-color:var(--text)}
+.arrow-link:hover{border-color:var(--red);color:var(--red)}
 
 /* ---------- logo mark ---------- */
 .mark{
@@ -107,13 +107,13 @@ ul,ol{list-style:none}
 /* over the home hero the bar is clear, so the sketch shows through it and moves with the page */
 .topbar.is-clear{background:transparent;border-bottom-color:transparent}
 .topbar :focus-visible{outline-color:var(--topbar-text)}
-.dock :focus-visible{outline-color:var(--ink)}
+.dock :focus-visible{outline-color:var(--cream)}
 .topbar-inner{height:100%;display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px}
 .clock{display:flex;align-items:baseline;gap:10px;font-size:var(--fs-small);font-variant-numeric:tabular-nums}
 .clock-city{font-size:var(--fs-label);text-transform:uppercase;letter-spacing:.06em;color:var(--topbar-muted);transition:color .25s ease}
 .topbar-links{display:flex;justify-content:flex-end;gap:28px;font-size:var(--fs-small)}
 .topbar-links a{display:inline-flex;align-items:center;gap:6px;transition:opacity .2s ease}
-.topbar-links a:hover{opacity:.7}
+.topbar-links a:hover{color:var(--red)}
 
 /* ---------- floating dock ---------- */
 .dock{
@@ -133,7 +133,7 @@ ul,ol{list-style:none}
 .dock-pill{position:absolute;left:0;top:0;z-index:0;width:0;height:0;border-radius:999px;background:var(--dock-active-bg);pointer-events:none;
   transition:transform .5s cubic-bezier(.3,1.3,.4,1),width .5s cubic-bezier(.3,1.3,.4,1),height .3s ease,opacity .2s ease;will-change:transform}
 .dock-pill.no-anim{transition:none}
-.dock-pill.dragging{transition:none;box-shadow:0 6px 18px rgb(158 21 25 / .3)}
+.dock-pill.dragging{transition:none;box-shadow:0 6px 18px rgb(23 23 23 / .3)}
 .dock.glide a{z-index:1;-webkit-user-drag:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .dock.glide a[aria-current="page"]{background:none;color:var(--dock-text)}
 .dock.glide a[aria-current="page"]::after{display:none}
@@ -145,7 +145,7 @@ ul,ol{list-style:none}
 /* ---------- buttons (square, per brand rule) ---------- */
 .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:var(--r-btn);font-size:.9375rem;font-weight:500;transition:background .2s ease}
 .btn-primary{background:var(--btn-primary-bg);color:var(--btn-primary-text)}
-.btn-primary:hover{background:var(--btn-primary-bg-hover);color:var(--cream)}
+.btn-primary:hover{background:var(--btn-primary-bg-hover)}
 .btn-line{border:1px solid var(--line);color:var(--text)}
 .btn-line:hover{border-color:var(--text)}
 
@@ -173,7 +173,7 @@ ul,ol{list-style:none}
 .w-case:hover{opacity:.8}
 .w-cap{margin:clamp(20px,3vw,40px) auto;max-width:30em;text-align:center;font-weight:600;text-transform:uppercase;letter-spacing:.01em;line-height:1.3;font-size:clamp(.8125rem,1.2vw,1rem);color:var(--text);transition:color .3s ease}
 .w-photos{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(10px,2vw,22px);margin:clamp(24px,4vw,48px) auto;max-width:1200px}
-.w-photos li{width:clamp(96px,12vw,170px);padding:5px;background:var(--sky);box-shadow:0 10px 22px rgb(158 21 25 / .3);transform:rotate(-3deg)}
+.w-photos li{width:clamp(96px,12vw,170px);padding:5px;background:var(--cream);box-shadow:0 0 0 1px rgb(23 23 23 / .12),0 10px 22px rgb(23 23 23 / .3);transform:rotate(-3deg)}
 .w-photos li:nth-child(even){transform:rotate(2.5deg)}
 .w-photos li:nth-child(3n){transform:rotate(5deg)}
 .w-photos img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
@@ -223,14 +223,14 @@ ul,ol{list-style:none}
 .brand-link{position:relative;display:block;border-radius:50%}
 /* a soft icy light that blooms behind the logo on hover or keyboard focus */
 .brand-link::before{content:"";position:absolute;inset:-22%;z-index:0;border-radius:50%;pointer-events:none;
-  background:radial-gradient(closest-side,rgb(166 220 248 / .85),rgb(166 220 248 / .4) 55%,rgb(166 220 248 / 0) 100%);
+  background:radial-gradient(closest-side,rgb(255 41 45 / .22),rgb(255 41 45 / .1) 55%,rgb(255 41 45 / 0) 100%);
   opacity:0;transform:scale(.78);transition:opacity .4s ease,transform .5s cubic-bezier(.2,.7,.2,1)}
-.brand-logo img{position:relative;z-index:1;width:100%;height:auto;aspect-ratio:1;border-radius:50%;box-shadow:0 0 0 rgb(166 220 248 / 0);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s ease}
+.brand-logo img{position:relative;z-index:1;width:100%;height:auto;aspect-ratio:1;border-radius:50%;box-shadow:0 0 0 rgb(255 41 45 / 0);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s ease}
 a.brand-link:focus-visible{outline:none}
 a.brand-link:focus-visible img{outline:2px solid var(--text);outline-offset:6px}
 @media (hover:hover){
   a.brand-link:hover::before{opacity:1;transform:scale(1)}
-  a.brand-link:hover img{transform:translateY(-10px) scale(1.06);box-shadow:0 22px 44px rgb(0 0 0 / .38),0 0 0 6px rgb(235 38 39 / .18)}
+  a.brand-link:hover img{transform:translateY(-10px) scale(1.06);box-shadow:0 22px 44px rgb(0 0 0 / .38),0 0 0 6px rgb(255 41 45 / .18)}
 }
 a.brand-link:focus-visible::before{opacity:1;transform:scale(1)}
 a.brand-link:focus-visible img{transform:translateY(-10px) scale(1.06)}
@@ -245,7 +245,7 @@ a.brand-link:focus-visible img{transform:translateY(-10px) scale(1.06)}
 .case-ig{margin-top:14px;font-size:var(--fs-small)}
 .case-body .row-lead{margin-bottom:24px}
 .case-shots{grid-column:1 / -1;list-style:none;display:flex;gap:clamp(10px,2vw,24px);flex-wrap:wrap}
-.case-shots li{width:clamp(130px,17vw,240px);padding:clamp(3px,.4vw,6px);background:var(--sky);box-shadow:0 12px 26px rgb(158 21 25 / .3);transform:rotate(-2deg);transition:transform .35s ease}
+.case-shots li{width:clamp(130px,17vw,240px);padding:clamp(3px,.4vw,6px);background:var(--cream);box-shadow:0 0 0 1px rgb(23 23 23 / .12),0 12px 26px rgb(23 23 23 / .3);transform:rotate(-2deg);transition:transform .35s ease}
 .case-shots li:nth-child(even){transform:rotate(2deg)}
 .case-shots li:nth-child(3n){transform:rotate(-1deg)}
 @media (hover:hover){.case-shots li:hover{transform:rotate(0) translateY(-6px)}}
@@ -262,12 +262,12 @@ a.brand-link:focus-visible img{transform:translateY(-10px) scale(1.06)}
 .home-foot{position:fixed;left:0;right:0;bottom:max(28px,env(safe-area-inset-bottom));z-index:30;display:flex;justify-content:space-between;align-items:center;padding-inline:var(--gutter);font-size:var(--fs-small);pointer-events:none}
 .home-foot > *{pointer-events:auto}
 .home-foot nav{display:flex;gap:18px;color:var(--text-muted)}
-.home-foot nav a:hover,.home-foot .mail:hover{color:var(--text)}
+.home-foot nav a:hover,.home-foot .mail:hover{color:var(--red)}
 /* the pinned footer sits over the cream sketchbook hero before the page scrolls */
 .home-foot,.home-foot nav{transition:color .2s ease}
-body.on-paper .home-foot{color:#9E1519}
-body.on-paper .home-foot nav{color:rgb(158 21 25 / .72)}
-body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:#9E1519}
+body.on-paper .home-foot{color:#171717}
+body.on-paper .home-foot nav{color:rgb(23 23 23 / .72)}
+body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:var(--red)}
 
 /* ==========================================================
    Inner pages
@@ -330,8 +330,8 @@ body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:
 .cta p{max-width:36em;color:var(--text-muted);margin-bottom:32px}
 .cta h2 + .btn{margin-top:14px}
 .cta .fine{margin:24px 0 0;font-size:var(--fs-small)}
-.cta .fine a{color:var(--text);border-bottom:1px solid var(--line)}
-.cta .fine a:hover{border-color:var(--text)}
+.cta .fine a{color:var(--red);border-bottom:1px solid currentColor}
+.cta .fine a:hover{color:var(--ink)}
 /* the "Let's be friends!" closing section is a big, confident finale (home and About) */
 .cta-big{padding-block:clamp(88px,12vw,200px) clamp(48px,6vw,96px)}
 .home-cta.cta-big{padding-top:clamp(40px,5vw,84px)}
@@ -349,7 +349,7 @@ body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:
 .site-footer{border-top:1px solid var(--line);padding-block:28px}
 .site-footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;font-size:var(--fs-small);color:var(--text-muted)}
 .site-footer nav{display:flex;flex-wrap:wrap;gap:8px 22px}
-.site-footer a:hover{color:var(--text)}
+.site-footer a:hover{color:var(--red)}
 
 /* legal */
 .legal{max-width:760px;padding-block:clamp(40px,5vw,72px)}
@@ -358,7 +358,7 @@ body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:
 .legal p,.legal li{color:var(--text-muted);margin-bottom:14px}
 .legal strong{color:var(--text);font-weight:500}
 .legal ul{margin:0 0 14px 18px;list-style:disc}
-.legal a{color:var(--text);border-bottom:1px solid var(--line)}
+.legal a{color:var(--red);border-bottom:1px solid currentColor}
 .legal .disclaimer{margin-top:48px;padding:20px 22px;border:1px solid var(--line);border-radius:2px;font-size:var(--fs-small);color:var(--text-muted)}
 
 /* 404 */
@@ -431,4 +431,4 @@ body .home-cta.cta-big .label{font-size:calc(clamp(1.5rem,3vw,2.75rem) * 1.12)} 
 
 /* headings take the 30% light blue on red (red on the light-blue start of the home page) */
 h1,h2,h3,.display,.row-title,.w-words,.w-our,.w-work,.stat-num,.home-cta.cta-big .label{color:var(--head)}
-.sk-paper .row-title{color:var(--red)}
+.stat-num{color:var(--red)}
