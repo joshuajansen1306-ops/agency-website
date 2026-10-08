@@ -10,15 +10,15 @@
   src:url(fonts/newsreader.woff2) format('woff2')}
 
 .sk-hero{
-  --paper:#D4E7F7;
-  --ink:#13233D;
-  --ink-soft:rgba(19,35,61,.58);
+  --paper:#A6DCF8;
+  --ink:#9E1519;
+  --ink-soft:rgba(158,21,25,.58);
   --display:'Instrument Serif',"New York",Georgia,'Times New Roman',serif;
   --font:var(--font-sans);
   --track-caps:.24em;
   /* room the book may use: the hero's height minus its padding and kicker */
   --sk-h:max(520px,calc(100svh - var(--topbar-h)));
-  --sk-logo:clamp(52px,6.4vw,88px);    /* the fable wordmark */
+  --sk-logo:clamp(64px,7vw,96px);    /* the Fable&Co logo */
   --sk-pt:24px;
   --sk-pb:76px;                       /* kept clear at the bottom for the pinned nav */
   --sk-arrow:50px;                    /* the scroll arrow, sitting just under the book */
@@ -42,16 +42,12 @@
 .sk-hero a{color:inherit;text-decoration:none}
 
 /* the logo */
-.sk-name{
-  position:relative;z-index:3;display:block;margin-bottom:10px;
-  font-family:var(--display);font-size:var(--sk-logo);letter-spacing:.005em;
-  white-space:nowrap;line-height:1;
-}
-.sk-hero .sk-name{color:#3A4F99}   /* the logo's blue (scoped so it beats the hero's plain link colour) */
+.sk-name{position:relative;z-index:3;display:block;margin-bottom:10px;line-height:0}
+.sk-name img{display:block;width:var(--sk-logo);height:var(--sk-logo);margin-inline:auto}
 
 .sk-kicker{
   font-family:var(--font-sub);font-size:clamp(16px,1.45vw,20px);font-weight:700;letter-spacing:.01em;line-height:1.3;text-align:center;
-  color:rgba(19,35,61,.9);margin:0 0 clamp(18px,3vh,30px);padding-inline:20px;max-width:min(34em,92vw);text-wrap:balance;
+  color:var(--ink);margin:0 0 clamp(18px,3vh,30px);padding-inline:20px;max-width:min(34em,92vw);text-wrap:balance;
   position:relative;z-index:2;
   text-shadow:0 0 5px var(--paper),0 0 10px var(--paper),0 0 14px var(--paper);   /* a halo so the grid lines never run through the words */
 }
@@ -70,7 +66,7 @@
 /* the floral sketch behind the hero. Landscape screens use a widened copy made by mirroring the picture side to side
    (so there is no visible join and no stretching); phones use the original tall picture. */
 .sk-hero{
-  background-color:#D4E7F7;   /* exactly the icy blue of the top bar */
+  background-color:#A6DCF8;   /* exactly the icy blue of the top bar */
 }
 /* the sketch is white with grey lines, so it is multiplied over the blue: the white turns into the blue and the lines stay */
 .sk-hero::before{
@@ -82,7 +78,7 @@
 /* the wallpaper fades out toward the bottom, into exactly the colour of the About section below, so there is no edge */
 .sk-hero::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:44%;z-index:0;pointer-events:none;
-  background:linear-gradient(to bottom,rgb(214 236 250 / 0) 0%,rgb(214 236 250 / .38) 35%,rgb(214 236 250 / .78) 70%,#D6ECFA 100%);
+  background:linear-gradient(to bottom,rgb(166 220 248 / 0) 0%,rgb(166 220 248 / .38) 35%,rgb(166 220 248 / .78) 70%,#A6DCF8 100%);
 }
 .sk-hero .sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2}
 .sk-hero .sb-stage{
@@ -204,7 +200,7 @@
 .sk-hero .sb-wrap.intro.b2 .sb-full img,.sk-hero .sb-wrap.intro.b2 .sb-half-img{filter:url(#sb-mblur-2)}
 
 @media (max-width:640px){
-  .sk-hero{--sk-logo:52px;--sk-h:max(460px,calc(100svh - var(--topbar-h)));min-height:calc(460px + var(--topbar-h))}
+  .sk-hero{--sk-logo:60px;--sk-h:max(460px,calc(100svh - var(--topbar-h)));min-height:calc(460px + var(--topbar-h))}
   /* one line on a phone: the size follows the screen width so the whole sentence always fits */
   .sk-kicker{font-size:clamp(9.5px,3vw,15px);white-space:nowrap;max-width:none;padding-inline:0;letter-spacing:0}
   .sk-hero .sb-wrap{width:100vw;margin-inline:calc(50% - 50vw)}
@@ -221,20 +217,20 @@
 
 /* ---- About us: the same paper, wash and botanicals as the hero's bottom edge ---- */
 .sk-paper{
-  --ink:#13233D;--paper:#D6ECFA;
+  --ink:#9E1519;--paper:#A6DCF8;
   position:relative;overflow:hidden;background:var(--paper);color:var(--ink);
 }
 .sk-paper>.wrap{position:relative;z-index:2}
-.sk-paper .label{color:rgba(19,35,61,.58)}
-.sk-paper .row{border-bottom-color:rgba(19,35,61,.14)}
-.sk-paper .arrow-link{border-bottom-color:rgba(19,35,61,.3)}
+.sk-paper .label{color:rgba(158,21,25,.58)}
+.sk-paper .row{border-bottom-color:rgba(158,21,25,.14)}
+.sk-paper .arrow-link{border-bottom-color:rgba(158,21,25,.3)}
 .sk-paper .arrow-link:hover{border-bottom-color:var(--ink)}
 .sk-paper :focus-visible{outline-color:var(--ink)}
 
 /* ---- loading screen: covers the page while the book's pages get ready ---- */
 .sk-loader{
   position:fixed;inset:0;z-index:1000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;
-  background:#D6ECFA;color:#13233D;
+  background:#A6DCF8;color:#9E1519;
   opacity:1;transition:opacity .45s ease;
 }
 .sk-loading .sk-loader{display:flex}
@@ -245,16 +241,18 @@
   letter-spacing:.005em;line-height:1;text-align:center;padding-inline:20px;
   animation:sk-loader-in .7s ease both;
 }
-.sk-loader-bar{position:relative;display:block;width:clamp(120px,18vw,180px);height:1px;background:rgba(19,35,61,.16);overflow:hidden}
-.sk-loader-bar i{display:block;height:100%;width:100%;background:#13233D;transform:scaleX(.04);transform-origin:left;transition:transform .35s ease}
+.sk-loader-bar{position:relative;display:block;width:clamp(120px,18vw,180px);height:1px;background:rgba(158,21,25,.16);overflow:hidden}
+.sk-loader-bar i{display:block;height:100%;width:100%;background:#EB2627;transform:scaleX(.04);transform-origin:left;transition:transform .35s ease}
+
+.sk-loader-logo{display:block;width:clamp(88px,12vw,128px);height:auto;animation:sk-loader-in .7s ease both}
 @keyframes sk-loader-in{from{opacity:0;transform:translateY(6px)}}
-@media (prefers-reduced-motion:reduce){.sk-loader,.sk-loader-bar i{transition:none}.sk-loader-text{animation:none}}
+@media (prefers-reduced-motion:reduce){.sk-loader,.sk-loader-bar i{transition:none}.sk-loader-text,.sk-loader-logo{animation:none}}
 
 /* ---- About us: its textured wash melts into the page colour below, which starts icy blue and darkens with the scroll ---- */
 .home-about{--sk-fade:clamp(90px,11vw,170px);padding-bottom:var(--sk-fade)}
 .home-about::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:var(--sk-fade);z-index:1;pointer-events:none;
-  background:linear-gradient(to bottom,rgb(214 236 250 / 0) 0%,var(--bg) 100%);   /* var(--bg) follows the scroll effect, so the join never shows */
+  background:linear-gradient(to bottom,rgb(166 220 248 / 0) 0%,var(--bg) 100%);   /* var(--bg) follows the scroll effect, so the join never shows */
 }
 .home-about .row{border-bottom:0}
 

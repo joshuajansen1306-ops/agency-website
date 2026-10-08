@@ -5,21 +5,24 @@
 :root{
   --r-btn:14px;            /* rounded call-to-action boxes */
   --r-btn-lg:18px;
-  /* the palette: 60% background, 30% text, 20% buttons and icons */
-  --navy:#13233D;          /* 60%: background */
-  --sky:#B2CEE2;           /* 30%: text */
-  --cream:#ECECE5;         /* 20%: icons, buttons */
-  --indigo:#3A4F99;        /* accent (the logo on the pale hero) */
-  --sky-70:rgb(178 206 226 / .7);
-  --sky-20:rgb(178 206 226 / .2);
+  /* the brand palette: 60% red background, 30% light-blue text, 10% cream for calls to action, icons and boxes */
+  --red:#EB2627;           /* 60%: background */
+  --sky:#A6DCF8;           /* 30%: text (headings, key lines) and the light-blue start of the home page */
+  --cream:#FBF4E3;         /* 10%: buttons, icons, boxes; also small text on red, where light blue is too faint to read */
+  --ink:#9E1519;           /* a deep shade of the brand red, for small text on light blue and cream */
+  --navy:var(--ink);       /* legacy names kept so older rules still resolve */
+  --indigo:var(--red);
+  --sky-70:rgb(166 220 248 / .8);
+  --sky-20:rgb(251 244 227 / .34);
 
-  /* semantic */
-  --bg:var(--navy);
-  --surface:#1B2E4B;
-  --surface-raised:#243A5C;
-  --text:var(--sky);
-  --text-muted:var(--sky-70);
-  --line:var(--sky-20);
+  /* semantic (the home page changes --bg, --head, --text, --text-muted and --line as you scroll) */
+  --bg:var(--red);
+  --surface:#D12022;
+  --surface-raised:#B81B1D;
+  --head:var(--sky);
+  --text:var(--cream);
+  --text-muted:rgb(251 244 227 / .88);
+  --line:rgb(251 244 227 / .34);
   --accent:var(--cream);
   --accent-hover:var(--sky);
 
@@ -44,21 +47,21 @@
   --topbar-h:56px;
   --dock-clearance:112px;
 
-  /* component (the home page changes these as you scroll: icy blue at the top, the navy further down) */
-  --topbar-bg:#D4E7F7;
-  --topbar-text:var(--navy);
-  --topbar-muted:rgb(19 35 61 / .72);
+  /* component (the home page changes these as you scroll: light blue at the top, then red) */
+  --topbar-bg:var(--sky);
+  --topbar-text:var(--ink);
+  --topbar-muted:rgb(158 21 25 / .78);
   --dock-bg:var(--cream);
-  --dock-border:rgb(19 35 61 / .16);
-  --dock-text:var(--navy);
-  --dock-hover-bg:rgb(19 35 61 / .08);
-  --dock-active-bg:var(--navy);
+  --dock-border:rgb(158 21 25 / .25);
+  --dock-text:var(--ink);
+  --dock-hover-bg:rgb(158 21 25 / .08);
+  --dock-active-bg:var(--ink);
   --dock-active-text:var(--cream);
   --btn-primary-bg:var(--cream);
   --btn-primary-bg-hover:var(--sky);
-  --btn-primary-text:var(--navy);
+  --btn-primary-text:var(--ink);
   --mark-bg:var(--cream);
-  --mark-text:var(--navy);
+  --mark-text:var(--ink);
   --card-shadow:0 30px 60px rgb(0 0 0 / .45);
 }
 
@@ -76,7 +79,7 @@ a{color:inherit;text-decoration:none}
 a,button{touch-action:manipulation}
 ul,ol{list-style:none}
 :focus-visible{outline:2px solid var(--text);outline-offset:3px;border-radius:2px}
-::selection{background:var(--cream);color:var(--navy)}
+::selection{background:var(--cream);color:var(--ink)}
 
 .wrap{max-width:1600px;margin-inline:auto;padding-left:max(var(--gutter),env(safe-area-inset-left));padding-right:max(var(--gutter),env(safe-area-inset-right))}
 .skip{position:absolute;left:16px;top:-60px;z-index:100;background:var(--text);color:var(--bg);padding:10px 16px;border-radius:2px;font-size:var(--fs-small);font-weight:500;transition:top .2s ease}
@@ -104,7 +107,7 @@ ul,ol{list-style:none}
 /* over the home hero the bar is clear, so the sketch shows through it and moves with the page */
 .topbar.is-clear{background:transparent;border-bottom-color:transparent}
 .topbar :focus-visible{outline-color:var(--topbar-text)}
-.dock :focus-visible{outline-color:var(--navy)}
+.dock :focus-visible{outline-color:var(--ink)}
 .topbar-inner{height:100%;display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px}
 .clock{display:flex;align-items:baseline;gap:10px;font-size:var(--fs-small);font-variant-numeric:tabular-nums}
 .clock-city{font-size:var(--fs-label);text-transform:uppercase;letter-spacing:.06em;color:var(--topbar-muted);transition:color .25s ease}
@@ -130,7 +133,7 @@ ul,ol{list-style:none}
 .dock-pill{position:absolute;left:0;top:0;z-index:0;width:0;height:0;border-radius:999px;background:var(--dock-active-bg);pointer-events:none;
   transition:transform .5s cubic-bezier(.3,1.3,.4,1),width .5s cubic-bezier(.3,1.3,.4,1),height .3s ease,opacity .2s ease;will-change:transform}
 .dock-pill.no-anim{transition:none}
-.dock-pill.dragging{transition:none;box-shadow:0 6px 18px rgb(19 35 61 / .3)}
+.dock-pill.dragging{transition:none;box-shadow:0 6px 18px rgb(158 21 25 / .3)}
 .dock.glide a{z-index:1;-webkit-user-drag:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .dock.glide a[aria-current="page"]{background:none;color:var(--dock-text)}
 .dock.glide a[aria-current="page"]::after{display:none}
@@ -220,14 +223,14 @@ ul,ol{list-style:none}
 .brand-link{position:relative;display:block;border-radius:50%}
 /* a soft icy light that blooms behind the logo on hover or keyboard focus */
 .brand-link::before{content:"";position:absolute;inset:-22%;z-index:0;border-radius:50%;pointer-events:none;
-  background:radial-gradient(closest-side,rgb(178 206 226 / .55),rgb(178 206 226 / .22) 55%,rgb(178 206 226 / 0) 100%);
+  background:radial-gradient(closest-side,rgb(166 220 248 / .55),rgb(166 220 248 / .22) 55%,rgb(166 220 248 / 0) 100%);
   opacity:0;transform:scale(.78);transition:opacity .4s ease,transform .5s cubic-bezier(.2,.7,.2,1)}
-.brand-logo img{position:relative;z-index:1;width:100%;height:auto;aspect-ratio:1;border-radius:50%;box-shadow:0 0 0 rgb(178 206 226 / 0);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s ease}
+.brand-logo img{position:relative;z-index:1;width:100%;height:auto;aspect-ratio:1;border-radius:50%;box-shadow:0 0 0 rgb(166 220 248 / 0);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s ease}
 a.brand-link:focus-visible{outline:none}
 a.brand-link:focus-visible img{outline:2px solid var(--text);outline-offset:6px}
 @media (hover:hover){
   a.brand-link:hover::before{opacity:1;transform:scale(1)}
-  a.brand-link:hover img{transform:translateY(-10px) scale(1.06);box-shadow:0 22px 44px rgb(0 0 0 / .38),0 0 0 6px rgb(178 206 226 / .14)}
+  a.brand-link:hover img{transform:translateY(-10px) scale(1.06);box-shadow:0 22px 44px rgb(0 0 0 / .38),0 0 0 6px rgb(166 220 248 / .14)}
 }
 a.brand-link:focus-visible::before{opacity:1;transform:scale(1)}
 a.brand-link:focus-visible img{transform:translateY(-10px) scale(1.06)}
@@ -262,9 +265,9 @@ a.brand-link:focus-visible img{transform:translateY(-10px) scale(1.06)}
 .home-foot nav a:hover,.home-foot .mail:hover{color:var(--text)}
 /* the pinned footer sits over the cream sketchbook hero before the page scrolls */
 .home-foot,.home-foot nav{transition:color .2s ease}
-body.on-paper .home-foot{color:#13233D}
-body.on-paper .home-foot nav{color:rgb(19 35 61 / .72)}
-body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:#13233D}
+body.on-paper .home-foot{color:#9E1519}
+body.on-paper .home-foot nav{color:rgb(158 21 25 / .72)}
+body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:#9E1519}
 
 /* ==========================================================
    Inner pages
@@ -425,3 +428,7 @@ body .home-cta.cta-big .label{font-size:calc(clamp(1.5rem,3vw,2.75rem) * 1.12)} 
 
 /* the Fable&Co wordmark face (the same serif as the logo on the home hero) wherever the name is written in the copy */
 .fc{font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-weight:inherit;font-size:1.14em;line-height:1;letter-spacing:0;white-space:nowrap}
+
+/* headings take the 30% light blue on red (red on the light-blue start of the home page) */
+h1,h2,h3,.display,.row-title,.w-words,.w-our,.w-work,.stat-num,.home-cta.cta-big .label{color:var(--head)}
+.sk-paper .row-title{color:var(--red)}
