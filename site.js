@@ -12,34 +12,13 @@
 })();
 
 (() => {
-  // The page below About us starts as the same light blue (#A6DCF8), so there is no colour edge, and then
-  // turns to the brand red #EB2627 as you scroll into it. It follows the scroll position (not a timer).
-  // The text colours flip at the halfway point so nothing sits in muddy mid-tones.
+  // The top bar is clear while the sketch hero is under it (so the pattern runs to the top edge), then goes solid.
   const scroller = document.getElementById('work-stack');
   if (!scroller) return;
-  const from = [166, 220, 248], to = [235, 38, 39];   // #A6DCF8 -> #EB2627
-  const root = document.documentElement;
   const bar_el = document.querySelector('.topbar'), hero = document.querySelector('.sk-hero');
   let queued = false;
   const update = () => {
     queued = false;
-    const top = scroller.getBoundingClientRect().top;
-    const start = innerHeight * 0.6, end = -innerHeight * 0.4;   // from just entering view to a little way in
-    const p = Math.min(1, Math.max(0, (start - top) / (start - end)));
-    const e = p * p * (3 - 2 * p);                                // gentle ease in and out
-    const mix = 'rgb(' + from.map((v, i) => Math.round(v + (to[i] - v) * e)).join(' ') + ')';
-    root.style.setProperty('--bg', mix);
-    // The top bar follows the same scroll: its fill moves to the same red, and its text flips to cream
-    // at the halfway point, so it never sits in muddy mid-tones.
-    root.style.setProperty('--topbar-bg', mix);
-    root.style.setProperty('--topbar-line', 'rgb(251 244 227 / ' + (0.3 * e).toFixed(3) + ')');
-    const dark = e > 0.5;      // "dark" = the red state
-    root.style.setProperty('--head', dark ? '#A6DCF8' : '#EB2627');
-    root.style.setProperty('--text', dark ? '#FBF4E3' : '#9E1519');
-    root.style.setProperty('--text-muted', dark ? 'rgb(251 244 227 / .88)' : 'rgb(158 21 25 / .8)');
-    root.style.setProperty('--line', dark ? 'rgb(251 244 227 / .34)' : 'rgb(158 21 25 / .22)');
-    root.style.setProperty('--topbar-text', dark ? '#FBF4E3' : '#9E1519');
-    root.style.setProperty('--topbar-muted', dark ? 'rgb(251 244 227 / .85)' : 'rgb(158 21 25 / .78)');
     // while the sketch hero is under the bar, the bar is clear; once the hero has scrolled past it, it goes solid again
     if (bar_el && hero) bar_el.classList.toggle('is-clear', hero.getBoundingClientRect().bottom > bar_el.offsetHeight + 1);
   };

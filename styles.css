@@ -5,26 +5,26 @@
 :root{
   --r-btn:14px;            /* rounded call-to-action boxes */
   --r-btn-lg:18px;
-  /* the brand palette: 60% red background, 30% light-blue text, 10% cream for calls to action, icons and boxes */
-  --red:#EB2627;           /* 60%: background */
-  --sky:#A6DCF8;           /* 30%: text (headings, key lines) and the light-blue start of the home page */
-  --cream:#FBF4E3;         /* 10%: buttons, icons, boxes; also small text on red, where light blue is too faint to read */
-  --ink:#9E1519;           /* a deep shade of the brand red, for small text on light blue and cream */
+  /* the brand palette: 60% light-blue background, 30% cream, 10% red for calls to action and icons */
+  --red:#EB2627;           /* 10%: buttons, icons, headings */
+  --sky:#A6DCF8;           /* 60%: background */
+  --cream:#FBF4E3;         /* 30%: boxes and frames, and the text that sits on red */
+  --ink:#9E1519;           /* a deep shade of the brand red: small text on light blue, where cream or plain red is too faint to read */
   --navy:var(--ink);       /* legacy names kept so older rules still resolve */
   --indigo:var(--red);
-  --sky-70:rgb(166 220 248 / .8);
-  --sky-20:rgb(251 244 227 / .34);
+  --sky-70:rgb(158 21 25 / .8);
+  --sky-20:rgb(158 21 25 / .28);
 
-  /* semantic (the home page changes --bg, --head, --text, --text-muted and --line as you scroll) */
-  --bg:var(--red);
-  --surface:#D12022;
-  --surface-raised:#B81B1D;
-  --head:var(--sky);
-  --text:var(--cream);
-  --text-muted:rgb(251 244 227 / .88);
-  --line:rgb(251 244 227 / .34);
-  --accent:var(--cream);
-  --accent-hover:var(--sky);
+  /* semantic */
+  --bg:var(--sky);
+  --surface:#B9E3FA;
+  --surface-raised:#CBEAFB;
+  --head:var(--red);
+  --text:var(--ink);
+  --text-muted:rgb(158 21 25 / .8);
+  --line:rgb(158 21 25 / .28);
+  --accent:var(--red);
+  --accent-hover:var(--ink);
 
   --font-sans:"Neue Haas Grotesk Display Pro","Neue Haas Grotesk Text Pro","Neue Haas Grotesk","Neue Haas Unica","Helvetica Neue",Helvetica,"Inter",Arial,system-ui,sans-serif;
   --font-mark:"Newsreader",Georgia,serif;
@@ -47,27 +47,27 @@
   --topbar-h:56px;
   --dock-clearance:112px;
 
-  /* component (the home page changes these as you scroll: light blue at the top, then red) */
+  /* component */
   --topbar-bg:var(--sky);
   --topbar-text:var(--ink);
   --topbar-muted:rgb(158 21 25 / .78);
   --dock-bg:var(--cream);
   --dock-border:rgb(158 21 25 / .25);
   --dock-text:var(--ink);
-  --dock-hover-bg:rgb(158 21 25 / .08);
-  --dock-active-bg:var(--ink);
+  --dock-hover-bg:rgb(235 38 39 / .1);
+  --dock-active-bg:var(--red);
   --dock-active-text:var(--cream);
-  --btn-primary-bg:var(--cream);
-  --btn-primary-bg-hover:var(--sky);
-  --btn-primary-text:var(--ink);
-  --mark-bg:var(--cream);
-  --mark-text:var(--ink);
-  --card-shadow:0 30px 60px rgb(0 0 0 / .45);
+  --btn-primary-bg:var(--red);
+  --btn-primary-bg-hover:var(--ink);
+  --btn-primary-text:var(--cream);
+  --mark-bg:var(--red);
+  --mark-text:var(--cream);
+  --card-shadow:0 24px 48px rgb(158 21 25 / .25);
 }
 
 /* ---------- base ---------- */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--bg);color-scheme:dark}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--bg);color-scheme:light}
 body{
   background:var(--bg);color:var(--text);
   font-family:var(--font-sans);font-size:var(--fs-body);font-weight:400;line-height:1.5;
@@ -79,7 +79,7 @@ a{color:inherit;text-decoration:none}
 a,button{touch-action:manipulation}
 ul,ol{list-style:none}
 :focus-visible{outline:2px solid var(--text);outline-offset:3px;border-radius:2px}
-::selection{background:var(--cream);color:var(--ink)}
+::selection{background:var(--red);color:var(--cream)}
 
 .wrap{max-width:1600px;margin-inline:auto;padding-left:max(var(--gutter),env(safe-area-inset-left));padding-right:max(var(--gutter),env(safe-area-inset-right))}
 .skip{position:absolute;left:16px;top:-60px;z-index:100;background:var(--text);color:var(--bg);padding:10px 16px;border-radius:2px;font-size:var(--fs-small);font-weight:500;transition:top .2s ease}
@@ -223,14 +223,14 @@ ul,ol{list-style:none}
 .brand-link{position:relative;display:block;border-radius:50%}
 /* a soft icy light that blooms behind the logo on hover or keyboard focus */
 .brand-link::before{content:"";position:absolute;inset:-22%;z-index:0;border-radius:50%;pointer-events:none;
-  background:radial-gradient(closest-side,rgb(166 220 248 / .55),rgb(166 220 248 / .22) 55%,rgb(166 220 248 / 0) 100%);
+  background:radial-gradient(closest-side,rgb(251 244 227 / .85),rgb(251 244 227 / .4) 55%,rgb(251 244 227 / 0) 100%);
   opacity:0;transform:scale(.78);transition:opacity .4s ease,transform .5s cubic-bezier(.2,.7,.2,1)}
-.brand-logo img{position:relative;z-index:1;width:100%;height:auto;aspect-ratio:1;border-radius:50%;box-shadow:0 0 0 rgb(166 220 248 / 0);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s ease}
+.brand-logo img{position:relative;z-index:1;width:100%;height:auto;aspect-ratio:1;border-radius:50%;box-shadow:0 0 0 rgb(251 244 227 / 0);transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s ease}
 a.brand-link:focus-visible{outline:none}
 a.brand-link:focus-visible img{outline:2px solid var(--text);outline-offset:6px}
 @media (hover:hover){
   a.brand-link:hover::before{opacity:1;transform:scale(1)}
-  a.brand-link:hover img{transform:translateY(-10px) scale(1.06);box-shadow:0 22px 44px rgb(0 0 0 / .38),0 0 0 6px rgb(166 220 248 / .14)}
+  a.brand-link:hover img{transform:translateY(-10px) scale(1.06);box-shadow:0 22px 44px rgb(0 0 0 / .38),0 0 0 6px rgb(235 38 39 / .18)}
 }
 a.brand-link:focus-visible::before{opacity:1;transform:scale(1)}
 a.brand-link:focus-visible img{transform:translateY(-10px) scale(1.06)}
