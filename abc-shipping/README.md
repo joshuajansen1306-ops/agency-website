@@ -19,12 +19,12 @@ Worked out from the **Estimated Cargo Delivery Date** (always given):
 | Field | Rule |
 |---|---|
 | FOB ETD | first **Monday** on or after the delivery date |
-| Discharge Port ETA, Final Destination ETA | FOB ETD **+ 30 days** |
-| SI Cutoff Date | FOB ETD **− 3 days** |
+| Discharge Port ETA, Final Destination ETA | FOB ETD **+ 31 days** |
+| SI Cutoff Date | FOB ETD **− 3 working days** (Saturday and Sunday not counted) |
 | Cargo Cutoff Date | FOB ETD **− 1 day** |
 | Stuffing Location | looked up from the vendor (`stuffingByVendor`) |
 
-Example: delivery 10/13/2026 → FOB ETD 10/19, ETAs 11/18, SI cutoff 10/16, cargo cutoff 10/18.
+Example: delivery 10/13/2026 → FOB ETD 10/19, ETAs 11/19, SI cutoff 10/14, cargo cutoff 10/18.
 
 - **⚡ Auto-Fill** (booking page) fills all of the above; every filled field turns yellow.
 - **Confirm** requires all of them to be filled.

@@ -30,8 +30,8 @@ window.ABC_DATA = (function () {
     /* Everything below is worked out from the Estimated Cargo Delivery Date (always given). */
     schedule: {
       fobEtdWeekday: 1,          // Monday (0 = Sunday); first one on or after the delivery date
-      etaDaysAfterFobEtd: 30,    // Discharge Port ETA and Final Destination ETA
-      siCutoffDaysBefore: 3,     // SI Cutoff Date = FOB ETD - 3 days
+      etaDaysAfterFobEtd: 31,    // Discharge Port ETA and Final Destination ETA (calendar days)
+      siCutoffWorkingDaysBefore: 3, // SI Cutoff Date = FOB ETD - 3 working days (Sat/Sun not counted)
       cargoCutoffDaysBefore: 1,  // Cargo Cutoff Date = FOB ETD - 1 day
     },
     stuffingByVendor: {

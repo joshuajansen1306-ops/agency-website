@@ -126,13 +126,18 @@
     return m ? new Date(Date.UTC(+m[3], +m[1] - 1, +m[2])) : null;
   }
   const addDays = (d, n) => new Date(d.getTime() + n * 86400000);
+  function subWorkingDays(d, n) {            // step back n days, skipping Saturday and Sunday
+    let x = d;
+    while (n > 0) { x = addDays(x, -1); const w = x.getUTCDay(); if (w !== 0 && w !== 6) n--; }
+    return x;
+  }
   const fmtDate = (d) => String(d.getUTCMonth() + 1).padStart(2, '0') + '/' + String(d.getUTCDate()).padStart(2, '0') + '/' + d.getUTCFullYear();
   function computeSchedule(estDelivery) {
     const est = parseDate(estDelivery); if (!est) return null;
     const S = D.RULES.schedule;
     const fob = addDays(est, (S.fobEtdWeekday - est.getUTCDay() + 7) % 7);   // first Monday on or after
     const eta = fmtDate(addDays(fob, S.etaDaysAfterFobEtd));
-    return { fobEtd: fmtDate(fob), dischargeEta: eta, finalEta: eta, siCutoffDate: fmtDate(addDays(fob, -S.siCutoffDaysBefore)), cargoCutoffDate: fmtDate(addDays(fob, -S.cargoCutoffDaysBefore)) };
+    return { fobEtd: fmtDate(fob), dischargeEta: eta, finalEta: eta, siCutoffDate: fmtDate(subWorkingDays(fob, S.siCutoffWorkingDaysBefore)), cargoCutoffDate: fmtDate(addDays(fob, -S.cargoCutoffDaysBefore)) };
   }
   function doConfirm(b) { b.status = 'Confirmed'; b.fields.confirmDate = today(); persist(); }
   function doDecline(b, reason) { b.status = 'Declined'; b.reason = reason; persist(); }
