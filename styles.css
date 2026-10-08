@@ -58,7 +58,7 @@
   --dock-active-bg:var(--red);
   --dock-active-text:var(--cream);
   --btn-primary-bg:var(--red);
-  --btn-primary-bg-hover:var(--ink);
+  --btn-primary-bg-hover:#D91E22;
   --btn-primary-text:var(--cream);
   --mark-bg:var(--red);
   --mark-text:var(--cream);
@@ -107,7 +107,7 @@ ul,ol{list-style:none}
 /* over the home hero the bar is clear, so the sketch shows through it and moves with the page */
 .topbar.is-clear{background:transparent;border-bottom-color:transparent}
 .topbar :focus-visible{outline-color:var(--topbar-text)}
-.dock :focus-visible{outline-color:var(--cream)}
+.dock :focus-visible{outline-color:var(--red)}
 .topbar-inner{height:100%;display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px}
 .clock{display:flex;align-items:baseline;gap:10px;font-size:var(--fs-small);font-variant-numeric:tabular-nums}
 .clock-city{font-size:var(--fs-label);text-transform:uppercase;letter-spacing:.06em;color:var(--topbar-muted);transition:color .25s ease}

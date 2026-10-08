@@ -12,13 +12,39 @@
 })();
 
 (() => {
-  // The top bar is clear while the sketch hero is under it (so the pattern runs to the top edge), then goes solid.
+  // The page below About us starts as the same warm cream (#F7F1E3), so there is no colour edge, and then
+  // turns to charcoal #171717 as you scroll into it. It follows the scroll position (not a timer).
+  // The text colours flip at the halfway point so nothing sits in muddy mid-tones.
   const scroller = document.getElementById('work-stack');
   if (!scroller) return;
+  const from = [247, 241, 227], to = [23, 23, 23];    // #F7F1E3 -> #171717
+  const root = document.documentElement;
   const bar_el = document.querySelector('.topbar'), hero = document.querySelector('.sk-hero');
   let queued = false;
   const update = () => {
     queued = false;
+    const top = scroller.getBoundingClientRect().top;
+    const start = innerHeight * 0.6, end = -innerHeight * 0.4;   // from just entering view to a little way in
+    const p = Math.min(1, Math.max(0, (start - top) / (start - end)));
+    const e = p * p * (3 - 2 * p);                                // gentle ease in and out
+    const mix = 'rgb(' + from.map((v, i) => Math.round(v + (to[i] - v) * e)).join(' ') + ')';
+    const set = (k, v) => root.style.setProperty(k, v);
+    set('--bg', mix);
+    // The top bar follows the same scroll: its fill moves to the same charcoal, and its text flips to
+    // cream at the halfway point. The floating nav flips too (cream on charcoal), so it never disappears.
+    set('--topbar-bg', mix);
+    set('--topbar-line', 'rgb(247 241 227 / ' + (0.18 * e).toFixed(3) + ')');
+    const dark = e > 0.5;
+    set('--head', dark ? '#F7F1E3' : '#171717');
+    set('--text', dark ? '#F7F1E3' : '#171717');
+    set('--text-muted', dark ? 'rgb(247 241 227 / .72)' : 'rgb(23 23 23 / .72)');
+    set('--line', dark ? 'rgb(247 241 227 / .2)' : 'rgb(23 23 23 / .18)');
+    set('--topbar-text', dark ? '#F7F1E3' : '#171717');
+    set('--topbar-muted', dark ? 'rgb(247 241 227 / .7)' : 'rgb(23 23 23 / .7)');
+    set('--dock-bg', dark ? '#F7F1E3' : '#171717');
+    set('--dock-text', dark ? '#171717' : '#F7F1E3');
+    set('--dock-border', dark ? 'rgb(247 241 227 / .9)' : 'rgb(23 23 23 / .9)');
+    set('--dock-hover-bg', dark ? 'rgb(23 23 23 / .1)' : 'rgb(247 241 227 / .14)');
     // while the sketch hero is under the bar, the bar is clear; once the hero has scrolled past it, it goes solid again
     if (bar_el && hero) bar_el.classList.toggle('is-clear', hero.getBoundingClientRect().bottom > bar_el.offsetHeight + 1);
   };
