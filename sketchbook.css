@@ -10,7 +10,7 @@
   src:url(fonts/newsreader.woff2) format('woff2')}
 
 .sk-hero{
-  --paper:#A6DCF8;
+  --paper:#FBF4E3;
   --ink:#9E1519;
   --ink-soft:rgba(158,21,25,.58);
   --display:'Instrument Serif',"New York",Georgia,'Times New Roman',serif;
@@ -66,7 +66,7 @@
 /* the floral sketch behind the hero. Landscape screens use a widened copy made by mirroring the picture side to side
    (so there is no visible join and no stretching); phones use the original tall picture. */
 .sk-hero{
-  background-color:#A6DCF8;   /* exactly the icy blue of the top bar */
+  background-color:#FBF4E3;   /* exactly the cream of the page and top bar */
 }
 /* the sketch is white with grey lines, so it is multiplied over the blue: the white turns into the blue and the lines stay */
 .sk-hero::before{
@@ -78,7 +78,7 @@
 /* the wallpaper fades out toward the bottom, into exactly the colour of the About section below, so there is no edge */
 .sk-hero::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:44%;z-index:0;pointer-events:none;
-  background:linear-gradient(to bottom,rgb(166 220 248 / 0) 0%,rgb(166 220 248 / .38) 35%,rgb(166 220 248 / .78) 70%,#A6DCF8 100%);
+  background:linear-gradient(to bottom,rgb(251 244 227 / 0) 0%,rgb(251 244 227 / .38) 35%,rgb(251 244 227 / .78) 70%,#FBF4E3 100%);
 }
 .sk-hero .sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2}
 .sk-hero .sb-stage{
@@ -217,7 +217,7 @@
 
 /* ---- About us: the same paper, wash and botanicals as the hero's bottom edge ---- */
 .sk-paper{
-  --ink:#9E1519;--paper:#A6DCF8;
+  --ink:#9E1519;--paper:#FBF4E3;
   position:relative;overflow:hidden;background:var(--paper);color:var(--ink);
 }
 .sk-paper>.wrap{position:relative;z-index:2}
@@ -230,7 +230,7 @@
 /* ---- loading screen: covers the page while the book's pages get ready ---- */
 .sk-loader{
   position:fixed;inset:0;z-index:1000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;
-  background:#A6DCF8;color:#9E1519;
+  background:#FBF4E3;color:#9E1519;
   opacity:1;transition:opacity .45s ease;
 }
 .sk-loading .sk-loader{display:flex}
@@ -252,7 +252,7 @@
 .home-about{--sk-fade:clamp(90px,11vw,170px);padding-bottom:var(--sk-fade)}
 .home-about::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:var(--sk-fade);z-index:1;pointer-events:none;
-  background:linear-gradient(to bottom,rgb(166 220 248 / 0) 0%,var(--bg) 100%);   /* var(--bg) follows the scroll effect, so the join never shows */
+  background:linear-gradient(to bottom,rgb(251 244 227 / 0) 0%,var(--bg) 100%);   /* var(--bg) follows the scroll effect, so the join never shows */
 }
 .home-about .row{border-bottom:0}
 
