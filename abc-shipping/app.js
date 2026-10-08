@@ -2,7 +2,7 @@
   'use strict';
   const D = window.ABC_DATA;
   const L = D.LISTS;
-  const KEY = 'abc-shipping-demo-v1';
+  const KEY = 'abc-shipping-demo-v2';
   const CO_KEY = 'abc-shipping-company';
   const VIEWED_KEY = 'abc-shipping-viewed';
   const PAGE_SIZE = 10;
@@ -111,20 +111,42 @@
       stCity: s ? s.city : '', stState: s ? s.state : '', stCountry: s ? s.country : '', stPostal: s ? s.postal : '',
     });
   }
+  const REQUIRED = [
+    ['stuffing', 'Stuffing Location'], ['fobEtd', 'FOB ETD'], ['dischargeEta', 'Discharge Port ETA'], ['finalEta', 'Final Destination ETA'],
+    ['siCutoffDate', 'ABC SI Cutoff Date'], ['cargoCutoffDate', 'Cargo Cutoff Date'], ['cargoCutoffTime', 'Cargo Cutoff Time'],
+    ['vessel', 'Vessel'], ['voyage', 'Voyage'],
+  ];
   function validate(b) {
-    const errs = [];
-    if (!b.fields.stuffing) errs.push({ key: 'stuffing', msg: 'Stuffing Location is required before a booking can be confirmed.' });
-    return errs;
+    return REQUIRED.filter((r) => !String(b.fields[r[0]] || '').trim()).map((r) => ({ key: r[0], label: r[1], msg: r[1] + ' is required.' }));
+  }
+
+  /* dates are mm/dd/yyyy; worked in UTC so daylight-saving changes never shift a day */
+  function parseDate(s) {
+    const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(s || '').trim());
+    return m ? new Date(Date.UTC(+m[3], +m[1] - 1, +m[2])) : null;
+  }
+  const addDays = (d, n) => new Date(d.getTime() + n * 86400000);
+  const fmtDate = (d) => String(d.getUTCMonth() + 1).padStart(2, '0') + '/' + String(d.getUTCDate()).padStart(2, '0') + '/' + d.getUTCFullYear();
+  function computeSchedule(estDelivery) {
+    const est = parseDate(estDelivery); if (!est) return null;
+    const S = D.RULES.schedule;
+    const fob = addDays(est, (S.fobEtdWeekday - est.getUTCDay() + 7) % 7);   // first Monday on or after
+    const eta = fmtDate(addDays(fob, S.etaDaysAfterFobEtd));
+    return { fobEtd: fmtDate(fob), dischargeEta: eta, finalEta: eta, siCutoffDate: fmtDate(addDays(fob, -S.siCutoffDaysBefore)), cargoCutoffDate: fmtDate(addDays(fob, -S.cargoCutoffDaysBefore)) };
   }
   function doConfirm(b) { b.status = 'Confirmed'; b.fields.confirmDate = today(); persist(); }
   function doDecline(b, reason) { b.status = 'Declined'; b.reason = reason; persist(); }
   function doVoid(b) { b.status = 'Void'; persist(); }
+  /* Fills every rule-driven field. Returns what it filled and what it could not. */
   function autoFill(b) {
+    const filled = [], missing = [];
     const name = D.RULES.stuffingByVendor[b.fields.vendorCode];
-    if (!name) return null;
-    setStuffing(b, name);
+    if (name) { setStuffing(b, name); filled.push('Stuffing Location'); } else missing.push('Stuffing Location (no rule for vendor ' + b.fields.vendorCode + ')');
+    const sch = computeSchedule(b.fields.estDelivery);
+    if (sch) { Object.assign(b.fields, sch); filled.push('FOB ETD', 'Discharge Port ETA', 'Final Destination ETA', 'SI Cutoff Date', 'Cargo Cutoff Date'); } else missing.push('dates (Estimated Cargo Delivery Date is missing or invalid)');
+    Object.assign(b.fields, D.RULES.constants); filled.push('Cargo Cutoff Time', 'Vessel', 'Voyage');
     persist();
-    return name;
+    return { filled, missing, stuffing: name || '' };
   }
 
   /* -------------------------------------------------------------- sidebar */
@@ -332,7 +354,7 @@
     const li = (b) => '<li class="run" data-id="' + esc(b.id) + '"><span class="t">…</span><span><b>' + esc(b.id) + '</b> – queued</span></li>';
     modal({
       title: 'Auto-Process Bookings', wide: true,
-      body: '<p>For each selected booking, the automation applies the vendor rule (<b>Stuffing Location</b>, address auto-filled) and then confirms it. Bookings that are flagged <i>Ready to Decline</i> or <i>Not Ready to Process</i> are skipped for manual review.</p><ul class="log">' + list.map(li).join('') + '</ul>',
+      body: '<p>For each selected booking, the automation fills the <b>Stuffing Location</b> (vendor rule), <b>FOB ETD</b>, both <b>ETAs</b>, <b>SI</b> and <b>Cargo cutoff dates</b> (from the Estimated Cargo Delivery Date), and the fixed <b>Vessel</b>, <b>Voyage</b> and <b>Cargo Cutoff Time</b>, then confirms it. Bookings that are flagged <i>Ready to Decline</i> or <i>Not Ready to Process</i> are skipped for manual review.</p><ul class="log">' + list.map(li).join('') + '</ul>',
       buttons: [
         { label: 'Cancel', onClick: () => { } },
         {
@@ -347,11 +369,12 @@
               }
               const b = list[i++]; const row = $('li[data-id="' + b.id + '"]', bg);
               const set = (cls, t, msg) => { row.className = cls; $('.t', row).textContent = t; row.lastChild.innerHTML = '<b>' + esc(b.id) + '</b> – ' + msg; };
-              if (b.readiness !== 'process') { skipped++; set('skip', 'SKIP', b.readiness === 'decline' ? 'flagged Ready to Decline – needs a person to decide.' : 'flagged Not Ready to Process (e.g. vessel/voyage missing).'); }
+              if (b.readiness !== 'process') { skipped++; set('skip', 'SKIP', b.readiness === 'decline' ? 'flagged Ready to Decline – needs a person to decide.' : 'flagged Not Ready to Process – needs a person to check.'); }
               else {
-                const name = autoFill(b);
-                if (!name) { skipped++; set('skip', 'SKIP', 'no stuffing-location rule for vendor ' + esc(b.fields.vendorCode) + '.'); }
-                else { doConfirm(b); ok++; set('ok', 'OK', 'Stuffing Location → <b>' + esc(name) + '</b>; confirmed.'); }
+                const r = autoFill(b);
+                const left = validate(b);
+                if (left.length) { skipped++; set('skip', 'SKIP', 'still missing: ' + esc(r.missing.concat(left.map((x) => x.label)).join(', ')) + '.'); }
+                else { doConfirm(b); ok++; set('ok', 'OK', esc(b.fields.stuffing) + ' · FOB ETD <b>' + esc(b.fields.fobEtd) + '</b> · ETAs ' + esc(b.fields.dischargeEta) + ' · SI ' + esc(b.fields.siCutoffDate) + ' · cargo cutoff ' + esc(b.fields.cargoCutoffDate) + ' ' + esc(b.fields.cargoCutoffTime) + '; confirmed.'); }
               }
               setTimeout(step, 450);
             };
@@ -403,7 +426,7 @@
     const R = {};
     const f = b.fields;
 
-    const header =
+    const buildHeader = () =>
       sec('basic', 'Basic Information', 'sub') + '<div class="g12">' +
       F('bookingKey', 'Booking Key', 3, R) + F('office', 'ABC Office', 3, R) + F('companyCode', 'Company Code', 3, R) + F('', 'Status', 3, { val: STATUS_LABEL[b.status] }) +
       F('vendorName', 'Main Vendor Code/Name', 6, { val: f.vendorCode + ' - ' + f.vendorName }) + F('vendorContact', 'Main Vendor Contact', 2, R) + F('vendorPhone', 'Main Vendor Phone', 2, R) + F('vendorEmail', 'Main Vendor Email', 2, R) +
@@ -432,7 +455,7 @@
       F('fobPort', 'FOB Port', 6, R) + F('fobEtd', 'FOB ETD', 3, E) + '<div class="s3"></div>' +
       F('dischargePort', 'Discharge Port', 6, { sel: L.dischargePorts, ed: true }) + F('dischargeEta', 'Discharge Port ETA', 3, E) + F('dc', 'DC', 3, { sel: L.dc, ed: true }) +
       F('finalDest', 'Final Destination', 6, { sel: L.finalDest, ed: true }) + F('finalEta', 'Final Destination ETA', 3, E) + F('shipTo', 'Ship To Location', 3, { sel: L.shipTo, ed: true }) +
-      F('estDelivery', 'Estimated Cargo Delivery Date', 3, E) + F('actualReceived', 'Actual Cargo Received Date', 3, E) + F('siCutoffDate', 'ABC SI Cutoff Date', 3, E) + F('siCutoffTime', 'ABC SI Cutoff Time', 3, E) +
+      F('estDelivery', 'Estimated Cargo Delivery Date', 3, R) + F('actualReceived', 'Actual Cargo Received Date', 3, E) + F('siCutoffDate', 'ABC SI Cutoff Date', 3, E) + F('siCutoffTime', 'ABC SI Cutoff Time', 3, E) +
       F('carrier', 'Carrier Name/Code', 6, { sel: L.carriers, ed: true }) + F('carrierSo', 'Carrier SO Number', 3, E) + F('vessel', 'Vessel', 3, { ed: true, pencil: true }) +
       F('voyage', 'Voyage', 3, E) + F('cargoCutoffDate', 'Cargo Cutoff Date', 3, E) + F('cargoCutoffTime', 'Cargo Cutoff Time', 3, E) + F('trucking', 'ABC Trucking Service Required', 3, { chk: true, ed: true }) +
       '</div></div>' +
@@ -470,10 +493,10 @@
       }
       return '<div class="ws-head"><h2>Booking Header Information</h2><span class="legend"><i></i>changed field</span>' +
         '<button class="btn sq" id="btnSave" title="Save draft" ' + (editable ? '' : 'disabled') + '>' + ico('save') + '</button>' +
-        '<button class="btn auto" id="btnAutoFill" ' + (editable ? '' : 'disabled') + ' title="Fill the Stuffing Location from the vendor rule">⚡ Auto-Fill</button>' +
+        '<button class="btn auto" id="btnAutoFill" ' + (editable ? '' : 'disabled') + ' title="Fill Stuffing Location, FOB ETD, ETAs, cutoffs, Vessel, Voyage and Cargo Cutoff Time from the rules">⚡ Auto-Fill</button>' +
         '<button class="btn primary" id="btnConfirm" ' + (editable ? '' : 'disabled') + '>Confirm</button>' +
         '<button class="btn primary" id="btnDecline" ' + (editable ? '' : 'disabled') + '>Decline</button>' +
-        '<button class="btn primary" id="btnVoid" ' + (editable ? '' : 'disabled') + '>Void</button></div>' + header;
+        '<button class="btn primary" id="btnVoid" ' + (editable ? '' : 'disabled') + '>Void</button></div>' + buildHeader();
     }
 
     function paint() {
@@ -500,16 +523,17 @@
       on('#noteAdd', () => { const v = $('#noteText').value.trim(); if (!v) return; b.notes.push({ by: 'ABC-OPS01', at: new Date().toLocaleString(), text: v }); persist(); paint(); });
       on('#btnSave', () => { persist(); toast('Draft saved', 'ok'); });
       on('#btnAutoFill', () => {
-        const name = autoFill(b);
-        if (!name) { toast('No stuffing-location rule for vendor ' + f.vendorCode, 'bad'); return; }
-        paint(); toast('Stuffing Location set to ' + name + ' (vendor rule)', 'ok');
+        const r = autoFill(b);
+        paint();
+        if (r.missing.length) toast('Filled what the rules cover. Still needs you: ' + r.missing.join('; '), 'bad');
+        else toast('Auto-filled ' + r.filled.length + ' fields from the rules', 'ok');
       });
       on('#btnConfirm', () => {
         const errs = validate(b);
         $$('.f.err').forEach((x) => { x.classList.remove('err'); const h = $('.hint-err', x); if (h) h.remove(); });
         if (errs.length) {
           errs.forEach((er) => { const w = $('[data-wrap="' + er.key + '"]'); if (w) { w.classList.add('err'); w.insertAdjacentHTML('beforeend', '<span class="hint-err">' + er.msg + '</span>'); w.scrollIntoView({ block: 'center', behavior: 'smooth' }); } });
-          toast(errs[0].msg, 'bad'); return;
+          toast(errs.length === 1 ? errs[0].msg : errs.length + ' required fields are empty: ' + errs.map((x) => x.label).join(', '), 'bad'); return;
         }
         modal({ title: 'Confirm Booking', body: '<p>Confirm booking <b>' + esc(b.id) + '</b> with Stuffing Location <b>' + esc(b.fields.stuffing) + '</b>?</p>', buttons: [{ label: 'Cancel' }, { label: 'Confirm', cls: 'primary', onClick: () => { doConfirm(b); toast('Booking ' + b.id + ' confirmed', 'ok'); location.hash = '#/booking'; } }] });
       });

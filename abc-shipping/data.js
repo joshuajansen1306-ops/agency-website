@@ -25,6 +25,15 @@ window.ABC_DATA = (function () {
 
   /* Automation rule: which stuffing location is correct for which vendor. */
   const RULES = {
+    /* Same on every booking – always filled in. */
+    constants: { cargoCutoffTime: '17:00', voyage: '99', vessel: 'A VESSEL' },
+    /* Everything below is worked out from the Estimated Cargo Delivery Date (always given). */
+    schedule: {
+      fobEtdWeekday: 1,          // Monday (0 = Sunday); first one on or after the delivery date
+      etaDaysAfterFobEtd: 30,    // Discharge Port ETA and Final Destination ETA
+      siCutoffDaysBefore: 3,     // SI Cutoff Date = FOB ETD - 3 days
+      cargoCutoffDaysBefore: 1,  // Cargo Cutoff Date = FOB ETD - 1 day
+    },
     stuffingByVendor: {
       '50701': 'ALL CARGO TERMINAL Limited',
       '50822': 'Gateway Distriparks Limited CFS',
@@ -99,6 +108,7 @@ window.ABC_DATA = (function () {
   /* ---------- booking factory ---------- */
   function booking(o) {
     const op = OPS[o.op || 'Meera Iyer'];
+    const isOpen = (o.status || 'Sent') === 'Sent';
     const f = {
       bookingKey: o.id, office: 'IN0', companyCode: '981', status: 'Sent to Origin',
       vendorCode: o.vendorCode, vendorName: o.vendorName,
@@ -116,15 +126,15 @@ window.ABC_DATA = (function () {
       originCountry: 'INDIA', solidWood: 'No', exportLicense: 'No', dg: 'No',
       mfrName: o.mfrName, mfrAddr1: o.mfrAddr1, mfrAddr2: o.mfrAddr2 || '', mfrCity: o.mfrCity, mfrState: o.mfrState, mfrCountry: 'IN', mfrPostal: o.mfrPostal,
       stuffing: '', stAddr1: '', stAddr2: '', stCity: '', stState: '', stCountry: '', stPostal: '',
-      fobPort: o.fobPort, fobEtd: o.fobEtd,
-      dischargePort: '', dischargeEta: o.dischargeEta,
-      finalDest: o.finalDest || 'New York, NY', finalEta: o.dischargeEta,
+      fobPort: o.fobPort, fobEtd: isOpen ? '' : o.fobEtd,
+      dischargePort: '', dischargeEta: isOpen ? '' : o.dischargeEta,
+      finalDest: o.finalDest || 'New York, NY', finalEta: isOpen ? '' : o.dischargeEta,
       dc: o.dc || 'New York, NY', shipTo: o.shipTo || 'Summit USA, OH',
       estDelivery: o.estDelivery, actualReceived: '',
       siCutoffDate: '', siCutoffTime: '',
-      cargoCutoffDate: o.cutoff, cargoCutoffTime: '17:00',
+      cargoCutoffDate: isOpen ? '' : o.cutoff, cargoCutoffTime: isOpen ? '' : '17:00',
       carrier: o.carrier || 'Maersk(MAEU)', carrierSo: '',
-      vessel: o.vessel === undefined ? 'A VESSEL' : o.vessel, voyage: o.vessel === '' ? '' : '99',
+      vessel: isOpen ? '' : 'A VESSEL', voyage: isOpen ? '' : '99',
       trucking: false,
       shipMode: 'Ocean', freightType: 'CFS/CY', impacted: '', pallets: '', chargeableWeight: '',
       containers: ['', '', '', '', ''], containerTypes: ['', '', '', '', ''],
@@ -181,13 +191,13 @@ window.ABC_DATA = (function () {
       items: items('3209201', 676410220, 'INDIGO WASH', 'MENS DENIM SHIRT', 7, 1, 4),
     }),
     booking({
-      id: 'ABCLAX43702IN0', vendorCode: '51044', vendorName: 'Sunrise Textiles Pvt Ltd', op: 'Meera Iyer', readiness: 'notready', kpi: 'At Risk',
+      id: 'ABCLAX43702IN0', vendorCode: '51044', vendorName: 'Sunrise Textiles Pvt Ltd', op: 'Meera Iyer', kpi: 'At Risk',
       vendorEmail: 'logistics@sunrisetex.example', created: '09/29/2026', received: '10/08/2026', confirmDate: '09/30/2026',
       contactName: 'IMRAN SHEIKH', contactEmail: 'imran@sunrisetex.example',
       shipperAddress: 'GALA 7-9, ANDHERI INDUSTRIAL ESTATE\nMUMBAI, MAHARASHTRA 400093\nState Code: 27  State Name: Maharashtra',
       mfrName: 'Sunrise Textiles - Unit 1', mfrAddr1: 'GALA 7-9', mfrCity: 'MUMBAI', mfrState: 'MH', mfrPostal: '400093',
       fobPort: 'Nhava Sheva', fobEtd: '10/27/2026', dischargeEta: '11/30/2026', estDelivery: '10/20/2026', cutoff: '10/25/2026',
-      carrier: 'ONE(ONEY)', vessel: '', finalDest: 'Reno, NV', dc: 'Reno, NV', shipTo: 'Summit USA, NV',
+      carrier: 'ONE(ONEY)', finalDest: 'Reno, NV', dc: 'Reno, NV', shipTo: 'Summit USA, NV',
       items: items('3209255', 676520330, 'OATMEAL', 'WMNS CASHMERE BLEND SWEATER', 5, 3, 1),
     }),
     booking({
