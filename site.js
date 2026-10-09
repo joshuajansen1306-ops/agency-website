@@ -12,12 +12,12 @@
 })();
 
 (() => {
-  // The page below About us starts as the same warm cream (#F7F1E3), so there is no colour edge, and then
+  // The page below About us starts as the same warm cream (#F3EDE0), so there is no colour edge, and then
   // turns to charcoal #171717 as you scroll into it. It follows the scroll position (not a timer).
   // The text colours flip at the halfway point so nothing sits in muddy mid-tones.
   const scroller = document.getElementById('work-stack');
   if (!scroller) return;
-  const from = [247, 241, 227], to = [23, 23, 23];    // #F7F1E3 -> #171717
+  const from = [243, 237, 224], to = [23, 23, 23];    // #F3EDE0 -> #171717
   const root = document.documentElement;
   const bar_el = document.querySelector('.topbar'), hero = document.querySelector('.sk-hero');
   let queued = false;
@@ -33,18 +33,19 @@
     // The top bar follows the same scroll: its fill moves to the same charcoal, and its text flips to
     // cream at the halfway point. The floating nav flips too (cream on charcoal), so it never disappears.
     set('--topbar-bg', mix);
-    set('--topbar-line', 'rgb(247 241 227 / ' + (0.18 * e).toFixed(3) + ')');
+    set('--topbar-line', 'rgb(243 237 224 / ' + (0.18 * e).toFixed(3) + ')');
     const dark = e > 0.5;
-    set('--head', dark ? '#F7F1E3' : '#171717');
-    set('--text', dark ? '#F7F1E3' : '#171717');
-    set('--text-muted', dark ? 'rgb(247 241 227 / .72)' : 'rgb(23 23 23 / .72)');
-    set('--line', dark ? 'rgb(247 241 227 / .2)' : 'rgb(23 23 23 / .18)');
-    set('--topbar-text', dark ? '#F7F1E3' : '#171717');
-    set('--topbar-muted', dark ? 'rgb(247 241 227 / .7)' : 'rgb(23 23 23 / .7)');
-    set('--dock-bg', dark ? '#F7F1E3' : '#171717');
-    set('--dock-text', dark ? '#171717' : '#F7F1E3');
-    set('--dock-border', dark ? 'rgb(247 241 227 / .9)' : 'rgb(23 23 23 / .9)');
-    set('--dock-hover-bg', dark ? 'rgb(23 23 23 / .1)' : 'rgb(247 241 227 / .14)');
+    set('--head', dark ? '#F3EDE0' : '#171717');
+    set('--link', dark ? '#EBE8D9' : '#A5282B');
+    set('--text', dark ? '#F3EDE0' : '#171717');
+    set('--text-muted', dark ? 'rgb(243 237 224 / .72)' : 'rgb(23 23 23 / .72)');
+    set('--line', dark ? 'rgb(243 237 224 / .2)' : 'rgb(23 23 23 / .18)');
+    set('--topbar-text', dark ? '#F3EDE0' : '#171717');
+    set('--topbar-muted', dark ? 'rgb(243 237 224 / .7)' : 'rgb(23 23 23 / .7)');
+    set('--dock-bg', dark ? '#F3EDE0' : '#171717');
+    set('--dock-text', dark ? '#171717' : '#F3EDE0');
+    set('--dock-border', dark ? 'rgb(243 237 224 / .9)' : 'rgb(23 23 23 / .9)');
+    set('--dock-hover-bg', dark ? 'rgb(23 23 23 / .1)' : 'rgb(243 237 224 / .14)');
     // while the sketch hero is under the bar, the bar is clear; once the hero has scrolled past it, it goes solid again
     if (bar_el && hero) bar_el.classList.toggle('is-clear', hero.getBoundingClientRect().bottom > bar_el.offsetHeight + 1);
   };
