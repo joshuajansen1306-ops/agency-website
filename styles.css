@@ -307,7 +307,7 @@ body.on-paper .home-foot nav a:hover,body.on-paper .home-foot .mail:hover{color:
 .about-head{display:grid;grid-template-columns:7fr 5fr;gap:clamp(24px,4vw,64px);padding-block:clamp(40px,6vw,88px);border-bottom:1px solid var(--line)}
 .about-head .display{margin-bottom:28px}
 .about-head--solo{display:block;padding-block:clamp(40px,6vw,88px) 0;border-bottom:0}
-.about-head--solo .display{margin-bottom:0}
+.about-head--solo .display{margin-bottom:0;position:relative;top:clamp(14px,2vw,24px)}   /* a little lower, away from the label above it; the photos stay put */
 .about-team{padding-top:0}
 .about-team .team{margin-top:clamp(24px,3vw,40px)}
 .about-links{display:flex;flex-wrap:wrap;gap:12px 28px;font-size:var(--fs-small)}
