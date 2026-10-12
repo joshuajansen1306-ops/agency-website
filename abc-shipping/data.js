@@ -34,15 +34,8 @@ window.ABC_DATA = (function () {
       siCutoffWorkingDaysBefore: 3, // SI Cutoff Date = FOB ETD - 3 working days (Sat/Sun not counted)
       cargoCutoffDaysBefore: 1,  // Cargo Cutoff Date = FOB ETD - 1 day
     },
-    stuffingByVendor: {
-      '50701': 'ALL CARGO TERMINAL Limited',
-      '50822': 'Gateway Distriparks Limited CFS',
-      '50937': 'Kuehne + Nagel India Pvt Ltd.',
-      '51044': 'APM Terminals Inland Services',
-      '51160': 'JM Baxi Ports & Logistics Ltd.',
-      '51278': 'ULSS CFS (Container Freight Station)',
-      '51305': 'Ameya Logistics Private Limited',
-    },
+    /* Always the same, for every vendor. */
+    stuffingLocation: 'ALL CARGO TERMINAL Limited',
   };
 
   const LISTS = {
@@ -207,7 +200,7 @@ window.ABC_DATA = (function () {
       items: items('3209201', 676410220, 'INDIGO WASH', 'MENS DENIM SHIRT', 7, 1, 4),
     }),
     booking({
-      id: 'ABCLAX43702IN0', vendorCode: '51044', vendorName: 'Sunrise Textiles Pvt Ltd', op: 'Meera Iyer', kpi: 'At Risk',
+      id: 'ABCNYC43702IN0', vendorCode: '51044', vendorName: 'Sunrise Textiles Pvt Ltd', op: 'Meera Iyer', kpi: 'At Risk',
       vendorEmail: 'logistics@sunrisetex.example', created: '09/29/2026', received: '10/08/2026', confirmDate: '09/30/2026',
       contactName: 'IMRAN SHEIKH', contactEmail: 'imran@sunrisetex.example',
       shipperAddress: 'GALA 7-9, ANDHERI INDUSTRIAL ESTATE\nMUMBAI, MAHARASHTRA 400093\nState Code: 27  State Name: Maharashtra',
@@ -227,7 +220,7 @@ window.ABC_DATA = (function () {
       items: items('3209070', 676110440, 'WHITE', 'GIRLS WOVEN BLOUSE', 4, 0, 5),
     }),
     booking({
-      id: 'ABCSAV43725IN0', vendorCode: '51278', vendorName: 'Lotus Home Textiles', op: 'Farah Khan',
+      id: 'ABCNYC43725IN0', vendorCode: '51278', vendorName: 'Lotus Home Textiles', op: 'Farah Khan',
       vendorEmail: 'dispatch@lotushome.example', created: '10/01/2026', received: '10/08/2026', confirmDate: '10/02/2026',
       contactName: 'RAJESH PATEL', contactEmail: 'rajesh@lotushome.example',
       shipperAddress: 'SURVEY 212, GIDC ESTATE, SACHIN\nSURAT, GUJARAT 394230\nState Code: 24  State Name: Gujarat',
@@ -248,6 +241,38 @@ window.ABC_DATA = (function () {
     }),
   ];
 
+
+  /* More open bookings: [id, vendor code, vendor, city, state code, postal, est. delivery, color, product, options]. */
+  const MORE_ROWS = [
+    ['ABCNYC43748IN0', '51402', 'Maple Row Garments Pvt Ltd', 'LUDHIANA', 'PB', '141003', '10/14/2026', 'FOREST GREEN', 'MENS KNIT HENLEY'],
+    ['ABCNYC43752IN0', '51417', 'Saffron Weave Exports', 'JAIPUR', 'RJ', '302022', '10/16/2026', 'SAFFRON', 'WMNS BLOCK PRINT KURTA'],
+    ['ABCNYC43759IN0', '51426', 'Indus Knit Fabrics Ltd', 'TIRUPPUR', 'TN', '641604', '10/19/2026', 'CHARCOAL', 'MENS FLEECE HOODIE'],
+    ['ABCNYC43763IN0', '51439', 'Coral Bay Apparel', 'CHENNAI', 'TN', '600058', '10/21/2026', 'CORAL', 'GIRLS KNIT DRESS'],
+    ['ABCNYC43771IN0', '51448', 'Banyan Textiles Pvt Ltd', 'ERODE', 'TN', '638001', '10/23/2026', 'NATURAL', 'COTTON BED SHEET SET'],
+    ['ABCNYC43778IN0', '51455', 'Monsoon Threads Exports', 'KOLKATA', 'WB', '700091', '10/26/2026', 'RAIN BLUE', 'WMNS WOVEN BLOUSE'],
+    ['ABCNYC43784IN0', '51463', 'Kestrel Home Linen', 'PANIPAT', 'HR', '132103', '10/28/2026', 'SLATE GREY', 'COTTON THROW BLANKET'],
+    ['ABCNYC43790IN0', '51471', 'Lakeview Denim Works', 'BENGALURU', 'KA', '560068', '10/30/2026', 'DARK INDIGO', 'MENS DENIM JACKET'],
+    ['ABCNYC43797IN0', '51480', 'Silverline Outerwear', 'NOIDA', 'UP', '201305', '11/02/2026', 'BLACK', 'WMNS PUFFER VEST'],
+    ['ABCNYC43803IN0', '51492', 'Aster Kidswear Pvt Ltd', 'GURGAON', 'HR', '122001', '11/05/2026', 'SKY BLUE', 'BOYS GRAPHIC TEE'],
+    ['ABCNYC43811IN0', '51501', 'Vega Sportswear Exports', 'MUMBAI', 'MH', '400093', '10/09/2026', 'NAVY', 'MENS TRAINING SHORTS', { kpi: 'At Risk' }],
+    ['ABCNYC43819IN0', '51513', 'Orion Leather Goods', 'KANPUR', 'UP', '208001', '10/29/2026', 'TAN', 'LEATHER BELT ASSORTMENT', { kpi: 'At Risk', readiness: 'notready' }],
+  ];
+  const OPS_NAMES = Object.keys(OPS);
+  const more = MORE_ROWS.map((r, i) => {
+    const slug = r[2].split(' ')[0].toLowerCase(), opt = r[9] || {};
+    return booking(Object.assign({
+      id: r[0], vendorCode: r[1], vendorName: r[2], op: OPS_NAMES[i % OPS_NAMES.length],
+      vendorContact: ['Meena Rao', 'Karan Shah', 'Priya Nair', 'Vikram Sethi'][i % 4], vendorEmail: 'exports@' + slug + '.example',
+      created: '10/0' + (1 + (i % 8)) + '/2026', received: '10/12/2026', confirmDate: '10/0' + (2 + (i % 8)) + '/2026',
+      contactName: ['MEENA RAO', 'KARAN SHAH', 'PRIYA NAIR', 'VIKRAM SETHI'][i % 4], contactEmail: 'ops@' + slug + '.example',
+      shipperAddress: 'UNIT ' + (10 + i * 3) + ', INDUSTRIAL AREA\n' + r[3] + ' ' + r[4] + ' ' + r[5],
+      mfrName: r[2] + ' - Unit ' + (1 + (i % 3)), mfrAddr1: 'UNIT ' + (10 + i * 3), mfrAddr2: 'INDUSTRIAL AREA', mfrCity: r[3], mfrState: r[4], mfrPostal: r[5],
+      fobPort: 'Nhava Sheva', fobEtd: '', dischargeEta: '', estDelivery: r[6], cutoff: '',
+      carrier: 'Maersk(MAEU)',
+      items: items('3210' + String(100 + i * 17), 676800000 + i * 1000, r[7], r[8], 4 + (i % 4), (i * 2) % (4 + (i % 4)), 2 + i),
+    }, opt));
+  });
+
   /* Nine previously declined bookings (matches the "Declined Bookings (9)" tile). */
   const declinedVendors = [
     ['50701', 'Rajhans Exports Private Limited'], ['50822', 'Kaveri Knitwear Private Limited'], ['50937', 'Bluewave Garments Limited'],
@@ -267,5 +292,5 @@ window.ABC_DATA = (function () {
     }));
   }
 
-  return { COMPANIES, STUFFING, RULES, LISTS, OPS, DOCS, SHIPMENT_LANES, LANE_TABS, bookings: open.concat(declined) };
+  return { COMPANIES, STUFFING, RULES, LISTS, OPS, DOCS, SHIPMENT_LANES, LANE_TABS, bookings: open.concat(more, declined) };
 })();

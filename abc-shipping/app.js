@@ -2,7 +2,7 @@
   'use strict';
   const D = window.ABC_DATA;
   const L = D.LISTS;
-  const KEY = 'abc-shipping-demo-v3';
+  const KEY = 'abc-shipping-demo-v4';
   const CO_KEY = 'abc-shipping-company';
   const VIEWED_KEY = 'abc-shipping-viewed';
   const PAGE_SIZE = 10;
@@ -145,8 +145,8 @@
   /* Fills every rule-driven field. Returns what it filled and what it could not. */
   function autoFill(b) {
     const filled = [], missing = [];
-    const name = D.RULES.stuffingByVendor[b.fields.vendorCode];
-    if (name) { setStuffing(b, name); filled.push('Stuffing Location'); } else missing.push('Stuffing Location (no rule for vendor ' + b.fields.vendorCode + ')');
+    const name = D.RULES.stuffingLocation;
+    setStuffing(b, name); filled.push('Stuffing Location');
     const sch = computeSchedule(b.fields.estDelivery);
     if (sch) { Object.assign(b.fields, sch); filled.push('FOB ETD', 'Discharge Port ETA', 'Final Destination ETA', 'SI Cutoff Date', 'Cargo Cutoff Date'); } else missing.push('dates (Estimated Cargo Delivery Date is missing or invalid)');
     Object.assign(b.fields, D.RULES.constants); filled.push('Cargo Cutoff Time', 'Vessel', 'Voyage');
@@ -446,7 +446,7 @@
     const li = (b) => '<li class="run" data-id="' + esc(b.id) + '"><span class="t">…</span><span><b>' + esc(b.id) + '</b> – queued</span></li>';
     modal({
       title: 'Auto-Process Bookings', wide: true,
-      body: '<p>For each selected booking the automation fills the <b>Stuffing Location</b> (vendor rule), <b>FOB ETD</b>, both <b>ETAs</b>, <b>SI</b> and <b>Cargo cutoff dates</b> (from the Estimated Cargo Delivery Date) and the fixed <b>Vessel</b>, <b>Voyage</b> and <b>Cargo Cutoff Time</b>, then confirms it. Bookings flagged <i>Ready to Decline</i> or <i>Not Ready to Process</i> are skipped for a person to review.</p>' +
+      body: '<p>For each selected booking the automation fills the <b>Stuffing Location</b> (always ALL CARGO TERMINAL Limited), <b>FOB ETD</b>, both <b>ETAs</b>, <b>SI</b> and <b>Cargo cutoff dates</b> (from the Estimated Cargo Delivery Date) and the fixed <b>Vessel</b>, <b>Voyage</b> and <b>Cargo Cutoff Time</b>, then confirms it. Bookings flagged <i>Ready to Decline</i> or <i>Not Ready to Process</i> are skipped for a person to review.</p>' +
         '<label class="optrow"><input type="checkbox" id="optMove" checked> Also move confirmed bookings to their shipment (ship key looked up from the FOB ETD)</label><ul class="log">' + list.map(li).join('') + '</ul>',
       buttons: [
         { label: 'Cancel', onClick: () => { } },
